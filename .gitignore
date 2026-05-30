@@ -1,0 +1,54 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.env
+venv/
+env/
+ENV/
+.env.*
+
+# Virtualenv
+venv/
+ENV/
+env/
+
+# Django
+*.log
+*.pot
+*.pyc
+local_settings.py
+db.sqlite3
+media
+/staticfiles
+
+# VSCode
+.vscode/
+
+# Mac
+.DS_Store
+
+# Node
+node_modules/
+npm-debug.log
+
+# JetBrains
+*.iml
+.idea/
+
+# Coverage
+htmlcov/
+.coverage
+
+# dotenv
+.env
+
+# Build
+build/
+dist/
+
+# Pytest
+.pytest_cache/
+
+# SQLite
+*.sqlite3
