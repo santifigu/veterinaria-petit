@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="min-h-screen bg-background-light dark:bg-background-dark flex items-center justify-center py-20 px-4">
+    <div class="max-w-md w-full">
+        <div class="bg-white dark:bg-[#162a1c] rounded-3xl p-8 border border-[#e7f3eb] dark:border-[#1a3321] shadow-2xl">
+            <div class="text-center mb-8">
+                <div class="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span class="material-symbols-outlined text-primary text-5xl">pets</span>
+                </div>
+                <h1 class="text-3xl font-black text-[#0d1b12] dark:text-white mb-2">Perfil de Tutor</h1>
+                <p class="text-gray-600 dark:text-gray-400">Accede con tu email registrado</p>
+            </div>
+
+            <form method="GET" class="space-y-6">
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Email</label>
+                    <input 
+                        type="email" 
+                        name="email" 
+                        placeholder="tu@email.com"
+                        required
+                        class="w-full bg-background-light dark:bg-background-dark border border-gray-300 dark:border-[#1a3321] rounded-lg p-4 focus:ring-2 focus:ring-primary focus:outline-none transition-all"
+                    />
+                </div>
+
+                <button type="submit" class="w-full bg-primary text-teal-soft py-4 rounded-xl font-bold hover:shadow-lg transition-all flex items-center justify-center gap-2">
+                    <span class="material-symbols-outlined">login</span>
+                    <span>Acceder a mi Perfil</span>
+                </button>
+            </form>
+
+            <div class="mt-6 pt-6 border-t border-gray-200 dark:border-[#1a3321] text-center">
+                <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">¿No tienes una cuenta?</p>
+                <a href="{% url 'turnos' %}" class="text-primary font-bold hover:underline">Agenda tu primer turno aquí</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+{% extends "base.html" %}
+{% block header %}
+{% load static %}
+{% load static tailwind_tags %}
+<html lang="es-ar">
+<head>
+    {% tailwind_css %}
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Petit {% block title %}- Veterinaria{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link rel="icon" href="/static/img/icono.png" type="image" sizes="32x32">
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+
+    <!-- Script -->
+    <script id="tailwind-config">
+            tailwind.config = {
+                darkMode: "class",
+                theme: {
+                    extend: {
+                        colors: {
+                            "primary": "#52ACB5",
+                            "secondary": "#52B58C",
+                            "terciary": "#527BB5",
+                            "background-light": "#f6f8f6",
+                            "background-dark": "#102216",
+                            "teal-soft": "#e7f3eb",
+                            "wood-warm": "#d97706",
+                            "color1": "#EDF7F7",
+                            "color2": "#CDE7EA",
+                            "color3": "#ADD8DC",
+                            "color4": "#8DC9CE",
+                            "color5": "#6DB9C0",
+                            "color6": "#3F8B92",
+                            "color7": "#316D72",
+                            "color8": "#234E52",
+                            "color9": "#153032",
+                            "color10": "#081112",
+                            "coloraso": "#0d1b12",
+                        },
+                        fontFamily: {
+                            "display": ["Manrope", "sans-serif"]
+                        },
+                        borderRadius: {
+                            "DEFAULT": "0.25rem",
+                            "lg": "0.5rem",
+                            "xl": "0.75rem",
+                            "full": "9999px"
+                        },
+                    },
+                },
+            }
+    </script>
+
+    <!-- Style -->
+    <style type="text/tailwindcss">
+            @layer base {
+                body {
+                    font-family: 'Manrope', sans-serif;
+                }
+            }
+            .material-symbols-outlined {
+                font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            }
+    </style>
+    
+</head>
+<body class="bg-background-light dark:bg-background-dark text-[#0d1b12] dark:text-white transition-colors duration-300">
+{% endblock %}
+{% block hero %}
+        <div class="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden">
+            <div class="layout-container flex h-full grow flex-col">
+                <header class="flex items-center justify-between backdrop-blur-xl bg-black/10 dark:bg-black/20 border-b border-white/10 px-6 lg:px-20 py-4 fixed top-0 w-full z-50 shadow-sm">
+                    <a class="flex items-center gap-3 text-white" href="{% url 'index' %}">
+                        <div class="size-8 text-primary">
+                            <span class="material-symbols-outlined">pets</span>
+                        </div>
+                        <div class="flex flex-col">
+                            <h2 class="text-lg font-bold leading-tight tracking-tight">Córdoba Veterinaria</h2>
+                            <span class="text-xs font-medium opacity-80 uppercase tracking-tighter">Córdoba Capital</span>
+                        </div>
+                    </a>
+                    
+                    <div class="flex flex-1 justify-end gap-6 items-center">
+                        <!-- Desktop Navigation -->
+                        <nav class="hidden md:flex items-center gap-8 text-[#e7f3eb]">
+                            <a class="text-sm font-semibold hover:text-primary transition-colors" href="{% url 'index' %}">Inicio</a>
+                            <a class="text-sm font-semibold hover:text-primary transition-colors" href="{% url 'nosotros' %}">Nosotros</a>
+                            <a class="text-sm font-semibold hover:text-primary transition-colors" href="{% url 'blog:blog' %}">Blog</a>
+                            <a class="text-sm font-semibold hover:text-primary transition-colors" href="{% url 'tienda' %}">Tienda</a>
+                            <a class="text-sm font-semibold hover:text-primary transition-colors" href="{% url 'turnos:turnos' %}">Turnos</a>
+                            <a class="text-sm font-semibold hover:text-primary transition-colors" href="{% url 'contacto' %}">Contacto</a>
+                        </nav>
+
+                        <div class="flex gap-3 items-center">
+                            <!-- CARRITO -->
+                            <a href="{% url 'checkout' %}" class="relative flex items-center justify-center w-10 h-10 rounded-lg hover:scale-105 transition-transform">
+                                <!-- BADGE -->
+                                <span class="absolute -top-1 -right-1 bg-primary text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center shadow-md">{{ cantidad_total_carro }}</span>
+                                <!-- SVG DEL CARRITO -->
+                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 512 512">
+                                    <path fill="#e7f3eb" d="M454.65 169.4A31.82 31.82 0 0 0 432 160h-64v-16a112 112 0 0 0-224 0v16H80a32 32 0 0 0-32 32v216c0 39 33 72 72 72h272a72.22 72.22 0 0 0 50.48-20.55a69.48 69.48 0 0 0 21.52-50.2V192a31.75 31.75 0 0 0-9.35-22.6M176 144a80 80 0 0 1 160 0v16H176Z"/>
+                                </svg>
+                            </a>
+                            <!-- PERFIL -->
+                            {% if user.is_authenticated %}
+                                <a href="{% url 'perfil' %}" class="flex items-center justify-center w-10 h-10 text-white hover:scale-125 transition-transform">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24"><path fill="#E7F3EB" d="M12 4a4 4 0 1 1 0 8a4 4 0 0 1 0-8m0 16s8 0 8-2c0-2.4-3.9-5-8-5s-8 2.6-8 5c0 2 8 2 8 2"/></svg>
+                                </a>
+                            {% else %}
+                                <a href="{% url 'registro' %}" class="flex items-center justify-center w-10 h-10 text-white hover:scale-125 transition-transform">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24"><path fill="#E7F3EB" d="M12 4a4 4 0 1 1 0 8a4 4 0 0 1 0-8m0_16s8_0_8-2c0-2.4-3.9-5-8-5s-8_2.6-8_5c0_2_8_2_8_2"/></svg>
+                                </a>
+                            {% endif %}
+                            <!-- HAMBURGER BUTTON (Mobile) -->
+                            <button id="hamburger-btn" class="md:hidden flex items-center justify-center w-10 h-10 text-white hover:text-primary transition-colors">
+                                <span class="material-symbols-outlined text-3xl">menu</span>
+                            </button>
+                        </div>
+                    </div>
+                </header>
+
+                <!-- MOBILE MENU (Sidebar) -->
+                <div id="mobile-menu" class="fixed top-0 right-0 h-full w-[280px] bg-background-dark/98 backdrop-blur-xl border-l border-white/10 transform translate-x-full transition-transform duration-300 ease-in-out z-[60] md:hidden shadow-2xl">
+                    <div class="flex flex-col h-full">
+                        <!-- Close Button -->
+                        <div class="flex items-center justify-between px-6 py-4 border-b border-white/10">
+                            <div class="flex items-center gap-2 text-white">
+                                <span class="material-symbols-outlined text-primary">pets</span>
+                                <span class="font-bold text-sm">Menú</span>
+                            </div>
+                            <button id="close-menu-btn" class="flex items-center justify-center w-10 h-10 text-white hover:text-primary transition-colors">
+                                <span class="material-symbols-outlined text-3xl">close</span>
+                            </button>
+                        </div>
+
+                        <!-- Navigation Links -->
+                        <nav class="flex flex-col gap-1 px-4 py-6 flex-1 overflow-y-auto">
+                            <a class="flex items-center gap-3 px-4 py-3 text-white hover:bg-primary/10 hover:text-primary rounded-lg transition-all font-semibold" href="{% url 'index' %}">
+                                <span class="material-symbols-outlined text-xl">home</span>
+                                <span>Inicio</span>
+                            </a>
+                            <a class="flex items-center gap-3 px-4 py-3 text-white hover:bg-primary/10 hover:text-primary rounded-lg transition-all font-semibold" href="{% url 'nosotros' %}">
+                                <span class="material-symbols-outlined text-xl">group</span>
+                                <span>Nosotros</span>
+                            </a>
+                            <a class="flex items-center gap-3 px-4 py-3 text-white hover:bg-primary/10 hover:text-primary rounded-lg transition-all font-semibold" href="{% url 'blog:blog' %}">
+                                <span class="material-symbols-outlined text-xl">article</span>
+                                <span>Blog</span>
+                            </a>
+                            <a class="flex items-center gap-3 px-4 py-3 text-white hover:bg-primary/10 hover:text-primary rounded-lg transition-all font-semibold" href="{% url 'tienda' %}">
+                                <span class="material-symbols-outlined text-xl">store</span>
+                                <span>Tienda</span>
+                            </a>
+                            <a class="flex items-center gap-3 px-4 py-3 text-white hover:bg-primary/10 hover:text-primary rounded-lg transition-all font-semibold" href="{% url 'turnos:turnos' %}">
+                                <span class="material-symbols-outlined text-xl">calendar_month</span>
+                                <span>Turnos</span>
+                            </a>
+                            <a class="flex items-center gap-3 px-4 py-3 text-white hover:bg-primary/10 hover:text-primary rounded-lg transition-all font-semibold" href="{% url 'contacto' %}">
+                                <span class="material-symbols-outlined text-xl">mail</span>
+                                <span>Contacto</span>
+                            </a>
+                        </nav>
+
+                        <!-- Carrito y perfil en mobile -->
+                        <div class="px-4 py-3 border-t border-white/10 flex gap-3">
+                            <a href="{% url 'checkout' %}" class="relative flex items-center justify-center gap-2 flex-1 bg-white/5 hover:bg-white/10 text-white py-3 rounded-lg transition-all font-semibold text-sm">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 512 512">
+                                    <path fill="#e7f3eb" d="M454.65 169.4A31.82 31.82 0 0 0 432 160h-64v-16a112 112 0 0 0-224 0v16H80a32 32 0 0 0-32 32v216c0 39 33 72 72 72h272a72.22 72.22 0 0 0 50.48-20.55a69.48 69.48 0 0 0 21.52-50.2V192a31.75 31.75 0 0 0-9.35-22.6M176 144a80 80 0 0 1 160 0v16H176Z"/>
+                                </svg>
+                                <span>Carrito</span>
+                                <span class="absolute -top-1 -right-1 bg-primary text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">{{ cantidad_total_carro }}</span>
+                            </a>
+                            {% if user.is_authenticated %}
+                                <a href="{% url 'perfil' %}" class="flex items-center justify-center gap-2 flex-1 bg-white/5 hover:bg-white/10 text-white py-3 rounded-lg transition-all font-semibold text-sm">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path fill="#E7F3EB" d="M12 4a4 4 0 1 1 0 8a4 4 0 0 1 0-8m0 16s8 0 8-2c0-2.4-3.9-5-8-5s-8 2.6-8 5c0 2 8 2 8 2"/></svg>
+                                    <span>Mi Perfil</span>
+                                </a>
+                            {% else %}
+                                <a href="{% url 'registro' %}" class="flex items-center justify-center gap-2 flex-1 bg-white/5 hover:bg-white/10 text-white py-3 rounded-lg transition-all font-semibold text-sm">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path fill="#E7F3EB" d="M12 4a4 4 0 1 1 0 8a4 4 0 0 1 0-8m0 16s8 0 8-2c0-2.4-3.9-5-8-5s-8 2.6-8 5c0 2 8 2 8 2"/></svg>
+                                    <span>Registrarse</span>
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- OVERLAY (cuando el menú está abierto) -->
+                <div id="menu-overlay" class="fixed inset-0 bg-black/50 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300 z-[55]"></div>
+
+                <section class="relative h-screen w-full flex items-center justify-center overflow-hidden">
+                    <div class="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-transparent"></div>
+                    <img alt="Modern veterinary interior" class="absolute inset-0 w-full h-full object-cover" data-alt="Modern high-end veterinary clinic interior with clean minimalist design, wooden accents, and soft warm ambient lighting reflecting expertise" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBl_yfOc9ws7AD8o_qCzCG1JIPsUpO66JinM_NQ75hXGkq51QgopEM2dABKPLm5veG3FGYg2H4Y68nqaxxOWJxvyTG1UkU20RegFOgmRz3fd4LsqLCB_CETGM7FSDQB8fUY-0_BhOLy9gy6qko62Bmb2adRknmpM8wVPrBx_bpWDV-QLL_eO1h-5bwmQcVUnCf-5Kt-bhf2mmRnJQUWSyvRYotqNIFnhgOc1IJxNvVE6n-k90Vg5XP1mMOzcy8Q-wIHRxkF5ZLs2X0"/>
+                    <div class="absolute inset-0 bg-black/50 dark:bg-black/60"></div>
+                    <div class="relative z-20 text-center max-w-4xl px-6">
+                        <span class="font-headline text-teal-soft bg-primary/30 backdrop-blur-sm px-4 py-1.5 rounded-full text-xs font-bold tracking-widest uppercase mb-6 inline-block">Transparencia y Cuidado</span>
+                        <h1 class="font-headline text-5xl md:text-7xl font-extrabold text-white mb-6 tracking-tighter leading-none">Política de <span class="text-primary">Privacidad</span></h1>
+                        <p class="font-body text-lg md:text-xl text-white/90 max-w-2xl mx-auto leading-relaxed">
+                                            En Petit, el cuidado de su mascota comienza con el respeto absoluto por sus datos personales y la confidencialidad de sus historias clínicas.
+                                        </p>
+                    </div>
+                    <div class="absolute bottom-12 left-1/2 -translate-x-1/2 z-20">
+                        <span class="material-symbols-outlined text-white text-4xl animate-bounce">expand_more</span>
+                    </div>
+                </section>
+            </div>
+        </div>
+
+        <!-- JavaScript para el menú hamburguesa -->
+        <script>
+            const hamburgerBtn = document.getElementById('hamburger-btn');
+            const closeMenuBtn = document.getElementById('close-menu-btn');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const menuOverlay = document.getElementById('menu-overlay');
+
+            function openMenu() {
+                mobileMenu.classList.remove('translate-x-full');
+                mobileMenu.classList.add('translate-x-0');
+                menuOverlay.classList.remove('opacity-0', 'pointer-events-none');
+                menuOverlay.classList.add('opacity-100');
+                document.body.style.overflow = 'hidden';
+            }
+
+            function closeMenu() {
+                mobileMenu.classList.remove('translate-x-0');
+                mobileMenu.classList.add('translate-x-full');
+                menuOverlay.classList.remove('opacity-100');
+                menuOverlay.classList.add('opacity-0', 'pointer-events-none');
+                document.body.style.overflow = '';
+            }
+
+            hamburgerBtn.addEventListener('click', openMenu);
+            closeMenuBtn.addEventListener('click', closeMenu);
+            menuOverlay.addEventListener('click', closeMenu);
+
+            // Cerrar menú al hacer click en un link
+            const mobileMenuLinks = mobileMenu.querySelectorAll('a');
+            mobileMenuLinks.forEach(link => {
+                link.addEventListener('click', closeMenu);
+            });
+
+            // Cerrar menú con tecla ESC
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    closeMenu();
+                }
+            });
+        </script>
+    {% endblock %}
+    {% block content %}
+    <section class="bg-surface py-24 px-8 max-w-7xl mx-auto">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-16">
+            <!-- Sticky Navigation Column (Editorial Left) -->
+            <aside class="lg:col-span-3 hidden lg:block">
+                <div class="sticky top-32 space-y-8">
+                    <div>
+                        <h4 class="font-headline text-xs font-bold text-outline uppercase tracking-widest mb-6">Contenido</h4>
+                        <ul class="space-y-4">
+                        <li>
+                            <a class="group flex items-center gap-3 text-primary font-bold transition-all" href="#intro">
+                                <div class="h-4 w-1 bg-primary rounded-full"></div>
+                                <span>Introducción</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="group flex items-center gap-3 text-on-surface-variant hover:text-primary transition-all" href="#datos">
+                                <div class="h-4 w-1 bg-transparent group-hover:bg-outline-variant rounded-full"></div>
+                                <span>Uso de Datos</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="group flex items-center gap-3 text-on-surface-variant hover:text-primary transition-all" href="#clinica">
+                                <div class="h-4 w-1 bg-transparent group-hover:bg-outline-variant rounded-full"></div>
+                                <span>Historias Clínicas</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="group flex items-center gap-3 text-on-surface-variant hover:text-primary transition-all" href="#whatsapp">
+                                <div class="h-4 w-1 bg-transparent group-hover:bg-outline-variant rounded-full"></div>
+                                <span>Canales WhatsApp</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="group flex items-center gap-3 text-on-surface-variant hover:text-primary transition-all" href="#derechos">
+                                <div class="h-4 w-1 bg-transparent group-hover:bg-outline-variant rounded-full"></div>
+                                <span>Sus Derechos</span>
+                            </a>
+                        </li>
+                        </ul>
+                    </div>
+                    <div class="p-6 bg-surface-container-low rounded-xl">
+                        <p class="font-body text-xs text-on-surface-variant leading-relaxed">
+                        <span class="block font-bold mb-1">Última actualización:</span>
+                                                        24 de Mayo, 2024
+                                                    </p>
+                        <button class="mt-4 flex items-center gap-2 text-primary text-sm font-bold hover:underline">
+                            <span class="material-symbols-outlined text-sm">download</span>
+                                                            Descargar PDF
+                                                    </button>
+                    </div>
+                </div>
+            </aside>
+            <!-- Main Legal Content Well -->
+            <article class="lg:col-span-9 space-y-20 max-w-3xl">
+                <!-- Intro -->
+                <section id="intro">
+                    <h2 class="font-headline text-3xl font-bold text-primary mb-8 tracking-tight">1.0 Compromiso de Confidencialidad</h2>
+                    <div class="space-y-6 text-on-surface-variant leading-relaxed text-lg">
+                        <p>
+                                                        Bienvenido/a esta Política de Privacidad describe cómo <span class="font-bold text-on-surface">Petit</span> recopila, utiliza y protege su información personal. Valoramos la confianza que deposita en nosotros al confiarnos el cuidado de su mascota.
+                                                    </p>
+                        <p>
+                                                        Nuestra prioridad es garantizar que sus datos de contacto y la información médica de sus compañeros animales se manejen bajo los más altos estándares de seguridad técnica y ética profesional.
+                                                    </p>
+                    </div>
+                </section>
+                <!-- Datos de Contacto -->
+                <section class="p-10 border-2 dark:border-white/10 rounded-2xl editorial-shadow" id="datos">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div class="w-12 h-12 rounded-full bg-secondary-fixed flex items-center justify-center">
+                            <span class="material-symbols-outlined text-primary">contact_phone</span>
+                        </div>
+                        <h2 class="font-headline text-2xl font-bold text-on-surface">Uso de Datos de Contacto</h2>
+                    </div>
+                    <div class="space-y-6 text-on-surface-variant leading-relaxed">
+                        <p>
+                                                        Recopilamos información básica como su nombre, correo electrónico y número telefónico exclusivamente para:
+                                                    </p>
+                        <ul class="space-y-4">
+                            <li class="flex items-start gap-3">
+                                <span class="text-secondary mt-1 tracking-tighter">•</span>
+                                <span>Gestión de citas y recordatorios de vacunación o chequeos anuales.</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="text-secondary mt-1">•</span>
+                                <span>Notificaciones de emergencia relacionadas con el estado de salud de su mascota durante hospitalizaciones.</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="text-secondary mt-1">•</span>
+                                <span>Envío de facturación electrónica y reportes de laboratorio.</span>
+                            </li>
+                        </ul>
+                    </div>
+                </section>
+                <!-- Historias Clínicas -->
+                <section id="clinica">
+                    <h2 class="font-headline text-2xl font-bold text-primary mb-8 tracking-tight">Historias Clínicas y Expedientes</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                        <div class="bg-primary/5 p-8 rounded-xl border-l-4 border-primary">
+                            <h4 class="font-headline font-bold text-primary mb-3">Acceso Restringido</h4>
+                            <p class="text-sm leading-relaxed text-on-surface-variant">
+                                                                Solo el personal médico veterinario autorizado tiene acceso a los expedientes clínicos detallados.
+                                                            </p>
+                        </div>
+                        <div class="bg-secondary/5 p-8 rounded-xl border-l-4 border-secondary">
+                            <h4 class="font-headline font-bold text-secondary mb-3">Respaldo Seguro</h4>
+                            <p class="text-sm leading-relaxed text-on-surface-variant">
+                                                                Toda la información médica está encriptada y respaldada en servidores de alta seguridad clínica.
+                                                            </p>
+                        </div>
+                    </div>
+                    <p class="text-on-surface-variant leading-relaxed text-lg mb-6">
+                                                La historia clínica de su mascota es propiedad de usted, mientras que Petit actúa como custodio legal de los registros. Usted tiene derecho a solicitar una copia digital completa de su expediente en cualquier momento.
+                                            </p>
+                </section>
+                <!-- WhatsApp Policy -->
+                <section class="border-2 p-10 rounded-2xl text-coloraso" id="whatsapp">
+                    <div class="flex items-center gap-4 mb-6">
+                        <span class="material-symbols-outlined text-4xl text-primary">chat</span>
+                        <h2 class="font-headline text-2xl font-bold">Comunicación vía WhatsApp</h2>
+                    </div>
+                    <p class="mb-6 leading-relaxed opacity-90">
+                                            Entendemos que la inmediatez es crucial en el cuidado veterinario. Nuestro canal oficial de WhatsApp se rige bajo las siguientes normas:
+                                        </p>
+                    <div class="space-y-4">
+                        <div class="flex gap-4 items-start">
+                            <span class="material-symbols-outlined mt-1 text-primary">verified_user</span>
+                            <div>
+                                <p class="font-bold">Privacidad de la Conversación</p>
+                                <p class="text-sm opacity-80">No compartimos su número con terceros ni utilizamos grupos públicos para discutir la salud de sus mascotas.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-4 items-start">
+                            <span class="material-symbols-outlined mt-1 text-primary">history</span>
+                            <div>
+                                <p class="font-bold">Registro de Instrucciones Médicas</p>
+                                <p class="text-sm opacity-80">Cualquier instrucción médica dada por WhatsApp será transcripta a la historia clínica formal para asegurar la trazabilidad del tratamiento.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <!-- Derechos -->
+                <section class="pt-12 border-outline-variant/15" id="derechos">
+                    <h2 class="font-headline text-2xl font-bold text-on-surface mb-6">Sus Derechos de Privacidad</h2>
+                    <p class="text-on-surface-variant leading-relaxed mb-8">
+                        Como titular de los datos, usted podrá ejercer sus derechos de Acceso, Rectificación, Cancelación y Oposición (ARCO) enviando un correo a 
+                        <a href="mailto:santifigu72@gmail.com" class="text-primary font-medium">petit@gmail.com</a>.
+                                            </p>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="text-center p-6 rounded-lg hover:bg-surface-container-low transition-colors">
+                            <span class="material-symbols-outlined text-primary mb-2">edit_note</span>
+                            <p class="text-xs font-bold uppercase tracking-widest text-outline">Rectificar</p>
+                        </div>
+                        <div class="text-center p-6 rounded-lg hover:bg-surface-container-low transition-colors">
+                            <span class="material-symbols-outlined text-primary mb-2">delete_forever</span>
+                            <p class="text-xs font-bold uppercase tracking-widest text-outline">Eliminar</p>
+                        </div>
+                        <div class="text-center p-6 rounded-lg hover:bg-surface-container-low transition-colors">
+                            <span class="material-symbols-outlined text-primary mb-2">visibility</span>
+                            <p class="text-xs font-bold uppercase tracking-widest text-outline">Visualizar</p>
+                        </div>
+                    </div>
+                </section>
+            </article>
+        </div>
+    </section>
+    <!-- Call to Action / Support -->
+    <section class="bg-surface-container-low py-20 px-8">
+        <div class="max-w-4xl mx-auto text-center">
+            <h3 class="font-headline text-4xl font-bold text-primary mb-6">¿Tiene dudas sobre el tratamiento de sus datos?</h3>
+            <p class="text-on-surface-variant mb-10 max-w-xl mx-auto">Nuestro equipo de atención al cliente está disponible para explicarle detalladamente nuestros protocolos de seguridad.</p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a class="bg-primary text-on-primary px-8 py-4 text-teal-soft rounded-md font-bold hover:brightness-110 transition-all" href="{% url 'contacto' %}">Contactar Soporte</a>
+                <a class="bg-transparent border-2 border-primary text-primary px-8 py-4 rounded-md font-bold hover:bg-primary/5 transition-all" href="{% url 'terminos' %}">Ver Términos de Servicio</a>
+            </div>
+        </div>
+    </section>
+    </main>
+    {% endblock %}
+</body>
+</html>

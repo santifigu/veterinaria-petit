@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Payment Pending | Veterinaria Córdoba</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#13ec13",
+                        "pending": "#f59e0b",
+                        "background-light": "#fdfaf6",
+                        "background-dark": "#102210",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style type="text/tailwindcss">
+        body {
+            font-family: 'Manrope', sans-serif;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .pending-glow {
+            box-shadow: 0 0 20px rgba(245, 158, 11, 0.15);
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-[#0d1b0d] dark:text-[#e7f3e7] transition-colors duration-200 min-h-screen">
+<div class="layout-container flex h-full grow flex-col">
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#e7f3e7] dark:border-b-[#1d331d] px-10 py-3 bg-white dark:bg-[#102210]">
+<div class="flex items-center gap-4 text-[#0d1b0d] dark:text-[#e7f3e7]">
+<div class="size-6 text-primary">
+<span class="material-symbols-outlined text-3xl">pets</span>
+</div>
+<h2 class="text-[#0d1b0d] dark:text-white text-lg font-bold leading-tight tracking-[-0.015em]">Veterinaria Córdoba</h2>
+</div>
+<div class="flex flex-1 justify-end gap-8">
+<div class="flex items-center gap-9">
+<a class="text-[#0d1b0d] dark:text-[#e7f3e7] text-sm font-medium leading-normal hover:text-primary transition-colors" href="#">Services</a>
+<a class="text-[#0d1b0d] dark:text-[#e7f3e7] text-sm font-medium leading-normal hover:text-primary transition-colors" href="#">Shop</a>
+<a class="text-[#0d1b0d] dark:text-[#e7f3e7] text-sm font-medium leading-normal hover:text-primary transition-colors" href="#">Clinic</a>
+<a class="text-[#0d1b0d] dark:text-[#e7f3e7] text-sm font-medium leading-normal hover:text-primary transition-colors" href="#">Appointments</a>
+</div>
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 border-2 border-primary/20" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAZS4YYrtKedtniAjq5wm0_Pvme6seeW3PYzq4j1n_h6OcfZNOTVQ2uef1hm6aT2Y2R8Ttx82rlwOz7X0rOkEtJuO-tOxzbp487tWz2g2sjjv0HBoMmLyX6gFr9Q_7zh_S4YJo335bauCp1D3whiX1z6GFtXVoQ2g59sQIwZckB47ijG8MlSLl9YxG1EzSY5OgQ0dxzJ6JDCntRESS3BsGF5wwQGlpYDUJ4EIfTuALDIEv94mrMTVGr_CSfWEBtcgI1GyPqZHSXabo");'></div>
+</div>
+</header>
+<main class="flex-1 flex justify-center py-12 px-4 md:px-10 lg:px-40">
+<div class="max-w-[800px] w-full flex flex-col items-center">
+<div class="mb-10 flex flex-col items-center">
+<div class="bg-pending/10 dark:bg-pending/20 p-5 rounded-full mb-6 pending-glow">
+<span class="material-symbols-outlined text-pending text-6xl">pending_actions</span>
+</div>
+<h1 class="text-[#0d1b0d] dark:text-white tracking-tight text-[36px] font-extrabold leading-tight text-center pb-3">Payment in Process</h1>
+<p class="text-[#6b7280] dark:text-[#a1b3a1] text-lg font-normal leading-relaxed text-center max-w-[550px]">
+                    The bank or payment platform is currently verifying your transaction. This usually takes a few moments. We'll send you an email confirmation as soon as it's approved.
+                </p>
+</div>
+<div class="w-full flex flex-wrap gap-4 mb-8">
+<div class="flex min-w-[158px] flex-1 flex-col gap-2 rounded-xl p-6 border border-[#e5e7eb] dark:border-[#1d331d] bg-white dark:bg-[#152a15] shadow-sm">
+<p class="text-[#6b7280] dark:text-[#a1b3a1] text-xs font-bold leading-normal uppercase tracking-widest">Transaction ID</p>
+<p class="text-[#0d1b0d] dark:text-white tracking-tight text-xl font-bold leading-tight">TXN-99281-COR</p>
+</div>
+<div class="flex min-w-[158px] flex-1 flex-col gap-2 rounded-xl p-6 border border-pending/30 bg-pending/5 dark:bg-pending/10 shadow-sm relative overflow-hidden">
+<div class="absolute -right-4 -top-4 opacity-10">
+<span class="material-symbols-outlined text-8xl text-pending">schedule</span>
+</div>
+<p class="text-[#6b7280] dark:text-[#a1b3a1] text-xs font-bold leading-normal uppercase tracking-widest">Current Status</p>
+<p class="text-pending tracking-tight text-xl font-bold leading-tight flex items-center gap-2">
+                        Awaiting Confirmation
+                    </p>
+<p class="text-[#92400e] dark:text-[#fbbf24] font-medium text-xs flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">info</span> Processing in Córdoba Central
+                    </p>
+</div>
+</div>
+<div class="w-full bg-white dark:bg-[#152a15] rounded-xl border border-[#e5e7eb] dark:border-[#1d331d] overflow-hidden shadow-sm mb-8">
+<div class="border-b border-[#e5e7eb] dark:border-[#1d331d] px-6 py-4 flex items-center justify-between bg-gray-50/50 dark:bg-white/5">
+<h2 class="text-[#0d1b0d] dark:text-white text-[18px] font-bold leading-tight tracking-[-0.015em]">Purchase Summary</h2>
+<span class="text-xs font-bold px-2 py-1 bg-gray-100 dark:bg-gray-800 rounded text-[#6b7280] dark:text-[#a1b3a1]">3 ITEMS</span>
+</div>
+<div class="p-6 flex flex-col gap-6">
+<div class="flex items-center gap-4">
+<div class="size-14 rounded-lg bg-[#f0f4f0] dark:bg-[#1d331d] flex-shrink-0 bg-cover bg-center" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAdi3J8TOnjrKPKS38xJ9jVAzCKOT-2Je1P_evWG3d5VJmUXQmUrcW98WF-ZfZWxWKzQZAlccFR3RbgijlU9ZE1g6ImWayap93akr6_TahFibAQ2XXUZWr2k0plpRUKqxj7vjh6ilqCxAn4KxJPk3yuIH2WIvqAv4wxrkyXsVc3KFYPL4sKo4nIQm-WkY3VO0fRZo-kxYPxPEc8bTzJPR7vNMx3BZwMDlckSnRwwQWXPAQZluc_nhmWbRntaZE6Dtt9Pw2ZIDRrrpM');"></div>
+<div class="flex-1">
+<h3 class="text-[#0d1b0d] dark:text-white font-semibold text-sm">Nutrique Adult Healthy Weight</h3>
+<p class="text-[#6b7280] dark:text-[#a1b3a1] text-xs">3kg Bag • Qty: 1</p>
+</div>
+<p class="text-[#0d1b0d] dark:text-white font-bold text-sm">$12.450</p>
+</div>
+<div class="flex items-center gap-4">
+<div class="size-14 rounded-lg bg-[#f0f4f0] dark:bg-[#1d331d] flex-shrink-0 bg-cover bg-center" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBHUIz18FshyXe9L0wbcFWDG9xx8aV5OZ-6r7YS_USZkuRX1imenfAqoqbWIoQp64yUqTo7JdTQRR_p0ZtxLtadbrSMp1FgOsmvXEBh8n0aBID2_4EwUyrAklwhpW2mJiXbmeWc9ueda1rZR_FU8UwXOJ3dsF8zGVpf7NRN3xi9bFAKm47SEcjEY35eF4Gb9mTPHBGkBO-WxLZDMRJYKFrZAJg0ypPeAp8LxgcsMnO4kRgSJP7596fmzpz3yZ3cQrDuwhQQy-x27n4');"></div>
+<div class="flex-1">
+<h3 class="text-[#0d1b0d] dark:text-white font-semibold text-sm">Kong Classic Red L</h3>
+<p class="text-[#6b7280] dark:text-[#a1b3a1] text-xs">Durable Toy • Qty: 1</p>
+</div>
+<p class="text-[#0d1b0d] dark:text-white font-bold text-sm">$8.200</p>
+</div>
+<div class="flex items-center gap-4">
+<div class="size-14 rounded-lg bg-[#f0f4f0] dark:bg-[#1d331d] flex-shrink-0 bg-cover bg-center" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCGD0Y503IAmHNiwCDiRoiEYyvXpWPFxoDsuZG_ifspx7-_8tpg0ulGwhvJ4vWgQ0mDr91_u3I_AcIRPsNXkPzldHUKuKe50LEsG1-sG1MeEVQGH2Vb6oeVzD6MEdrfVE7SsU5T_n-sSA6LWaaVbXkk0qy2pT-BzOSaa6PzC7nesY-5xb9SFGJe6tJ2SuNR5ktsouRSrGUBmLnh-m5KFmXWTdldXOXMZazQRiGqfs-3c2ykS2HbJ5MCVTqmk5fIiOhK5KEdz9MrQ-Y');"></div>
+<div class="flex-1">
+<h3 class="text-[#0d1b0d] dark:text-white font-semibold text-sm">Dental Care Treats</h3>
+<p class="text-[#6b7280] dark:text-[#a1b3a1] text-xs">28 Units • Qty: 1</p>
+</div>
+<p class="text-[#0d1b0d] dark:text-white font-bold text-sm">$3.150</p>
+</div>
+<div class="border-t border-[#e5e7eb] dark:border-[#1d331d] pt-4 mt-2">
+<div class="flex justify-between items-center">
+<p class="text-[#0d1b0d] dark:text-white font-bold">Total Amount</p>
+<p class="text-[#0d1b0d] dark:text-white text-2xl font-extrabold">$23.800</p>
+</div>
+</div>
+</div>
+</div>
+<div class="flex flex-col sm:flex-row gap-4 w-full">
+<button class="flex-1 bg-pending text-white font-bold py-4 rounded-xl shadow-lg shadow-pending/20 hover:bg-[#d97706] transition-all flex items-center justify-center gap-2">
+<span class="material-symbols-outlined">refresh</span>
+                    Refresh Status
+                </button>
+<button class="flex-1 bg-white dark:bg-transparent border-2 border-[#e5e7eb] dark:border-[#1d331d] text-[#0d1b0d] dark:text-white font-bold py-4 rounded-xl hover:bg-gray-50 dark:hover:bg-white/5 transition-all flex items-center justify-center gap-2">
+<span class="material-symbols-outlined">storefront</span>
+                    Back to Store
+                </button>
+</div>
+<div class="mt-10 p-4 rounded-lg bg-white/50 dark:bg-white/5 border border-dashed border-[#e5e7eb] dark:border-[#1d331d] text-center w-full">
+<p class="text-sm text-[#6b7280] dark:text-[#a1b3a1]">
+                    Issues with your payment? <a class="text-pending font-bold underline underline-offset-4" href="#">Contact Córdoba Support</a> or call us at (0351) 455-8899
+                </p>
+</div>
+</div>
+</main>
+<footer class="py-8 text-center text-[#6b7280] dark:text-[#a1b3a1] text-sm border-t border-[#e5e7eb] dark:border-[#1d331d]">
+        © 2024 Veterinaria Córdoba. Your trust is our commitment to your pet's health.
+    </footer>
+</div>
+
+</body></html>

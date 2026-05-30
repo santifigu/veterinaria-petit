@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+{% extends 'base.html' %}
+{% load static tailwind_tags %}
+{% load static %}
+<html lang="es-ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vete {% block title %}| Blog - Post{% endblock %}</title>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-[#0d1b12] dark:text-white transition-colors duration-300">
+{% block hero %}
+<body class="bg-background-light dark:bg-background-dark font-display text-[#0d1b12] dark:text-white transition-colors duration-200">
+    <style>
+        /* Sobrescribir TODO con Manrope */
+        .blog-content,
+        .blog-content *,
+        .blog-content p,
+        .blog-content span,
+        .blog-content div,
+        .blog-content h1,
+        .blog-content h2,
+        .blog-content h3,
+        .blog-content strong,
+        .blog-content em,
+        [class*="ck-"] {
+            font-family: 'Manrope', ui-sans-serif, system-ui, sans-serif !important;
+            font-size: 'Manrope' !important;
+            color: 'Manrope' !important;
+        }
+    </style>
+    <div class="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden">
+    <section class="relative h-[80vh] min-h-[400px] w-full flex flex-col">
+                        <header class="flex items-center justify-between backdrop-blur-xl bg-black/10 dark:bg-black/20 border-b border-white/10 px-6 lg:px-20 py-4 fixed top-0 w-full z-50 shadow-sm">
+                    <a class="flex items-center gap-3 text-white" href="{% url 'index' %}">
+                        <div class="size-8 text-primary">
+                            <span class="material-symbols-outlined">pets</span>
+                        </div>
+                        <div class="flex flex-col">
+                            <h2 class="text-lg font-bold leading-tight tracking-tight">Córdoba Veterinaria</h2>
+                            <span class="text-xs font-medium opacity-80 uppercase tracking-tighter">Córdoba Capital</span>
+                        </div>
+                    </a>
+                    
+                    <div class="flex flex-1 justify-end gap-6 items-center">
+                        <!-- Desktop Navigation -->
+                        <nav class="hidden md:flex items-center gap-8 text-[#e7f3eb]">
+                            <a class="text-sm font-semibold hover:text-primary transition-colors" href="{% url 'index' %}">Inicio</a>
+                            <a class="text-sm font-semibold hover:text-primary transition-colors" href="{% url 'nosotros' %}">Nosotros</a>
+                            <a class="text-sm font-semibold hover:text-primary transition-colors" href="{% url 'blog:blog' %}">Blog</a>
+                            <a class="text-sm font-semibold hover:text-primary transition-colors" href="{% url 'tienda' %}">Tienda</a>
+                            <a class="text-sm font-semibold hover:text-primary transition-colors" href="{% url 'turnos:turnos' %}">Turnos</a>
+                            <a class="text-sm font-semibold hover:text-primary transition-colors" href="{% url 'contacto' %}">Contacto</a>
+                        </nav>
+
+                        <div class="flex gap-3 items-center">
+                            <!-- CARRITO -->
+                            <a href="{% url 'checkout' %}" class="relative flex items-center justify-center w-10 h-10 rounded-lg hover:scale-105 transition-transform">
+                                <!-- BADGE -->
+                                <span class="absolute -top-1 -right-1 bg-primary text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center shadow-md">{{ cantidad_total_carro }}</span>
+                                <!-- SVG DEL CARRITO -->
+                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 512 512">
+                                    <path fill="#e7f3eb" d="M454.65 169.4A31.82 31.82 0 0 0 432 160h-64v-16a112 112 0 0 0-224 0v16H80a32 32 0 0 0-32 32v216c0 39 33 72 72 72h272a72.22 72.22 0 0 0 50.48-20.55a69.48 69.48 0 0 0 21.52-50.2V192a31.75 31.75 0 0 0-9.35-22.6M176 144a80 80 0 0 1 160 0v16H176Z"/>
+                                </svg>
+                            </a>
+                            <!-- PERFIL -->
+                            {% if user.is_authenticated %}
+                                <a href="{% url 'perfil' %}" class="flex items-center justify-center w-10 h-10 text-white hover:scale-125 transition-transform">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24"><path fill="#E7F3EB" d="M12 4a4 4 0 1 1 0 8a4 4 0 0 1 0-8m0 16s8 0 8-2c0-2.4-3.9-5-8-5s-8 2.6-8 5c0 2 8 2 8 2"/></svg>
+                                </a>
+                            {% else %}
+                                <a href="{% url 'registro' %}" class="flex items-center justify-center w-10 h-10 text-white hover:scale-125 transition-transform">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24"><path fill="#E7F3EB" d="M12 4a4 4 0 1 1 0 8a4 4 0 0 1 0-8m0_16s8_0_8-2c0-2.4-3.9-5-8-5s-8_2.6-8_5c0_2_8_2_8_2"/></svg>
+                                </a>
+                            {% endif %}
+
+                            <!-- HAMBURGER BUTTON (Mobile) -->
+                            <button id="hamburger-btn" class="md:hidden flex items-center justify-center w-10 h-10 text-white hover:text-primary transition-colors">
+                                <span class="material-symbols-outlined text-3xl">menu</span>
+                            </button>
+                        </div>
+                    </div>
+                </header>
+
+                <!-- MOBILE MENU (Sidebar) -->
+                <div id="mobile-menu" class="fixed top-0 right-0 h-full w-[280px] bg-background-dark/98 backdrop-blur-xl border-l border-white/10 transform translate-x-full transition-transform duration-300 ease-in-out z-[60] md:hidden shadow-2xl">
+                    <div class="flex flex-col h-full">
+                        <!-- Close Button -->
+                        <div class="flex items-center justify-between px-6 py-4 border-b border-white/10">
+                            <div class="flex items-center gap-2 text-white">
+                                <span class="material-symbols-outlined text-primary">pets</span>
+                                <span class="font-bold text-sm">Menú</span>
+                            </div>
+                            <button id="close-menu-btn" class="flex items-center justify-center w-10 h-10 text-white hover:text-primary transition-colors">
+                                <span class="material-symbols-outlined text-3xl">close</span>
+                            </button>
+                        </div>
+
+                        <!-- Navigation Links -->
+                        <nav class="flex flex-col gap-1 px-4 py-6 flex-1 overflow-y-auto">
+                            <a class="flex items-center gap-3 px-4 py-3 text-white hover:bg-primary/10 hover:text-primary rounded-lg transition-all font-semibold" href="{% url 'index' %}">
+                                <span class="material-symbols-outlined text-xl">home</span>
+                                <span>Inicio</span>
+                            </a>
+                            <a class="flex items-center gap-3 px-4 py-3 text-white hover:bg-primary/10 hover:text-primary rounded-lg transition-all font-semibold" href="{% url 'nosotros' %}">
+                                <span class="material-symbols-outlined text-xl">group</span>
+                                <span>Nosotros</span>
+                            </a>
+                            <a class="flex items-center gap-3 px-4 py-3 text-white hover:bg-primary/10 hover:text-primary rounded-lg transition-all font-semibold" href="{% url 'blog:blog' %}">
+                                <span class="material-symbols-outlined text-xl">article</span>
+                                <span>Blog</span>
+                            </a>
+                            <a class="flex items-center gap-3 px-4 py-3 text-white hover:bg-primary/10 hover:text-primary rounded-lg transition-all font-semibold" href="{% url 'tienda' %}">
+                                <span class="material-symbols-outlined text-xl">store</span>
+                                <span>Tienda</span>
+                            </a>
+                            <a class="flex items-center gap-3 px-4 py-3 text-white hover:bg-primary/10 hover:text-primary rounded-lg transition-all font-semibold" href="{% url 'turnos:turnos' %}">
+                                <span class="material-symbols-outlined text-xl">calendar_month</span>
+                                <span>Turnos</span>
+                            </a>
+                            <a class="flex items-center gap-3 px-4 py-3 text-white hover:bg-primary/10 hover:text-primary rounded-lg transition-all font-semibold" href="{% url 'contacto' %}">
+                                <span class="material-symbols-outlined text-xl">mail</span>
+                                <span>Contacto</span>
+                            </a>
+                        </nav>
+
+                        <!-- Carrito y perfil en mobile -->
+                        <div class="px-4 py-3 border-t border-white/10 flex gap-3">
+                            <a href="{% url 'checkout' %}" class="relative flex items-center justify-center gap-2 flex-1 bg-white/5 hover:bg-white/10 text-white py-3 rounded-lg transition-all font-semibold text-sm">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 512 512">
+                                    <path fill="#e7f3eb" d="M454.65 169.4A31.82 31.82 0 0 0 432 160h-64v-16a112 112 0 0 0-224 0v16H80a32 32 0 0 0-32 32v216c0 39 33 72 72 72h272a72.22 72.22 0 0 0 50.48-20.55a69.48 69.48 0 0 0 21.52-50.2V192a31.75 31.75 0 0 0-9.35-22.6M176 144a80 80 0 0 1 160 0v16H176Z"/>
+                                </svg>
+                                <span>Carrito</span>
+                                <span class="absolute -top-1 -right-1 bg-primary text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">{{ cantidad_total_carro }}</span>
+                            </a>
+                            {% if user.is_authenticated %}
+                                <a href="{% url 'perfil' %}" class="flex items-center justify-center gap-2 flex-1 bg-white/5 hover:bg-white/10 text-white py-3 rounded-lg transition-all font-semibold text-sm">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path fill="#E7F3EB" d="M12 4a4 4 0 1 1 0 8a4 4 0 0 1 0-8m0 16s8 0 8-2c0-2.4-3.9-5-8-5s-8 2.6-8 5c0 2 8 2 8 2"/></svg>
+                                    <span>Mi Perfil</span>
+                                </a>
+                            {% else %}
+                                <a href="{% url 'registro' %}" class="flex items-center justify-center gap-2 flex-1 bg-white/5 hover:bg-white/10 text-white py-3 rounded-lg transition-all font-semibold text-sm">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path fill="#E7F3EB" d="M12 4a4 4 0 1 1 0 8a4 4 0 0 1 0-8m0 16s8 0 8-2c0-2.4-3.9-5-8-5s-8 2.6-8 5c0 2 8 2 8 2"/></svg>
+                                    <span>Registrarse</span>
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- OVERLAY (cuando el menú está abierto) -->
+                <div id="menu-overlay" class="fixed inset-0 bg-black/50 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300 z-[55]"></div>
+                
+        <!-- Imágen de post -->            
+        <div class="absolute inset-0 bg-cover bg-center" style='background-image: url("{% if post.imagen %}{{ post.imagen.url }}{% else %}https://via.placeholder.com/1920x1080{% endif %}");'>
+            <div class="absolute inset-0 bg-black/40"></div>
+        </div>
+        <div class="relative z-10 flex flex-col items-center justify-end h-full pb-16 px-6 max-w-[1280px] mx-auto w-full">
+            <div class="w-full text-left">
+                {% if post.categorias.all %}
+                <!-- Mostrar primer categoría seleccionada del post -->
+                <span class="inline-block px-4 py-1.5 rounded-full bg-primary text-teal-soft text-xs font-bold z-30 uppercase tracking-wider mb-6">{{ post.categorias.first.nombre }}</span>
+                {% endif %}
+                <!-- Título del post -->
+                <h1 class="text-white text-4xl md:text-6xl font-black leading-tight tracking-tight max-w-4xl">{{ post.titulo }}</h1>
+            </div>
+        </div>
+    </section>
+    <main class="max-w-[1280px] mx-auto w-full px-6 md:px-10 py-16">
+        <div class="flex flex-col lg:flex-row gap-16">
+            <article class="flex-1 max-w-4xl">
+                
+                <div class="flex items-center gap-6 mb-10 pb-10 border-b border-[#e7f3eb] dark:border-[#1a3d24]">
+                    <div class="flex items-center gap-3">
+                        <!-- Foto del autor -->
+                        <div class="size-12 rounded-full bg-cover bg-center ring-2 ring-primary/20" 
+                            style='background-image: url("{% if post.autor.veterinario.foto %}{{ post.autor.veterinario.foto.url }}{% else %}https://via.placeholder.com/100{% endif %}");'>
+                        </div>
+                        <div>
+                            <!-- Nombre del autor -->
+                            <p class="text-sm font-bold text-[#0d1b12] dark:text-white">
+                                {% if post.autor.veterinario %}
+                                    Dr/a. {{ post.autor.veterinario.nombre }} {{ post.autor.veterinario.apellido }}
+                                {% elif post.autor.get_full_name %}
+                                    Dr. {{ post.autor.get_full_name }}
+                                {% else %}
+                                    {{ post.autor.username }}
+                                {% endif %}
+                            </p>
+                            <p class="text-xs text-primary">Veterinario</p>
+                        </div>
+                    </div>
+                    <div class="h-8 w-px bg-[#e7f3eb] dark:bg-[#1a3d24]"></div>
+                    <div class="flex flex-col">
+                        <!-- ¿Activo? -->
+                        <span class="text-xs font-bold text-secondary/70 uppercase tracking-wide">Publicado</span>
+                        <div class="flex items-center gap-1 text-sm font-medium text-[#0d1b12]/90 dark:text-white">
+                            <!-- Fecha de publicación-->
+                            <span>{{ post.publicado_en|date:"M d, Y" }} <span class="text-primary">• {{ post.tiempo }} min</span></span> <!-- Cantidad de minutos con el post.tiempo -->
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
+                                <path fill="#52ACB5" d="M12 21.5c-1.35-.85-3.8-1.5-5.5-1.5c-1.65 0-3.35.3-4.75 1.05c-.1.05-.15.05-.25.05c-.25 0-.5-.25-.5-.5V6c.6-.45 1.25-.75 2-1c1.11-.35 2.33-.5 3.5-.5c1.95 0 4.05.4 5.5 1.5c1.45-1.1 3.55-1.5 5.5-1.5c1.17 0 2.39.15 3.5.5c.75.25 1.4.55 2 1v14.6c0 .25-.25.5-.5.5c-.1 0-.15 0-.25-.05c-1.4-.75-3.1-1.05-4.75-1.05c-1.7 0-4.15.65-5.5 1.5m-1-14c-1.36-.6-3.16-1-4.5-1c-1.2 0-2.4.15-3.5.5v11.5c1.1-.35 2.3-.5 3.5-.5c1.34 0 3.14.4 4.5 1zM13 19c1.36-.6 3.16-1 4.5-1c1.2 0 2.4.15 3.5.5V7c-1.1-.35-2.3-.5-3.5-.5c-1.34 0-3.14.4-4.5 1z"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                <!-- Bajada del post -->
+                {% if post.bajada %}
+                <p class="text-xl md:text-2xl text-[#0d1b12]/60 dark:text-[#a0d9b4] font-medium leading-relaxed mb-10 italic">
+                                            {{ post.bajada }}
+                                        </p>
+                {% endif %}
+                <div class="prose max-w-none">
+                <!-- Contenido1 del post -->
+                    {{ post.contenido1|safe }}</p>
+                </div>
+                <!-- Frase -->
+                {% if post.frase %}
+                <blockquote class="border-l-4 border-primary pl-6 my-10 italic text-lg text-[#0d1b12] dark:text-white bg-[#e7f3eb]/30 dark:bg-white/5 py-6 rounded-r-xl">
+                    {{ post.frase }}
+                </blockquote>
+                    {% endif %}
+                    <!-- Contenido2 del post -->
+                    {% if post.contenido2 %}
+                    <p>
+                    {{ post.contenido2|safe }}
+                    </p>
+                    {% endif %}
+            </article>
+
+            <!-- Aside - Barra lateral -->
+            <aside class="w-full lg:w-[320px] flex flex-col gap-10">
+                <form action="." method="get">
+                    <div class="w-full">
+                        <div class="flex w-full h-12 rounded-xl overflow-hidden shadow-sm border hover:border-primary ease-in duration-100 dark:border-[#1a3d24]">
+                            <div class="text-primary flex bg-[#e7f3eb] dark:bg-[#102216] items-center justify-center px-4">
+                                <span class="material-symbols-outlined text-xl">search</span>
+                            </div>
+                            <input type="text" name="query" class="form-input flex w-full flex-1 border-none bg-white dark:bg-[#0d1b12] text-[#0d1b12] dark:text-white focus:ring-0 text-sm font-medium" placeholder="Buscar artículos..."/>
+                        </div>
+                    </div>
+                </form>
+                <!-- Último post -->
+                <div>
+                    <h3 class="text-lg font-bold mb-5 flex items-center gap-2">
+                        <span class="w-2 h-6 bg-primary rounded-full"></span>
+                        Último post
+                    </h3>
+
+                    {% if ultimo_post %}
+                    <a href="{% url 'blog:post' ultimo_post.id %}"
+                    class="group flex flex-col bg-white dark:bg-[#0d1b12] rounded-xl overflow-hidden border border-[#e7f3eb] dark:border-[#1a3d24] shadow-sm hover:shadow-md transition-all">
+
+                        {% if ultimo_post.imagen %}
+                        <div class="h-32 bg-cover bg-center transition-transform duration-500 group-hover:scale-105"
+                            style="background-image: url('{{ ultimo_post.imagen.url }}');"></div>
+                        {% else %}
+                        <div class="h-32 bg-[#1a3d24] flex items-center justify-center">
+                            <span class="material-symbols-outlined text-primary text-4xl opacity-30">pets</span>
+                        </div>
+                        {% endif %}
+
+                        <div class="p-4 flex flex-col gap-2">
+                            {% if ultimo_post.categoria.all %}
+                            <span class="text-[10px] font-bold uppercase tracking-wider text-primary">
+                                {{ ultimo_post.categoria.all.0.nombre }}
+                            </span>
+                            {% endif %}
+
+                            <h4 class="font-bold text-sm leading-snug group-hover:text-primary transition-colors text-[#0d1b12] dark:text-white">
+                                {{ ultimo_post.titulo }}
+                            </h4>
+
+                            <div class="flex items-center gap-1 text-xs text-[#0d1b12]/60 dark:text-white/60 mt-1">
+                                <span>{{ ultimo_post.publicado_en|timesince }} atrás</span>
+                                <span class="text-primary">•</span>
+                                <span class="text-primary font-medium">{{ ultimo_post.tiempo }} min</span>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24">
+                                    <path fill="#52ACB5" d="M12 21.5c-1.35-.85-3.8-1.5-5.5-1.5c-1.65 0-3.35.3-4.75 1.05c-.1.05-.15.05-.25.05c-.25 0-.5-.25-.5-.5V6c.6-.45 1.25-.75 2-1c1.11-.35 2.33-.5 3.5-.5c1.95 0 4.05.4 5.5 1.5c1.45-1.1 3.55-1.5 5.5-1.5c1.17 0 2.39.15 3.5.5c.75.25 1.4.55 2 1v14.6c0 .25-.25.5-.5.5c-.1 0-.15 0-.25-.05c-1.4-.75-3.1-1.05-4.75-1.05c-1.7 0-4.15.65-5.5 1.5m-1-14c-1.36-.6-3.16-1-4.5-1c-1.2 0-2.4.15-3.5.5v11.5c1.1-.35 2.3-.5 3.5-.5c1.34 0 3.14.4 4.5 1zM13 19c1.36-.6 3.16-1 4.5-1c1.2 0 2.4.15 3.5.5V7c-1.1-.35-2.3-.5-3.5-.5c-1.34 0-3.14.4-4.5 1z"/>
+                                </svg>
+                            </div>
+                        </div>
+                            </a>
+                            {% else %}
+                            <p class="text-sm text-[#0d1b12]/50 dark:text-white/40 italic">
+                                No hay otros posts disponibles.
+                            </p>
+                            {% endif %}
+                </div>
+
+            <!-- Recomendados -->
+            <div>
+                <h3 class="text-lg font-bold mb-5 flex items-center gap-2">
+                    <span class="w-2 h-6 bg-primary rounded-full"></span>
+                    Recomendados
+                </h3>
+
+                {% if recomendados %}
+                <div class="flex flex-col gap-4">
+                    {% for rec in recomendados %}
+                    <a href="{% url 'blog:post' rec.id %}" class="flex gap-4 items-center group">
+
+                        {% if rec.imagen %}
+                        <div class="size-16 shrink-0 rounded-lg bg-cover bg-center transition-transform duration-300 group-hover:scale-105"
+                            style="background-image: url('{{ rec.imagen.url }}');"></div>
+                        {% else %}
+                        <div class="size-16 shrink-0 rounded-lg bg-[#1a3d24] flex items-center justify-center">
+                            <span class="material-symbols-outlined text-primary text-2xl opacity-40">pets</span>
+                        </div>
+                        {% endif %}
+
+                        <div class="flex flex-col gap-1 min-w-0">
+                            <h4 class="text-sm font-bold leading-tight group-hover:text-primary transition-colors text-[#0d1b12] dark:text-white line-clamp-2">
+                                {{ rec.titulo }}
+                            </h4>
+                            {% if rec.categoria.all %}
+                            <span class="text-[10px] font-bold text-primary uppercase tracking-wide">
+                                {{ rec.categoria.all.0.nombre }}
+                            </span>
+                            {% endif %}
+                        </div>
+                    </a>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p class="text-sm text-[#0d1b12]/50 dark:text-white/40 italic">
+                    No hay recomendados disponibles.
+                </p>
+                {% endif %}
+            </div>
+                </aside>
+            </div>
+        </main>
+        <section class="bg-[#f6f8f6] dark:bg-[#0d1b12]/50 py-16">
+        <div class="max-w-[1280px] mx-auto px-6 md:px-10">
+            <div class="flex justify-between items-end mb-10">
+                <div>
+                    <h2 class="text-3xl font-black text-[#0d1b12]/90 dark:text-white tracking-tight">Artículos Relacionados</h2>
+                    <p class="text-soft-teal dark:text-[#a0d9b4] mt-2">Ampliá tus conocimientos con estos temas relacionados</p>
+                </div>
+                {% if posts_relacionados|length > 3 %}
+                <div class="flex gap-2">
+                    <button id="prev-post" class="size-10 flex items-center justify-center rounded-full bg-white dark:bg-[#162a1c] border border-[#e7f3eb] dark:border-[#1a3321] hover:bg-primary hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors ease-in-out duration-200">
+                        <span class="material-symbols-outlined">chevron_left</span>
+                    </button>
+                    <button id="next-post" class="size-10 flex items-center justify-center rounded-full bg-white dark:bg-[#162a1c] border border-[#e7f3eb] dark:border-[#1a3321] hover:bg-primary hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors ease-in-out duration-200">
+                        <span class="material-symbols-outlined">chevron_right</span>
+                    </button>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Grid de posts -->
+            <div id="posts-grid" class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                {% for post_rel in posts_relacionados %}
+                <a href="{% url 'blog:post' post_rel.id %}"
+                data-index="{{ forloop.counter0 }}"
+                class="post-card group flex flex-col bg-white dark:bg-[#0d1b12] rounded-2xl overflow-hidden border border-[#e7f3eb] dark:border-[#1a3d24] shadow-sm hover:shadow-lg transition-all">
+
+                    <div class="relative h-48 overflow-hidden">
+                        {% if post_rel.imagen %}
+                        <div class="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-105"
+                            style="background-image: url('{{ post_rel.imagen.url }}');"></div>
+                        {% else %}
+                        <div class="absolute inset-0 bg-primary/20 flex items-center justify-center">
+                            <span class="material-symbols-outlined text-6xl text-primary/40">pets</span>
+                        </div>
+                        {% endif %}
+                        {% if post_rel.categoria.first %}
+                        <div class="absolute top-4 left-4">
+                            <span class="px-3 py-1 bg-white/90 dark:bg-[#162a1c]/90 backdrop-blur rounded-full text-[10px] font-bold uppercase text-[#0d1b12] dark:text-white">
+                                {{ post_rel.categoria.first.nombre }}
+                            </span>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="p-6 flex flex-col gap-3 flex-1">
+                        <h3 class="text-xl font-bold leading-tight group-hover:text-primary transition-colors">
+                            {{ post_rel.titulo }}
+                        </h3>
+                        <!-- bajada en lugar de contenido1 para evitar HTML roto -->
+                        <p class="text-sm text-[#0d1b12]/70 dark:text-[#a0d9b4] line-clamp-3 font-light">
+                            {{ post_rel.bajada }}
+                        </p>
+                        <div class="mt-auto pt-4 flex items-center justify-between">
+                            <span class="text-xs font-medium text-primary dark:text-[#a0d9b4] flex items-center gap-1">
+                                • {{ post_rel.tiempo }} min
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
+                                    <path fill="#52ACB5" d="M12 21.5c-1.35-.85-3.8-1.5-5.5-1.5c-1.65 0-3.35.3-4.75 1.05c-.1.05-.15.05-.25.05c-.25 0-.5-.25-.5-.5V6c.6-.45 1.25-.75 2-1c1.11-.35 2.33-.5 3.5-.5c1.95 0 4.05.4 5.5 1.5c1.45-1.1 3.55-1.5 5.5-1.5c1.17 0 2.39.15 3.5.5c.75.25 1.4.55 2 1v14.6c0 .25-.25.5-.5.5c-.1 0-.15 0-.25-.05c-1.4-.75-3.1-1.05-4.75-1.05c-1.7 0-4.15.65-5.5 1.5m-1-14c-1.36-.6-3.16-1-4.5-1c-1.2 0-2.4.15-3.5.5v11.5c1.1-.35 2.3-.5 3.5-.5c1.34 0 3.14.4 4.5 1zM13 19c1.36-.6 3.16-1 4.5-1c1.2 0 2.4.15 3.5.5V7c-1.1-.35-2.3-.5-3.5-.5c-1.34 0-3.14.4-4.5 1z"/>
+                                </svg>
+                            </span>
+                            <span class="text-primary text-sm font-bold flex items-center gap-1">
+                                Ver más <span class="material-symbols-outlined text-sm">open_in_new</span>
+                            </span>
+                        </div>
+                    </div>
+                </a>
+                {% empty %}
+                <div class="col-span-3 text-center py-12">
+                    <p class="text-[#0d1b12]/40 dark:text-white/40 italic">No hay artículos relacionados todavía.</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <script>
+    (function () {
+        const CARDS_PER_PAGE = 3;
+        const cards = Array.from(document.querySelectorAll('.post-card'));
+        const prevBtn = document.getElementById('prev-post');
+        const nextBtn = document.getElementById('next-post');
+        let currentPage = 0;
+        let isAnimating = false;
+        const totalPages = Math.ceil(cards.length / CARDS_PER_PAGE);
+
+        // Estilos base para todas las cards
+        cards.forEach(card => {
+            card.style.transition = 'opacity 400ms cubic-bezier(0.4, 0, 0.2, 1), transform 400ms cubic-bezier(0.4, 0, 0.2, 1)';
+        });
+
+        function getCardsForPage(page) {
+            return cards.filter((_, i) => i >= page * CARDS_PER_PAGE && i < (page + 1) * CARDS_PER_PAGE);
+        }
+
+        function updateButtons() {
+            if (prevBtn) {
+                prevBtn.disabled = currentPage === 0;
+                prevBtn.classList.toggle('opacity-30', currentPage === 0);
+                prevBtn.classList.toggle('cursor-not-allowed', currentPage === 0);
+            }
+            if (nextBtn) {
+                nextBtn.disabled = currentPage >= totalPages - 1;
+                nextBtn.classList.toggle('opacity-30', currentPage >= totalPages - 1);
+                nextBtn.classList.toggle('cursor-not-allowed', currentPage >= totalPages - 1);
+            }
+        }
+
+        function showPage(newPage, direction) {
+            if (isAnimating) return;
+            isAnimating = true;
+
+            const outCards = getCardsForPage(currentPage);
+            const inCards  = getCardsForPage(newPage);
+            const slideOut = direction === 'next' ? '-60px' : '60px';
+            const slideIn  = direction === 'next' ?  '60px' : '-60px';
+
+            // 1. Salida de las cards actuales
+            outCards.forEach(card => {
+                card.style.opacity   = '0';
+                card.style.transform = `translateX(${slideOut})`;
+            });
+
+            setTimeout(() => {
+                // 2. Ocultar las que salieron, preparar las que entran
+                outCards.forEach(card => {
+                    card.style.display   = 'none';
+                    card.style.transform = '';    // reset sin transición
+                });
+
+                inCards.forEach(card => {
+                    card.style.transition = 'none';  // sin animación para posicionar
+                    card.style.display    = 'flex';
+                    card.style.opacity    = '0';
+                    card.style.transform  = `translateX(${slideIn})`;
+                });
+
+                // 3. Forzar reflow para que el browser registre el estado inicial
+                inCards[0]?.offsetHeight;
+
+                // 4. Restaurar transición y animar entrada
+                inCards.forEach(card => {
+                    card.style.transition = 'opacity 400ms cubic-bezier(0.4, 0, 0.2, 1), transform 400ms cubic-bezier(0.4, 0, 0.2, 1)';
+                    card.style.opacity    = '1';
+                    card.style.transform  = 'translateX(0)';
+                });
+
+                currentPage = newPage;
+                updateButtons();
+
+                setTimeout(() => { isAnimating = false; }, 420);
+            }, 380); // esperar que terminen de salir
+        }
+
+        // Estado inicial: mostrar solo la primera página
+        cards.forEach((card, i) => {
+            if (i < CARDS_PER_PAGE) {
+                card.style.display   = 'flex';
+                card.style.opacity   = '1';
+                card.style.transform = 'translateX(0)';
+            } else {
+                card.style.display = 'none';
+                card.style.opacity = '0';
+            }
+        });
+
+        updateButtons();
+
+        prevBtn?.addEventListener('click', () => {
+            if (currentPage > 0) showPage(currentPage - 1, 'prev');
+        });
+
+        nextBtn?.addEventListener('click', () => {
+            if (currentPage < totalPages - 1) showPage(currentPage + 1, 'next');
+        });
+    })();
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+        const posts = document.querySelectorAll('.post-card');
+        const prevBtn = document.getElementById('prev-post');
+        const nextBtn = document.getElementById('next-post');
+        const loadMoreBtn = document.getElementById('load-more');
+        
+        let currentIndex = 0;
+        const postsPerPage = 3;
+
+        function updateGrid() {
+            posts.forEach((post, index) => {
+                // Mostramos solo el rango actual de 3 posts
+                if (index >= currentIndex && index < currentIndex + postsPerPage) {
+                    post.classList.remove('hidden');
+                } else {
+                    post.classList.add('hidden');
+                }
+            });
+
+            // Deshabilitar flechas si no hay más para mostrar
+            prevBtn.style.opacity = currentIndex === 0 ? "0.5" : "1";
+            prevBtn.style.pointerEvents = currentIndex === 0 ? "none" : "auto";
+            
+            nextBtn.style.opacity = (currentIndex + postsPerPage >= posts.length) ? "0.5" : "1";
+            nextBtn.style.pointerEvents = (currentIndex + postsPerPage >= posts.length) ? "none" : "auto";
+        }
+
+        // Evento Flecha Derecha
+        nextBtn.addEventListener('click', () => {
+            if (currentIndex + postsPerPage < posts.length) {
+                currentIndex += postsPerPage;
+                updateGrid();
+            }
+        });
+
+        // Evento Flecha Izquierda
+        prevBtn.addEventListener('click', () => {
+            if (currentIndex - postsPerPage >= 0) {
+                currentIndex -= postsPerPage;
+                updateGrid();
+            }
+        });
+
+        // Si también quieres que el botón "Cargar más" funcione para mostrar todos
+        if (loadMoreBtn) {
+            loadMoreBtn.addEventListener('click', () => {
+                posts.forEach(post => post.classList.remove('hidden'));
+                loadMoreBtn.parentElement.classList.add('hidden'); // Oculta el botón al cargar todos
+                // Opcional: ocultar flechas al ver todos
+                prevBtn.parentElement.classList.add('hidden');
+            });
+        }
+
+        // Inicializar
+        updateGrid();
+    });
+    </script>
+    </div>    
+    </body>
+    <!-- JavaScript para el menú hamburguesa -->
+            <script>
+                const hamburgerBtn = document.getElementById('hamburger-btn');
+                const closeMenuBtn = document.getElementById('close-menu-btn');
+                const mobileMenu = document.getElementById('mobile-menu');
+                const menuOverlay = document.getElementById('menu-overlay');
+
+                function openMenu() {
+                    mobileMenu.classList.remove('translate-x-full');
+                    mobileMenu.classList.add('translate-x-0');
+                    menuOverlay.classList.remove('opacity-0', 'pointer-events-none');
+                    menuOverlay.classList.add('opacity-100');
+                    document.body.style.overflow = 'hidden';
+                }
+
+                function closeMenu() {
+                    mobileMenu.classList.remove('translate-x-0');
+                    mobileMenu.classList.add('translate-x-full');
+                    menuOverlay.classList.remove('opacity-100');
+                    menuOverlay.classList.add('opacity-0', 'pointer-events-none');
+                    document.body.style.overflow = '';
+                }
+
+                hamburgerBtn.addEventListener('click', openMenu);
+                closeMenuBtn.addEventListener('click', closeMenu);
+                menuOverlay.addEventListener('click', closeMenu);
+
+                // Cerrar menú al hacer click en un link
+                const mobileMenuLinks = mobileMenu.querySelectorAll('a');
+                mobileMenuLinks.forEach(link => {
+                    link.addEventListener('click', closeMenu);
+                });
+
+                // Cerrar menú con tecla ESC
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape') {
+                        closeMenu();
+                    }
+                });
+        </script>
+{% endblock %}
+{% block content %}
+{% endblock %}

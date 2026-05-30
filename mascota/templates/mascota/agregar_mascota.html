@@ -1,0 +1,126 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="min-h-screen bg-background-light dark:bg-background-dark py-20">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-20 py-8">
+        <div class="max-w-3xl mx-auto">
+            <a href="javascript:history.back()" class="inline-flex items-center gap-2 text-primary hover:underline mb-6">
+                <span class="material-symbols-outlined">arrow_back</span>
+                <span>Volver</span>
+            </a>
+
+            <div class="bg-white dark:bg-[#162a1c] rounded-3xl p-8 border border-[#e7f3eb] dark:border-[#1a3321] shadow-2xl">
+                <div class="text-center mb-8">
+                    <div class="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="material-symbols-outlined text-primary text-5xl">pets</span>
+                    </div>
+                    <h1 class="text-3xl font-black text-[#0d1b12] dark:text-white mb-2">Agregar Nueva Mascota</h1>
+                    <p class="text-gray-600 dark:text-gray-400">Completa los datos de tu mascota</p>
+                </div>
+
+                {% if messages %}
+                {% for message in messages %}
+                <div class="mb-4 p-4 rounded-lg {% if message.tags == 'error' %}bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400{% else %}bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400{% endif %}">
+                    {{ message }}
+                </div>
+                {% endfor %}
+                {% endif %}
+
+                <form method="POST" enctype="multipart/form-data" class="space-y-6">
+                    {% csrf_token %}
+
+                    <input type="hidden" name="email_tutor" value="{{ request.GET.email }}">
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Nombre *</label>
+                            <input type="text" name="nombre" required
+                                class="w-full bg-background-light dark:bg-background-dark border border-gray-300 dark:border-[#1a3321] rounded-lg p-3 focus:ring-2 focus:ring-primary focus:outline-none"
+                                placeholder="Ej: Max, Luna, Rocky">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Tipo *</label>
+                            <select name="tipo" required
+                                class="w-full bg-background-light dark:bg-background-dark border border-gray-300 dark:border-[#1a3321] rounded-lg p-3 focus:ring-2 focus:ring-primary focus:outline-none">
+                                <option value="">Seleccionar...</option>
+                                <option value="perro">🐕 Perro</option>
+                                <option value="gato">🐱 Gato</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Raza *</label>
+                            <input type="text" name="raza" required
+                                class="w-full bg-background-light dark:bg-background-dark border border-gray-300 dark:border-[#1a3321] rounded-lg p-3 focus:ring-2 focus:ring-primary focus:outline-none"
+                                placeholder="Ej: Golden Retriever, Siamés">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Sexo *</label>
+                            <select name="sexo" required
+                                class="w-full bg-background-light dark:bg-background-dark border border-gray-300 dark:border-[#1a3321] rounded-lg p-3 focus:ring-2 focus:ring-primary focus:outline-none">
+                                <option value="">Seleccionar...</option>
+                                <option value="macho">♂️ Macho</option>
+                                <option value="hembra">♀️ Hembra</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Fecha de Nacimiento</label>
+                            <input type="date" name="fecha_nacimiento"
+                                class="w-full bg-background-light dark:bg-background-dark border border-gray-300 dark:border-[#1a3321] rounded-lg p-3 focus:ring-2 focus:ring-primary focus:outline-none">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Peso (kg)</label>
+                            <input type="number" step="0.01" name="peso"
+                                class="w-full bg-background-light dark:bg-background-dark border border-gray-300 dark:border-[#1a3321] rounded-lg p-3 focus:ring-2 focus:ring-primary focus:outline-none"
+                                placeholder="Ej: 28.5">
+                        </div>
+
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Color / Particularidades *</label>
+                            <input type="text" name="color" required
+                                class="w-full bg-background-light dark:bg-background-dark border border-gray-300 dark:border-[#1a3321] rounded-lg p-3 focus:ring-2 focus:ring-primary focus:outline-none"
+                                placeholder="Ej: Dorado claro con manchas blancas">
+                            <p class="text-xs text-gray-500 mt-1">Describe cómo se puede identificar a tu mascota</p>
+                        </div>
+
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Número de Microchip</label>
+                            <input type="text" name="microchip"
+                                class="w-full bg-background-light dark:bg-background-dark border border-gray-300 dark:border-[#1a3321] rounded-lg p-3 focus:ring-2 focus:ring-primary focus:outline-none"
+                                placeholder="Ej: ARG123456789">
+                        </div>
+
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Observaciones</label>
+                            <textarea name="observaciones" rows="3"
+                                class="w-full bg-background-light dark:bg-background-dark border border-gray-300 dark:border-[#1a3321] rounded-lg p-3 focus:ring-2 focus:ring-primary focus:outline-none"
+                                placeholder="Alergias, comportamientos especiales, medicamentos, etc."></textarea>
+                        </div>
+
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Foto de la Mascota</label>
+                            <input type="file" name="foto" accept="image/*"
+                                class="w-full bg-background-light dark:bg-background-dark border border-gray-300 dark:border-[#1a3321] rounded-lg p-3 focus:ring-2 focus:ring-primary focus:outline-none">
+                        </div>
+                    </div>
+
+                    <div class="flex gap-4 pt-6">
+                        <button type="submit" class="flex-1 bg-primary text-teal-soft py-4 rounded-xl font-bold hover:shadow-lg transition-all flex items-center justify-center gap-2">
+                            <span class="material-symbols-outlined">check_circle</span>
+                            <span>Agregar Mascota</span>
+                        </button>
+                        <a href="javascript:history.back()" class="flex-1 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white py-4 rounded-xl font-bold text-center hover:shadow-lg transition-all">
+                            Cancelar
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

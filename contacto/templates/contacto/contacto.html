@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+{% extends 'base.html' %}
+{% load static tailwind_tags %}
+{% load static %}
+<html lang="es-ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Petit {% block title %}| Domicilio {% endblock %}</title>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-color9 dark:text-white transition-colors duration-300">
+    {% block hero %}
+
+    <!-- Header -->
+    <div class="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden">
+            <div class="layout-container flex h-full grow flex-col">
+                <header class="flex items-center justify-between backdrop-blur-xl bg-black/10 dark:bg-black/20 border-b border-white/10 px-6 lg:px-20 py-4 fixed top-0 w-full z-50 shadow-sm">
+                    <a class="flex items-center gap-3 text-white" href="{% url 'index' %}">
+                        <div class="size-8 text-primary">
+                            <span class="material-symbols-outlined">pets</span>
+                        </div>
+                        <div class="flex flex-col">
+                            <h2 class="text-lg font-bold leading-tight tracking-tight">Córdoba Veterinaria</h2>
+                            <span class="text-xs font-medium opacity-80 uppercase tracking-tighter">Córdoba Capital</span>
+                        </div>
+                    </a>
+                    
+                    <div class="flex flex-1 justify-end gap-6 items-center">
+                        <!-- Desktop Navigation -->
+                        <nav class="hidden md:flex items-center gap-8 text-[#e7f3eb]">
+                            <a class="text-sm font-semibold hover:text-primary transition-colors" href="{% url 'index' %}">Inicio</a>
+                            <a class="text-sm font-semibold hover:text-primary transition-colors" href="{% url 'nosotros' %}">Nosotros</a>
+                            <a class="text-sm font-semibold hover:text-primary transition-colors" href="{% url 'blog:blog' %}">Blog</a>
+                            <a class="text-sm font-semibold hover:text-primary transition-colors" href="{% url 'tienda' %}">Tienda</a>
+                            <a class="text-sm font-semibold hover:text-primary transition-colors" href="{% url 'turnos:turnos' %}">Turnos</a>
+                            <a class="text-sm font-semibold hover:text-primary transition-colors" href="{% url 'contacto' %}">Contacto</a>
+                        </nav>
+
+                        <div class="flex gap-3 items-center">
+                            <!-- CARRITO -->
+                            <a href="{% url 'checkout' %}" class="relative flex items-center justify-center w-10 h-10 rounded-lg hover:scale-105 transition-transform">
+                                <!-- BADGE -->
+                                <span class="absolute -top-1 -right-1 bg-primary text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center shadow-md">{{ cantidad_total_carro }}</span>
+                                <!-- SVG DEL CARRITO -->
+                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 512 512">
+                                    <path fill="#e7f3eb" d="M454.65 169.4A31.82 31.82 0 0 0 432 160h-64v-16a112 112 0 0 0-224 0v16H80a32 32 0 0 0-32 32v216c0 39 33 72 72 72h272a72.22 72.22 0 0 0 50.48-20.55a69.48 69.48 0 0 0 21.52-50.2V192a31.75 31.75 0 0 0-9.35-22.6M176 144a80 80 0 0 1 160 0v16H176Z"/>
+                                </svg>
+                            </a>
+                            <!-- PERFIL -->
+                            {% if user.is_authenticated %}
+                                <a href="{% url 'perfil' %}" class="flex items-center justify-center w-10 h-10 text-white hover:scale-125 transition-transform">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24"><path fill="#E7F3EB" d="M12 4a4 4 0 1 1 0 8a4 4 0 0 1 0-8m0 16s8 0 8-2c0-2.4-3.9-5-8-5s-8 2.6-8 5c0 2 8 2 8 2"/></svg>
+                                </a>
+                            {% else %}
+                                <a href="{% url 'registro' %}" class="flex items-center justify-center w-10 h-10 text-white hover:scale-125 transition-transform">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24"><path fill="#E7F3EB" d="M12 4a4 4 0 1 1 0 8a4 4 0 0 1 0-8m0 16s8 0 8-2c0-2.4-3.9-5-8-5s-8 2.6-8 5c0 2 8 2 8 2"/></svg>
+                                </a>
+                            {% endif %}
+
+                            <!-- HAMBURGER BUTTON (Mobile) -->
+                            <button id="hamburger-btn" class="md:hidden flex items-center justify-center w-10 h-10 text-white hover:text-primary transition-colors">
+                                <span class="material-symbols-outlined text-3xl">menu</span>
+                            </button>
+                        </div>
+                    </div>
+                </header>
+
+                <!-- MOBILE MENU (Sidebar) -->
+                <div id="mobile-menu" class="fixed top-0 right-0 h-full w-[280px] bg-background-dark/98 backdrop-blur-xl border-l border-white/10 transform translate-x-full transition-transform duration-300 ease-in-out z-[60] md:hidden shadow-2xl">
+                    <div class="flex flex-col h-full">
+                        <!-- Close Button -->
+                        <div class="flex items-center justify-between px-6 py-4 border-b border-white/10">
+                            <div class="flex items-center gap-2 text-white">
+                                <span class="material-symbols-outlined text-primary">pets</span>
+                                <span class="font-bold text-sm">Menú</span>
+                            </div>
+                            <button id="close-menu-btn" class="flex items-center justify-center w-10 h-10 text-white hover:text-primary transition-colors">
+                                <span class="material-symbols-outlined text-3xl">close</span>
+                            </button>
+                        </div>
+
+                        <!-- Navigation Links -->
+                        <nav class="flex flex-col gap-1 px-4 py-6 flex-1 overflow-y-auto">
+                            <a class="flex items-center gap-3 px-4 py-3 text-white hover:bg-primary/10 hover:text-primary rounded-lg transition-all font-semibold" href="{% url 'index' %}">
+                                <span class="material-symbols-outlined text-xl">home</span>
+                                <span>Inicio</span>
+                            </a>
+                            <a class="flex items-center gap-3 px-4 py-3 text-white hover:bg-primary/10 hover:text-primary rounded-lg transition-all font-semibold" href="{% url 'nosotros' %}">
+                                <span class="material-symbols-outlined text-xl">group</span>
+                                <span>Nosotros</span>
+                            </a>
+                            <a class="flex items-center gap-3 px-4 py-3 text-white hover:bg-primary/10 hover:text-primary rounded-lg transition-all font-semibold" href="{% url 'blog:blog' %}">
+                                <span class="material-symbols-outlined text-xl">article</span>
+                                <span>Blog</span>
+                            </a>
+                            <a class="flex items-center gap-3 px-4 py-3 text-white hover:bg-primary/10 hover:text-primary rounded-lg transition-all font-semibold" href="{% url 'tienda' %}">
+                                <span class="material-symbols-outlined text-xl">store</span>
+                                <span>Tienda</span>
+                            </a>
+                            <a class="flex items-center gap-3 px-4 py-3 text-white hover:bg-primary/10 hover:text-primary rounded-lg transition-all font-semibold" href="{% url 'turnos:turnos' %}">
+                                <span class="material-symbols-outlined text-xl">calendar_month</span>
+                                <span>Turnos</span>
+                            </a>
+                            <a class="flex items-center gap-3 px-4 py-3 text-white hover:bg-primary/10 hover:text-primary rounded-lg transition-all font-semibold" href="{% url 'contacto' %}">
+                                <span class="material-symbols-outlined text-xl">mail</span>
+                                <span>Contacto</span>
+                            </a>
+                        </nav>
+
+                        <!-- Carrito y perfil en mobile -->
+                        <div class="px-4 py-3 border-t border-white/10 flex gap-3">
+                            <a href="{% url 'checkout' %}" class="relative flex items-center justify-center gap-2 flex-1 bg-white/5 hover:bg-white/10 text-white py-3 rounded-lg transition-all font-semibold text-sm">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 512 512">
+                                    <path fill="#e7f3eb" d="M454.65 169.4A31.82 31.82 0 0 0 432 160h-64v-16a112 112 0 0 0-224 0v16H80a32 32 0 0 0-32 32v216c0 39 33 72 72 72h272a72.22 72.22 0 0 0 50.48-20.55a69.48 69.48 0 0 0 21.52-50.2V192a31.75 31.75 0 0 0-9.35-22.6M176 144a80 80 0 0 1 160 0v16H176Z"/>
+                                </svg>
+                                <span>Carrito</span>
+                                <span class="absolute -top-1 -right-1 bg-primary text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">{{ cantidad_total_carro }}</span>
+                            </a>
+                            {% if user.is_authenticated %}
+                                <a href="{% url 'perfil' %}" class="flex items-center justify-center gap-2 flex-1 bg-white/5 hover:bg-white/10 text-white py-3 rounded-lg transition-all font-semibold text-sm">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path fill="#E7F3EB" d="M12 4a4 4 0 1 1 0 8a4 4 0 0 1 0-8m0 16s8 0 8-2c0-2.4-3.9-5-8-5s-8 2.6-8 5c0 2 8 2 8 2"/></svg>
+                                    <span>Mi Perfil</span>
+                                </a>
+                            {% else %}
+                                <a href="{% url 'registro' %}" class="flex items-center justify-center gap-2 flex-1 bg-white/5 hover:bg-white/10 text-white py-3 rounded-lg transition-all font-semibold text-sm">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path fill="#E7F3EB" d="M12 4a4 4 0 1 1 0 8a4 4 0 0 1 0-8m0 16s8 0 8-2c0-2.4-3.9-5-8-5s-8 2.6-8 5c0 2 8 2 8 2"/></svg>
+                                    <span>Registrarse</span>
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- OVERLAY (cuando el menú está abierto) -->
+                <div id="menu-overlay" class="fixed inset-0 bg-black/50 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300 z-[55]"></div>
+                <section class="relative w-full overflow-hidden">
+                    <div class="relative w-full min-h-[100vh] flex flex-col items-center justify-center px-4 py-18 text-center">
+                        <div class="absolute inset-0 z-0">
+                            <img alt="Modern veterinary interior" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD_SBXpA3_A-UvwO5iBEeF2bAFJGi95K69ZhtCMMjFGavuINXY_V34w1jExQQ79j2X-5x9vll8NeIR9bTcy5H7ELyNouzebA-BcZi78cAMujeXLyhiDBVwN_c4IV6vZdkvDL3S9_0WB8MWG7MGf3gGcFiNRWYHQPVvoG66CEAxHnAUd-qXlMZFcrItMJGc_kMoAxCKVVJd6voIlZ9hpSx4BIfgeWECUS8a_3hyxqUib15Z6mdyOjuMev5xwS2SNjeyhiUThkM-i3lI"/>
+                            <div class="absolute inset-0 bg-black/50 dark:bg-black/60"></div>
+                        </div>
+                        <div class="relative z-10 max-w-4xl mx-auto flex flex-col items-center gap-8">
+                            <span class="inline-block px-4 py-2 bg-primary/60 backdrop-blur-sm text-white text-xs font-bold uppercase tracking-[0.2em] rounded-full mb-6 mt-10">
+                                        Contactanos
+                            </span>
+                            <div class="flex flex-col gap-6">
+                                <h1 class="text-5xl md:text-7xl font-black leading-tight tracking-tight mb-6 text-white">
+                                    Estamos en <span class="text-primary">Contacto</span> para Vos y tu Mascota
+                                </h1>
+                                <p class="text-xl md:text-2xl text-white/90 font-light max-w-2xl mx-auto leading-relaxed mb-10">
+                                    Dejanos un mensaje y te contestaremos lo antes posible.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+    {% endblock %}
+    {% block content %}
+    <main class="max-w-7xl mx-auto px-6 lg:px-20 py-24 font-['Manrope']">
+
+    <!-- Título de sección -->
+    <div class="text-center max-w-3xl mx-auto mb-16">
+        <span class="text-primary font-bold text-sm tracking-[0.3em] uppercase">Contacto</span>
+        <h2 class="text-color9 dark:text-white text-4xl md:text-5xl font-black leading-tight tracking-tight mt-3">
+            Estamos aquí para <span class="text-primary">Ayudarte</span>
+        </h2>
+        <div class="h-1.5 w-24 bg-primary rounded-full mx-auto mt-4 mb-6"></div>
+        <p class="text-color9/60 dark:text-white/60 text-lg font-light leading-relaxed">
+            Dejanos tu consulta y te respondemos a la brevedad.
+        </p>
+    </div>
+
+    <div class="grid lg:grid-cols-12 gap-16">
+        <div class="lg:col-span-7 bg-white dark:bg-zinc-900 p-8 md:p-12 rounded-3xl shadow-sm border border-primary/10" id="contact-form">
+            <div class="mb-10">
+                <h3 class="text-3xl font-black text-[#0d1b12] dark:text-white mb-2">Envíanos un mensaje</h3>
+                <p class="text-zinc-500 dark:text-zinc-400">Completa el formulario y te responderemos lo antes posible.</p>
+            </div>
+
+                <form id="contacto-form" method="POST" class="space-y-6">
+                    {% if form.errors %}
+                        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
+                            {{ form.errors }}
+                        </div>
+                    {% endif %}
+                    {% csrf_token %}
+                    
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="space-y-2">
+                            <label class="text-sm font-bold text-[#0d1b12] dark:text-zinc-300 ml-1">Nombre</label>
+                            <input name="nombre" class="w-full px-5 py-4 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-800 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all" placeholder="Ej. Lionel" type="text" required/>
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-sm font-bold text-[#0d1b12] dark:text-zinc-300 ml-1">Apellido</label>
+                            <input name="apellido" class="w-full px-5 py-4 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-800 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all" placeholder="Messi" type="text" required/>
+                        </div>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="space-y-2">
+                            <label class="text-sm font-bold text-[#0d1b12] dark:text-zinc-300 ml-1">Correo Electrónico</label>
+                            <input name="email" class="w-full px-5 py-4 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-800 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all" placeholder="lionelm10@gmail.com" type="email" required/>
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-sm font-bold text-[#0d1b12] dark:text-zinc-300 ml-1">Teléfono</label>
+                            <input name="telefono" class="w-full px-5 py-4 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-800 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all" placeholder="+54 351..." type="text" required/>
+                        </div>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="space-y-2">
+                            <label class="text-sm font-bold text-[#0d1b12] dark:text-zinc-300 ml-1">Nombre de tu Mascota</label>
+                            <input name="nombre_mascota" class="w-full px-5 py-4 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-800 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all" placeholder="Ej. Hulk" type="text" required/>
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-sm font-bold text-[#0d1b12] dark:text-zinc-300 ml-1">Tipo de Consulta</label>
+                            <div class="relative">
+                                {{ form.tipo_consulta }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="text-sm font-bold text-[#0d1b12] dark:text-zinc-300 ml-1">Mensaje</label>
+                        <textarea name="mensaje" class="w-full px-5 py-4 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-800 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all resize-none" placeholder="¿En qué podemos ayudarte?" rows="4" required></textarea>
+                    </div>
+
+                    <button id="submit-btn" type="submit" class="w-full bg-primary text-white py-5 rounded-xl font-black text-lg hover:shadow-lg hover:shadow-primary/30 hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2 group">
+                        <span id="btn-text">Enviar Consulta</span>
+                        <span class="material-symbols-outlined">arrow_forward</span>
+                        <!-- Loader (oculto por defecto) -->
+                        <svg id="btn-loader" class="hidden animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                        </svg>
+                    </button>
+                </form>
+
+                <script>
+                document.getElementById('contacto-form').addEventListener('submit', async function(e) {
+                    e.preventDefault();
+
+                    const btn = document.getElementById('submit-btn');
+                    const btnText = document.getElementById('btn-text');
+                    const btnIcon = document.getElementById('btn-icon');
+                    const btnLoader = document.getElementById('btn-loader');
+
+                    // Activar loader
+                    btn.disabled = true;
+                    btn.classList.add('opacity-80', 'cursor-not-allowed');
+                    btnText.textContent = 'Enviando...';
+                    btnIcon.classList.add('hidden');
+                    btnLoader.classList.remove('hidden');
+
+                    try {
+                        const formData = new FormData(this);
+
+                        const response = await fetch(this.action || window.location.href, {
+                            method: 'POST',
+                            headers: { 'X-Requested-With': 'XMLHttpRequest' },
+                            body: formData,
+                        });
+
+                        const data = await response.json();
+
+                        if (data.success) {
+                            // Limpiar el form
+                            this.reset();
+
+                            // Popup de éxito
+                            Swal.fire({
+                                title: '¡Mensaje enviado!',
+                                text: 'Te responderemos a la brevedad. ¡Gracias por contactarnos!',
+                                icon: 'success',
+                                confirmButtonText: 'Aceptar',
+                                confirmButtonColor: '#10b981',
+                                draggable: true,
+                                customClass: {
+                                    popup: 'rounded-2xl font-["Manrope"]',
+                                    confirmButton: 'rounded-xl px-8 py-3 font-bold',
+                                }
+                            });
+                        } else {
+                            Swal.fire({
+                                title: 'Algo salió mal',
+                                text: 'Hubo un error al enviar tu mensaje. Por favor intentá de nuevo.',
+                                icon: 'error',
+                                confirmButtonText: 'Reintentar',
+                                confirmButtonColor: '#10b981',
+                                draggable: true,
+                                customClass: {
+                                    popup: 'rounded-2xl font-["Manrope"]',
+                                    confirmButton: 'rounded-xl px-8 py-3 font-bold',
+                                }
+                            });
+                        }
+
+                    } catch (err) {
+                        Swal.fire({
+                            title: 'Error de conexión',
+                            text: 'No pudimos conectarnos al servidor. Verificá tu conexión e intentá de nuevo.',
+                            icon: 'error',
+                            confirmButtonText: 'Reintentar',
+                            confirmButtonColor: '#10b981',
+                            draggable: true,
+                            customClass: {
+                                popup: 'rounded-2xl font-["Manrope"]',
+                                confirmButton: 'rounded-xl px-8 py-3 font-bold',
+                            }
+                        });
+                    } finally {
+                        // Restaurar botón siempre
+                        btn.disabled = false;
+                        btn.classList.remove('opacity-80', 'cursor-not-allowed');
+                        btnText.textContent = 'Enviar Consulta';
+                        btnIcon.classList.remove('hidden');
+                        btnLoader.classList.add('hidden');
+                    }
+                });
+                </script>
+            </div>
+
+            <div class="lg:col-span-5 flex flex-col gap-8">
+                <div class="bg-background-dark text-white p-8 rounded-3xl border-t-8 border-primary relative overflow-hidden group">
+                    <div class="relative z-10">
+                        <div class="flex items-center gap-3 mb-4">
+                            <span class="material-symbols-outlined text-primary text-3xl animate-pulse">emergency</span>
+                            <h4 class="text-xl font-bold">Urgencias 24 Horas</h4>
+                        </div>
+                        <p class="text-zinc-400 mb-6">Atención inmediata para casos críticos en cualquier momento del día.</p>
+                        <a class="text-3xl md:text-4xl font-black text-primary hover:text-white transition-colors block mb-2" href="tel:+543511234567">
+                            +54 351 123 4567
+                        </a>
+                        <p class="text-[10px] uppercase tracking-[0.2em] text-zinc-500 font-bold">Click para llamar ahora</p>
+                    </div>
+                    <div class="absolute -right-10 -bottom-10 size-40 bg-primary/10 rounded-full blur-3xl group-hover:bg-primary/20 transition-all"></div>
+                </div>
+
+                <div class="bg-white dark:bg-zinc-900 p-8 rounded-3xl border border-zinc-100 dark:border-zinc-800 shadow-sm">
+                    <h4 class="text-xl font-bold mb-6 flex items-center gap-2 text-[#0d1b12] dark:text-white">
+                        <span class="material-symbols-outlined text-primary">schedule</span> Horarios de Atención
+                    </h4>
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center pb-4 border-b border-zinc-100 dark:border-zinc-800">
+                            <span class="font-medium text-zinc-600 dark:text-zinc-400">Lunes a Viernes</span>
+                            <span class="font-bold">09:00 - 20:00</span>
+                        </div>
+                        <div class="flex justify-between items-center pb-4 border-b border-zinc-100 dark:border-zinc-800">
+                            <span class="font-medium text-zinc-600 dark:text-zinc-400">Sábados</span>
+                            <span class="font-bold">09:00 - 13:00</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <div class="flex items-center gap-2">
+                                <span class="font-medium text-zinc-600 dark:text-zinc-400">Guardia</span>
+                                <span class="px-2 py-0.5 bg-primary/20 text-primary text-[10px] font-bold rounded uppercase tracking-tighter">24/7</span>
+                            </div>
+                            <span class="font-bold text-primary">Disponible</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white dark:bg-zinc-900 p-8 rounded-3xl border border-zinc-100 dark:border-zinc-800 shadow-sm">
+                    <h4 class="text-xl font-bold mb-4 flex items-center gap-2 text-[#0d1b12] dark:text-white">
+                        <span class="material-symbols-outlined text-primary">location_on</span> Ubicación
+                    </h4>
+                    <p class="text-zinc-600 dark:text-zinc-400 leading-relaxed mb-6">
+                        Av. Rafael Núñez 4567, Cerro de las Rosas<br/>
+                        X5000 Córdoba, Argentina
+                    </p>
+                    <a href="https://maps.google.com" target="_blank" class="w-full py-3 border-2 border-primary/20 text-primary font-bold rounded-xl flex items-center justify-center gap-2 hover:bg-primary hover:text-white transition-all">
+                        ¿Cómo llegar? <span class="material-symbols-outlined text-sm">open_in_new</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </main>
+    <!-- Map Section -->
+    <section class="w-full px-6 lg:px-20 pb-24">
+    <div class="w-full h-[500px] rounded-3xl overflow-hidden shadow-xl border-4 border-white dark:border-zinc-900 relative group">
+        <!-- Google Maps iframe -->
+        <iframe 
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3404.7234567890123!2d-64.18856!3d-31.41667!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x9432a2f0d0d0d0d0%3A0x0!2sMiguel%20C%20del%20Corro%2056%2C%20C%C3%B3rdoba!5e0!3m2!1ses-419!2sar!4v1234567890123!5m2!1ses-419!2sar" 
+            width="100%" 
+            height="500" 
+            style="border:0;" 
+            allowfullscreen="" 
+            loading="lazy" 
+            referrerpolicy="no-referrer-when-downgrade"
+            class="w-full h-full">
+        </iframe>
+        
+        <!-- Overlay con información (aparece al hacer hover) -->
+        <div class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-300 pointer-events-none"></div>
+        
+        <!-- Card de ubicación -->
+        <div class="absolute bottom-6 left-1/2 transform -translate-x-1/2 dark:bg-zinc-900/95 px-8 py-6 rounded-2xl text-center transition-all duration-300 group-hover:scale-105"
+                href="https://www.google.com/maps/search/?api=1&query=Miguel+C+del+Corro+56,+Córdoba,+Argentina" 
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex items-center gap-2 bg-primary hover:bg-primary/90 text-background-dark px-6 py-2.5 rounded-lg text-sm font-bold transition-all hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0">
+            </a>
+        </div>
+    </div>
+</section>
+<!-- JavaScript para el menú hamburguesa -->
+        <script>
+            const hamburgerBtn = document.getElementById('hamburger-btn');
+            const closeMenuBtn = document.getElementById('close-menu-btn');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const menuOverlay = document.getElementById('menu-overlay');
+
+            function openMenu() {
+                mobileMenu.classList.remove('translate-x-full');
+                mobileMenu.classList.add('translate-x-0');
+                menuOverlay.classList.remove('opacity-0', 'pointer-events-none');
+                menuOverlay.classList.add('opacity-100');
+                document.body.style.overflow = 'hidden';
+            }
+
+            function closeMenu() {
+                mobileMenu.classList.remove('translate-x-0');
+                mobileMenu.classList.add('translate-x-full');
+                menuOverlay.classList.remove('opacity-100');
+                menuOverlay.classList.add('opacity-0', 'pointer-events-none');
+                document.body.style.overflow = '';
+            }
+
+            hamburgerBtn.addEventListener('click', openMenu);
+            closeMenuBtn.addEventListener('click', closeMenu);
+            menuOverlay.addEventListener('click', closeMenu);
+
+            // Cerrar menú al hacer click en un link
+            const mobileMenuLinks = mobileMenu.querySelectorAll('a');
+            mobileMenuLinks.forEach(link => {
+                link.addEventListener('click', closeMenu);
+            });
+
+            // Cerrar menú con tecla ESC
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    closeMenu();
+                }
+            });
+        </script>
+    {% endblock %}
+
+</body></html>

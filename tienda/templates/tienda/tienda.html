@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+{% extends 'base.html' %}
+{% load static tailwind_tags %}
+{% load static %}
+<html lang="es-ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Petit {% block title %}| Domicilio {% endblock %}</title>
+    <link rel="icon" href="/static/img/icono.png" type="image" sizes="32x32">
+</head>
+<body class="bg-background-light dark:bg-background-dark text-color9 dark:text-white transition-colors duration-300">
+    {% block hero %}
+
+    <!-- Header -->
+    <div class="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden">
+            <div class="layout-container flex h-full grow flex-col">
+                <header class="flex items-center justify-between backdrop-blur-xl bg-black/10 dark:bg-black/20 border-b border-white/10 px-6 lg:px-20 py-4 fixed top-0 w-full z-50 shadow-sm">
+                    <a class="flex items-center gap-3 text-white" href="{% url 'index' %}">
+                        <div class="size-8 text-primary">
+                            <span class="material-symbols-outlined">pets</span>
+                        </div>
+                        <div class="flex flex-col">
+                            <h2 class="text-lg font-bold leading-tight tracking-tight">Córdoba Veterinaria</h2>
+                            <span class="text-xs font-medium opacity-80 uppercase tracking-tighter">Córdoba Capital</span>
+                        </div>
+                    </a>
+                    
+                    <div class="flex flex-1 justify-end gap-6 items-center">
+                        <!-- Desktop Navigation -->
+                        <nav class="hidden md:flex items-center gap-8 text-[#e7f3eb]">
+                            <a class="text-sm font-semibold hover:text-primary transition-colors" href="{% url 'index' %}">Inicio</a>
+                            <a class="text-sm font-semibold hover:text-primary transition-colors" href="{% url 'nosotros' %}">Nosotros</a>
+                            <a class="text-sm font-semibold hover:text-primary transition-colors" href="{% url 'blog:blog' %}">Blog</a>
+                            <a class="text-sm font-semibold hover:text-primary transition-colors" href="{% url 'tienda' %}">Tienda</a>
+                            <a class="text-sm font-semibold hover:text-primary transition-colors" href="{% url 'turnos:turnos' %}">Turnos</a>
+                            <a class="text-sm font-semibold hover:text-primary transition-colors" href="{% url 'contacto' %}">Contacto</a>
+                        </nav>
+
+                        <div class="flex gap-3 items-center">
+                            <!-- CARRITO -->
+                            <a href="{% url 'checkout' %}" class="relative flex items-center justify-center w-10 h-10 rounded-lg hover:scale-105 transition-transform">
+                                <!-- BADGE -->
+                                <span class="absolute -top-1 -right-1 bg-primary text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center shadow-md">{{ cantidad_total_carro }}</span>
+                                <!-- SVG DEL CARRITO -->
+                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 512 512">
+                                    <path fill="#e7f3eb" d="M454.65 169.4A31.82 31.82 0 0 0 432 160h-64v-16a112 112 0 0 0-224 0v16H80a32 32 0 0 0-32 32v216c0 39 33 72 72 72h272a72.22 72.22 0 0 0 50.48-20.55a69.48 69.48 0 0 0 21.52-50.2V192a31.75 31.75 0 0 0-9.35-22.6M176 144a80 80 0 0 1 160 0v16H176Z"/>
+                                </svg>
+                            </a>
+                            <!-- PERFIL -->
+                            {% if user.is_authenticated %}
+                                <a href="{% url 'perfil' %}" class="flex items-center justify-center w-10 h-10 text-white hover:scale-125 transition-transform">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24"><path fill="#E7F3EB" d="M12 4a4 4 0 1 1 0 8a4 4 0 0 1 0-8m0 16s8 0 8-2c0-2.4-3.9-5-8-5s-8 2.6-8 5c0 2 8 2 8 2"/></svg>
+                                </a>
+                            {% else %}
+                                <a href="{% url 'registro' %}" class="flex items-center justify-center w-10 h-10 text-white hover:scale-125 transition-transform">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24"><path fill="#E7F3EB" d="M12 4a4 4 0 1 1 0 8a4 4 0 0 1 0-8m0 16s8 0 8-2c0-2.4-3.9-5-8-5s-8 2.6-8 5c0 2 8 2 8 2"/></svg>
+                                </a>
+                            {% endif %}
+                            <!-- HAMBURGER BUTTON (Mobile) -->
+                            <button id="hamburger-btn" class="md:hidden flex items-center justify-center w-10 h-10 text-white hover:text-primary transition-colors">
+                                <span class="material-symbols-outlined text-3xl">menu</span>
+                            </button>
+                        </div>
+                    </div>
+                </header>
+
+                <!-- MOBILE MENU (Sidebar) -->
+                <div id="mobile-menu" class="fixed top-0 right-0 h-full w-[280px] bg-background-dark/98 backdrop-blur-xl border-l border-white/10 transform translate-x-full transition-transform duration-300 ease-in-out z-[60] md:hidden shadow-2xl">
+                    <div class="flex flex-col h-full">
+                        <!-- Close Button -->
+                        <div class="flex items-center justify-between px-6 py-4 border-b border-white/10">
+                            <div class="flex items-center gap-2 text-white">
+                                <span class="material-symbols-outlined text-primary">pets</span>
+                                <span class="font-bold text-sm">Menú</span>
+                            </div>
+                            <button id="close-menu-btn" class="flex items-center justify-center w-10 h-10 text-white hover:text-primary transition-colors">
+                                <span class="material-symbols-outlined text-3xl">close</span>
+                            </button>
+                        </div>
+
+                        <!-- Navigation Links -->
+                        <nav class="flex flex-col gap-1 px-4 py-6 flex-1 overflow-y-auto">
+                            <a class="flex items-center gap-3 px-4 py-3 text-white hover:bg-primary/10 hover:text-primary rounded-lg transition-all font-semibold" href="{% url 'index' %}">
+                                <span class="material-symbols-outlined text-xl">home</span>
+                                <span>Inicio</span>
+                            </a>
+                            <a class="flex items-center gap-3 px-4 py-3 text-white hover:bg-primary/10 hover:text-primary rounded-lg transition-all font-semibold" href="{% url 'nosotros' %}">
+                                <span class="material-symbols-outlined text-xl">group</span>
+                                <span>Nosotros</span>
+                            </a>
+                            <a class="flex items-center gap-3 px-4 py-3 text-white hover:bg-primary/10 hover:text-primary rounded-lg transition-all font-semibold" href="{% url 'blog:blog' %}">
+                                <span class="material-symbols-outlined text-xl">article</span>
+                                <span>Blog</span>
+                            </a>
+                            <a class="flex items-center gap-3 px-4 py-3 text-white hover:bg-primary/10 hover:text-primary rounded-lg transition-all font-semibold" href="{% url 'tienda' %}">
+                                <span class="material-symbols-outlined text-xl">store</span>
+                                <span>Tienda</span>
+                            </a>
+                            <a class="flex items-center gap-3 px-4 py-3 text-white hover:bg-primary/10 hover:text-primary rounded-lg transition-all font-semibold" href="{% url 'turnos:turnos' %}">
+                                <span class="material-symbols-outlined text-xl">calendar_month</span>
+                                <span>Turnos</span>
+                            </a>
+                            <a class="flex items-center gap-3 px-4 py-3 text-white hover:bg-primary/10 hover:text-primary rounded-lg transition-all font-semibold" href="{% url 'contacto' %}">
+                                <span class="material-symbols-outlined text-xl">mail</span>
+                                <span>Contacto</span>
+                            </a>
+                        </nav>
+
+                        <!-- Carrito y perfil en mobile -->
+                        <div class="px-4 py-3 border-t border-white/10 flex gap-3">
+                            <a href="{% url 'checkout' %}" class="relative flex items-center justify-center gap-2 flex-1 bg-white/5 hover:bg-white/10 text-white py-3 rounded-lg transition-all font-semibold text-sm">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 512 512">
+                                    <path fill="#e7f3eb" d="M454.65 169.4A31.82 31.82 0 0 0 432 160h-64v-16a112 112 0 0 0-224 0v16H80a32 32 0 0 0-32 32v216c0 39 33 72 72 72h272a72.22 72.22 0 0 0 50.48-20.55a69.48 69.48 0 0 0 21.52-50.2V192a31.75 31.75 0 0 0-9.35-22.6M176 144a80 80 0 0 1 160 0v16H176Z"/>
+                                </svg>
+                                <span>Carrito</span>
+                                <span class="absolute -top-1 -right-1 bg-primary text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">{{ cantidad_total_carro }}</span>
+                            </a>
+                            {% if user.is_authenticated %}
+                                <a href="{% url 'perfil' %}" class="flex items-center justify-center gap-2 flex-1 bg-white/5 hover:bg-white/10 text-white py-3 rounded-lg transition-all font-semibold text-sm">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path fill="#E7F3EB" d="M12 4a4 4 0 1 1 0 8a4 4 0 0 1 0-8m0 16s8 0 8-2c0-2.4-3.9-5-8-5s-8 2.6-8 5c0 2 8 2 8 2"/></svg>
+                                    <span>Mi Perfil</span>
+                                </a>
+                            {% else %}
+                                <a href="{% url 'registro' %}" class="flex items-center justify-center gap-2 flex-1 bg-white/5 hover:bg-white/10 text-white py-3 rounded-lg transition-all font-semibold text-sm">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path fill="#E7F3EB" d="M12 4a4 4 0 1 1 0 8a4 4 0 0 1 0-8m0 16s8 0 8-2c0-2.4-3.9-5-8-5s-8 2.6-8 5c0 2 8 2 8 2"/></svg>
+                                    <span>Registrarse</span>
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <!-- OVERLAY (cuando el menú está abierto) -->
+                <div id="menu-overlay" class="fixed inset-0 bg-black/50 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300 z-[55]"></div>
+                <section class="relative w-full overflow-hidden">
+                    <div class="relative w-full min-h-[100vh] flex flex-col items-center justify-center px-4 py-18 text-center">
+                        <div class="absolute inset-0 z-0">
+                            <img alt="Modern veterinary interior" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCdQHO8hUkrs0YMcKwdVuiMWrTKnebzPAw81pKc8Z3DYVX8bnx_Qn3xQ9xL2gAncOSfdOvlHmJA00xMXbvnsbwj7mitAu6gNfZJ52UhXikA_Sl5QaxgwvImkPRaHKu3EktSqkgYQc1m15XrS8-9Z51eSO34lcaiZRirTPjo2CF22wgq3IkGRA2IAO7HONExyhNsjjkn7hvXsLEmOhaR07Vj-uo-XGlrUkGAaneg9AT0ClhdO_IC1-tAUBakNuV0zJZntupwy6DGorU"/>
+                            <div class="absolute inset-0 bg-black/50 dark:bg-black/60"></div>
+                        </div>
+                        <div class="relative z-10 max-w-4xl mx-auto flex flex-col items-center gap-8">
+                            <span class="inline-block px-4 py-2 bg-primary/60 backdrop-blur-sm text-white text-xs font-bold uppercase tracking-[0.2em] rounded-full mb-6 mt-10">
+                                        Tienda Online
+                            </span>
+                            <div class="flex flex-col gap-6">
+                                <h1 class="text-5xl md:text-7xl font-black leading-tight tracking-tight mb-6 text-white">
+                                    La <span class="text-primary">Tienda</span> para tu Mascota en un solo lugar
+                                </h1>
+                                <p class="text-xl md:text-2xl text-white/90 font-light max-w-2xl mx-auto leading-relaxed mb-10">
+                                        Productos veterinarios seleccionados por profesionales, con envío rápido y seguro a tu domicilio.                                                  </p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+    {% endblock %}
+    {% block content %}
+    
+        <main class="flex-1 bg-background-light dark:bg-background-dark transition-colors duration-300 pt-24">
+            <div class="max-w-[1200px] mx-auto pb-20">
+                <!-- Tabs / Categories -->
+                <div class="pb-6 sticky top-[65px] bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md z-40">
+                    <div class="flex border-b border-[#cfe7d7] dark:border-[#1e3a28] px-4 gap-8 overflow-x-auto no-scrollbar">
+
+                        <!-- Todos -->
+                        <a class="flex flex-col items-center justify-center border-b-[3px] pb-[13px] pt-4 min-w-fit transition-colors
+                            {% if not categoria_id %}border-b-primary text-[#0d1b12] dark:text-white{% else %}border-b-transparent text-primary hover:border-b-primary/50{% endif %}"
+                            href="?{% if q %}q={{ q }}&{% endif %}{% if orden %}orden={{ orden }}{% endif %}">
+                            <div class="flex items-center gap-2">
+                                <span class="material-symbols-outlined text-[20px]">storefront</span>
+                                <p class="text-sm font-bold leading-normal tracking-[0.015em]">Todos</p>
+                            </div>
+                        </a>
+
+                        {% for cat in categorias %}
+                        <a class="flex flex-col items-center justify-center border-b-[3px] pb-[13px] pt-4 min-w-fit transition-colors
+                            {% if categoria_id == cat.id|stringformat:'s' %}border-b-primary text-[#0d1b12] dark:text-white{% else %}border-b-transparent text-primary hover:border-b-primary/50{% endif %}"
+                            href="?categoria={{ cat.id }}{% if q %}&q={{ q }}{% endif %}{% if orden %}&orden={{ orden }}{% endif %}">
+                            <div class="flex items-center gap-2">
+                                {% with nombre=cat.nombre|lower %}
+                                    {% if 'alimento' in nombre or 'comida' in nombre or 'nutricion' in nombre %}
+                                        <span class="material-symbols-outlined text-[20px]">restaurant</span>
+                                    {% elif 'farmacia' in nombre or 'medicamento' in nombre or 'medicina' in nombre %}
+                                        <span class="material-symbols-outlined text-[20px]">medical_services</span>
+                                    {% elif 'accesorio' in nombre or 'juguete' in nombre or 'collar' in nombre %}
+                                        <span class="material-symbols-outlined text-[20px]">sports_tennis</span>
+                                    {% elif 'dieta' in nombre or 'especial' in nombre or 'veterinario' in nombre %}
+                                        <span class="material-symbols-outlined text-[20px]">local_hospital</span>
+                                    {% elif 'combo' in nombre or 'plan' in nombre or 'paquete' in nombre %}
+                                        <span class="material-symbols-outlined text-[20px]">redeem</span>
+                                    {% elif 'higiene' in nombre or 'baño' in nombre or 'peluqueria' in nombre %}
+                                        <span class="material-symbols-outlined text-[20px]">shower</span>
+                                    {% elif 'antiparasitario' in nombre or 'parasito' in nombre %}
+                                        <span class="material-symbols-outlined text-[20px]">bug_report</span>
+                                    {% elif 'vacuna' in nombre %}
+                                        <span class="material-symbols-outlined text-[20px]">vaccines</span>
+                                    {% elif 'cama' in nombre or 'descanso' in nombre %}
+                                        <span class="material-symbols-outlined text-[20px]">bed</span>
+                                    {% else %}
+                                        <span class="material-symbols-outlined text-[20px]">category</span>
+                                    {% endif %}
+                                {% endwith %}
+                                <p class="text-sm font-bold leading-normal tracking-[0.015em]">{{ cat.nombre }}</p>
+                            </div>
+                        </a>
+                        {% endfor %}
+
+                    </div>
+                </div>
+
+                <!-- Section Header con buscador y filtro -->
+                <div class="flex flex-col gap-3 px-4 pb-3 pt-5">
+                    <div class="flex items-center justify-between">
+                        <h2 class="flex items-center gap-2 text-[#0d1b12]/90 dark:text-white text-[22px] font-bold tracking-[-0.015em]">
+                            <span class="material-symbols-outlined text-[26px] text-primary">local_offer</span>
+                            {% if q %}
+                                Resultados para "{{ q }}"
+                            {% elif categoria_id %}
+                                Productos filtrados
+                            {% else %}
+                                Productos Destacados
+                            {% endif %}
+                        </h2>
+
+                        <!-- Ordenamiento -->
+                        <div class="relative">
+                            <select
+                                id="ordenSelect"
+                                class="appearance-none bg-white dark:bg-background-dark border border-[#cfe7d7] dark:border-[#1e3a28] text-primary text-sm font-bold px-4 py-2 pr-8 rounded-xl cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary">
+                                <option value="" {% if not orden %}selected{% endif %}>Ordenar</option>
+                                <option value="precio_asc" {% if orden == 'precio_asc' %}selected{% endif %}>Precio: menor a mayor</option>
+                                <option value="precio_desc" {% if orden == 'precio_desc' %}selected{% endif %}>Precio: mayor a menor</option>
+                                <option value="nombre" {% if orden == 'nombre' %}selected{% endif %}>Nombre A-Z</option>
+                            </select>
+                            <span class="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 text-primary pointer-events-none text-[18px]">expand_more</span>
+                        </div>
+                    </div>
+
+                    <!-- Buscador -->
+                    <form method="GET" id="searchForm">
+                        {% if categoria_id %}<input type="hidden" name="categoria" value="{{ categoria_id }}">{% endif %}
+                        {% if orden %}<input type="hidden" name="orden" value="{{ orden }}">{% endif %}
+                        <div class="relative w-full">
+                            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-primary">search</span>
+                            <input
+                                id="productSearch"
+                                name="q"
+                                type="text"
+                                value="{{ q }}"
+                                placeholder="Buscar productos..."
+                                class="w-full bg-white dark:bg-[#0d1b12] text-[#0d1b12] dark:text-white border border-[#cfe7d7] dark:border-[#1e3a28] rounded-3xl py-4 pl-10 pr-12 focus:ring-2 focus:ring-primary focus:outline-none"
+                            />
+                            {% if q %}
+                            <a href="?{% if categoria_id %}categoria={{ categoria_id }}&{% endif %}{% if orden %}orden={{ orden }}{% endif %}"
+                            class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-primary">
+                                <span class="material-symbols-outlined">close</span>
+                            </a>
+                            {% endif %}
+                        </div>
+                    </form>
+
+                    <!-- Contador de resultados -->
+                    <p class="text-xs text-gray-400 font-semibold px-1">
+                        {{ productos.count }} producto{{ productos.count|pluralize }} encontrado{{ productos.count|pluralize }}
+                    </p>
+                </div>
+            <!-- Product Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 p-4">
+                {% for producto in productos %}
+                <div class="flex flex-col gap-3 group bg-white dark:bg-background-dark/50 p-3 rounded-xl border border-transparent hover:border-primary/20 transition-all shadow-sm hover:shadow-md">
+                    <div class="relative w-full aspect-square bg-center bg-no-repeat bg-cover rounded-lg overflow-hidden"
+                        style='background-image: url("{% if producto.imagen %}{{ producto.imagen.url }}{% endif %}");'>
+                        <div class="absolute top-2 left-2 bg-primary text-teal-soft text-[10px] font-black px-2 py-1 rounded uppercase tracking-tighter">
+                            {{ producto.categoria.nombre }}
+                        </div>
+                    </div>
+                    <div class="flex flex-col flex-1">
+                        <p class="text-[#0d1b12] dark:text-white text-base font-bold leading-tight line-clamp-1">{{ producto.nombre }}</p>
+                        <p class="text-[#4c9a66] text-xs font-medium mb-2 line-clamp-2">{{ producto.descripcion }}</p>
+                        <div class="mt-auto">
+                            <div class="flex items-center gap-1 mb-2">
+                                <span class="material-symbols-outlined text-primary text-[14px]">local_shipping</span>
+                                <p class="text-primary text-[11px] font-bold uppercase tracking-wide">Se retira en sucursal
+                                </p>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <p class="text-xl font-black text-[#0d1b12]/80 dark:text-white">${{ producto.precio }}</p>
+                                {% if user.is_authenticated %}
+                                    <a class="bg-primary hover:bg-primary/90 text-teal-soft p-2 rounded-lg flex items-center justify-center transition-colors"
+                                    href="{% url 'carro:agregar' producto.id %}">
+                                {% else %}
+                                    <a class="bg-primary hover:bg-primary/90 text-teal-soft p-2 rounded-lg flex items-center justify-center transition-colors cursor-pointer"
+                                    onclick="mensajeLogin()">
+                                {% endif %}
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 56 56">
+                                        <path fill="#e7f3eb" d="M45.416 28.85C51.155 28.85 56 24.068 56 18.287S51.217 7.723 45.416 7.723c-5.781 0-10.564 4.783-10.564 10.564c0 5.822 4.783 10.563 10.564 10.563m-28.51 12.976h24.268c.81 0 1.517-.665 1.517-1.56c0-.893-.707-1.559-1.517-1.559H17.26c-1.186 0-1.914-.832-2.1-2.1l-.313-2.184h26.368c2.163 0 3.556-.915 4.346-2.703c-1.788 0-3.473-.353-5.032-1.04c-.312.416-.707.603-1.29.603l-24.87.021l-1.767-12.06h19.463c-.103-.957-.041-2.205.104-3.14H12.144l-.374-2.642c-.229-1.6-.79-2.412-2.911-2.412h-7.32C.707 11.05 0 11.778 0 12.61c0 .852.707 1.58 1.539 1.58h7.028l3.328 22.833c.436 2.953 1.996 4.803 5.011 4.803m28.53-16.677c-.727 0-1.372-.5-1.372-1.268v-4.326h-3.972a1.274 1.274 0 0 1-1.268-1.268c0-.686.561-1.269 1.268-1.269h3.972v-4.304c0-.79.645-1.29 1.373-1.29c.727 0 1.35.5 1.35 1.29v4.304h3.973c.707 0 1.29.582 1.29 1.269s-.583 1.268-1.29 1.268h-3.972v4.326c0 .769-.624 1.268-1.351 1.268M18.55 51.933a3.34 3.34 0 0 0 3.369-3.37a3.355 3.355 0 0 0-3.37-3.368a3.34 3.34 0 0 0-3.368 3.369a3.33 3.33 0 0 0 3.369 3.369m19.464 0a3.34 3.34 0 0 0 3.368-3.37a3.355 3.355 0 0 0-3.368-3.368c-1.893 0-3.41 1.497-3.41 3.369c0 1.892 1.517 3.369 3.41 3.369"/>
+                                    </svg>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="col-span-4 text-center py-20">
+                    <span class="material-symbols-outlined text-6xl text-gray-300 mb-4 block">search_off</span>
+                    <p class="text-gray-500 dark:text-gray-400 text-xl font-bold">No encontramos productos</p>
+                    <p class="text-gray-400 text-sm mt-2 mb-6">
+                        {% if q %}No hay resultados para "{{ q }}"{% else %}No hay productos en esta categoría{% endif %}
+                    </p>
+                    <a href="{% url 'tienda' %}" class="inline-flex items-center gap-2 bg-primary text-white px-6 py-3 rounded-xl font-bold text-sm hover:opacity-90 transition-all">
+                        <span class="material-symbols-outlined" style="font-size:18px;">storefront</span>
+                        Ver todos los productos
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+            <!-- Special Service Combos Section Header -->
+            {% with combos=productos|dictsort:"nombre" %}
+            {% comment %}Filtramos combos desde la vista{% endcomment %}
+            {% endwith %}
+
+            {% if combos_productos %}
+            <div class="flex items-center gap-2 px-4 pb-3 pt-10">
+                <span class="material-symbols-outlined text-[25px] text-primary">redeem</span>
+                <h2 class="text-[#0d1b12]/90 dark:text-white text-[22px] font-bold leading-tight tracking-[-0.035em]">Combos Especiales</h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 p-4">
+                {% for combo in combos_productos %}
+                <div class="flex flex-col sm:flex-row bg-white dark:bg-background-dark/50 rounded-xl overflow-hidden border border-[#cfe7d7] dark:border-[#1e3a28] shadow-sm hover:shadow-md transition-shadow">
+                    <div class="w-full sm:w-1/3 h-48 sm:h-auto bg-center bg-no-repeat bg-cover flex-shrink-0"
+                        style='background-image: url("{% if combo.imagen %}{{ combo.imagen.url }}{% endif %}");'>
+                    </div>
+                    <div class="p-6 flex flex-col justify-center flex-1">
+                        <span class="text-[10px] font-black text-primary uppercase tracking-widest mb-2">{{ combo.categoria.nombre }}</span>
+                        <h3 class="text-xl font-bold mb-2 text-[#0d1b12] dark:text-white">{{ combo.nombre }}</h3>
+                        <p class="text-sm text-primary mb-4 line-clamp-3">{{ combo.descripcion }}</p>
+                        <div class="flex items-center justify-between mt-auto">
+                            <p class="text-2xl font-black text-[#0d1b12]/80 dark:text-white">${{ combo.precio }}</p>
+                            {% if user.is_authenticated %}
+                                <a href="{% url 'carro:agregar' combo.id %}"
+                                class="bg-primary text-teal-soft px-4 py-2 rounded-lg font-bold text-sm hover:bg-primary/90 transition-colors">
+                                    Agregar Plan
+                                </a>
+                            {% else %}
+                                <button onclick="mensajeLogin()"
+                                        class="bg-primary text-teal-soft px-4 py-2 rounded-lg font-bold text-sm hover:bg-primary/90 transition-colors">
+                                    Agregar Plan
+                                </button>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+        </div>
+    </main>
+    <!-- Sticky Cart Summary (Mobile/Compact) -->
+    <div class="fixed bottom-6 right-6 z-50">
+        <a class="bg-primary text-teal-soft flex items-center gap-3 px-6 py-4 rounded-full shadow-2xl hover:scale-105 active:scale-95 transition-all" href="{% url 'checkout' %}">
+            <span class="material-symbols-outlined text-[24px]">shopping_bag</span>
+            <div class="flex flex-col items-start leading-none">
+                <span class="text-[10px] font-black uppercase opacity-70">Total</span>
+                {% include 'carro/widget.html' %}
+                <span class="text-base font-bold">${{ importe_total_carro|floatformat:2 }}</span>
+            </div>
+        </a>
+    </div>
+    <!-- JavaScript para el menú hamburguesa -->
+        <script>
+            const hamburgerBtn = document.getElementById('hamburger-btn');
+            const closeMenuBtn = document.getElementById('close-menu-btn');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const menuOverlay = document.getElementById('menu-overlay');
+
+            function openMenu() {
+                mobileMenu.classList.remove('translate-x-full');
+                mobileMenu.classList.add('translate-x-0');
+                menuOverlay.classList.remove('opacity-0', 'pointer-events-none');
+                menuOverlay.classList.add('opacity-100');
+                document.body.style.overflow = 'hidden';
+            }
+
+            function closeMenu() {
+                mobileMenu.classList.remove('translate-x-0');
+                mobileMenu.classList.add('translate-x-full');
+                menuOverlay.classList.remove('opacity-100');
+                menuOverlay.classList.add('opacity-0', 'pointer-events-none');
+                document.body.style.overflow = '';
+            }
+
+            hamburgerBtn.addEventListener('click', openMenu);
+            closeMenuBtn.addEventListener('click', closeMenu);
+            menuOverlay.addEventListener('click', closeMenu);
+
+            // Cerrar menú al hacer click en un link
+            const mobileMenuLinks = mobileMenu.querySelectorAll('a');
+            mobileMenuLinks.forEach(link => {
+                link.addEventListener('click', closeMenu);
+            });
+
+            // Cerrar menú con tecla ESC
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    closeMenu();
+                }
+            });
+        </script>
+
+        <!-- Script para ordenamiento y búsqueda -->
+        <script>
+        document.getElementById('ordenSelect').addEventListener('change', function() {
+            const url = new URL(window.location.href);
+            if (this.value) {
+                url.searchParams.set('orden', this.value);
+            } else {
+                url.searchParams.delete('orden');
+            }
+            window.location.href = url.toString();
+        });
+
+        // Búsqueda con delay para no recargar en cada tecla
+        let searchTimeout;
+        document.getElementById('productSearch').addEventListener('input', function() {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                document.getElementById('searchForm').submit();
+            }, 1000);
+        });
+        </script>
+        <script>
+function mensajeLogin() {
+    Swal.fire({
+        title: '¡Nos alegramos que quieras comprar!',
+        text: "Para agregar productos al carrito y cuidar a tus mascotas, primero debés iniciar sesión.",
+        icon: 'info',
+        showCancelButton: true,
+        confirmButtonColor: '#52ACB5',
+        cancelButtonColor: '#6b7280',
+        confirmButtonText: 'Iniciar Sesión',
+        cancelButtonText: 'Seguir mirando',
+        reverseButtons: true,
+        customClass: {
+            popup: 'rounded-[2rem]',
+            confirmButton: 'rounded-xl font-bold px-6 py-3',
+            cancelButton: 'rounded-xl font-bold px-6 py-3'
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = "{% url 'registro' %}";
+        }
+    });
+}
+</script>
+    {% endblock %}
+</div>
+</body>
+</html>

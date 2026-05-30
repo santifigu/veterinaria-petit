@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+{% extends "base.html" %}
+{% block header %}
+{% load static %}
+{% load static tailwind_tags %}
+<html lang="es-ar">
+<head>
+    {% tailwind_css %}
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Petit {% block title %}- Veterinaria{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link rel="icon" href="/static/img/icono.png" type="image" sizes="32x32">
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+
+    <!-- Script -->
+    <script id="tailwind-config">
+            tailwind.config = {
+                darkMode: "class",
+                theme: {
+                    extend: {
+                        colors: {
+                            "primary": "#52ACB5",
+                            "secondary": "#52B58C",
+                            "terciary": "#527BB5",
+                            "background-light": "#f6f8f6",
+                            "background-dark": "#102216",
+                            "teal-soft": "#e7f3eb",
+                            "wood-warm": "#d97706",
+                            "color1": "#EDF7F7",
+                            "color2": "#CDE7EA",
+                            "color3": "#ADD8DC",
+                            "color4": "#8DC9CE",
+                            "color5": "#6DB9C0",
+                            "color6": "#3F8B92",
+                            "color7": "#316D72",
+                            "color8": "#234E52",
+                            "color9": "#153032",
+                            "color10": "#081112",
+                            "coloraso": "#0d1b12",
+                        },
+                        fontFamily: {
+                            "display": ["Manrope", "sans-serif"]
+                        },
+                        borderRadius: {
+                            "DEFAULT": "0.25rem",
+                            "lg": "0.5rem",
+                            "xl": "0.75rem",
+                            "full": "9999px"
+                        },
+                    },
+                },
+            }
+    </script>
+
+    <!-- Style -->
+    <style type="text/tailwindcss">
+            @layer base {
+                body {
+                    font-family: 'Manrope', sans-serif;
+                }
+            }
+            .material-symbols-outlined {
+                font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-[#0d1b12] dark:text-white transition-colors duration-300">
+        {% endblock %}
+        {% block hero %}
+                <div class="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden">
+                    <div class="layout-container flex h-full grow flex-col">
+                        <header class="flex items-center justify-between backdrop-blur-xl bg-black/10 dark:bg-black/20 border-b border-white/10 px-6 lg:px-20 py-4 fixed top-0 w-full z-50 shadow-sm">
+                            <a class="flex items-center gap-3 text-white" href="{% url 'index' %}">
+                                <div class="size-8 text-primary">
+                                    <span class="material-symbols-outlined">pets</span>
+                                </div>
+                                <div class="flex flex-col">
+                                    <h2 class="text-lg font-bold leading-tight tracking-tight">Córdoba Veterinaria</h2>
+                                    <span class="text-xs font-medium opacity-80 uppercase tracking-tighter">Córdoba Capital</span>
+                                </div>
+                            </a>
+                            
+                            <div class="flex flex-1 justify-end gap-6 items-center">
+                                <!-- Desktop Navigation -->
+                                <nav class="hidden md:flex items-center gap-8 text-[#e7f3eb]">
+                                    <a class="text-sm font-semibold hover:text-primary transition-colors" href="{% url 'index' %}">Inicio</a>
+                                    <a class="text-sm font-semibold hover:text-primary transition-colors" href="{% url 'nosotros' %}">Nosotros</a>                                    <a class="text-sm font-semibold hover:text-primary transition-colors" href="{% url 'blog:blog' %}">Blog</a>
+                                    <a class="text-sm font-semibold hover:text-primary transition-colors" href="{% url 'tienda' %}">Tienda</a>
+                                    <a class="text-sm font-semibold hover:text-primary transition-colors" href="{% url 'turnos:turnos' %}">Turnos</a>
+                                    <a class="text-sm font-semibold hover:text-primary transition-colors" href="{% url 'contacto' %}">Contacto</a>
+                                </nav>
+
+                                <div class="flex gap-3 items-center">
+                                    <!-- CARRITO -->
+                                    <a href="{% url 'checkout' %}" class="relative flex items-center justify-center w-10 h-10 rounded-lg hover:scale-105 transition-transform">
+                                        <!-- BADGE -->
+                                        <span class="absolute -top-1 -right-1 bg-primary text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center shadow-md">{{ cantidad_total_carro }}</span>
+                                        <!-- SVG DEL CARRITO -->
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 512 512">
+                                            <path fill="#e7f3eb" d="M454.65 169.4A31.82 31.82 0 0 0 432 160h-64v-16a112 112 0 0 0-224 0v16H80a32 32 0 0 0-32 32v216c0 39 33 72 72 72h272a72.22 72.22 0 0 0 50.48-20.55a69.48 69.48 0 0 0 21.52-50.2V192a31.75 31.75 0 0 0-9.35-22.6M176 144a80 80 0 0 1 160 0v16H176Z"/>
+                                        </svg>
+                                    </a>
+                                    <!-- PERFIL -->
+                                    {% if user.is_authenticated %}
+                                        <a href="{% url 'perfil' %}" class="flex items-center justify-center w-10 h-10 text-white hover:scale-125 transition-transform">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24"><path fill="#E7F3EB" d="M12 4a4 4 0 1 1 0 8a4 4 0 0 1 0-8m0 16s8 0 8-2c0-2.4-3.9-5-8-5s-8 2.6-8 5c0 2 8 2 8 2"/></svg>
+                                        </a>
+                                    {% else %}
+                                        <a href="{% url 'registro' %}" class="flex items-center justify-center w-10 h-10 text-white hover:scale-125 transition-transform">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24"><path fill="#E7F3EB" d="M12 4a4 4 0 1 1 0 8a4 4 0 0 1 0-8m0_16s8_0_8-2c0-2.4-3.9-5-8-5s-8_2.6-8_5c0_2_8_2_8_2"/></svg>
+                                        </a>
+                                    {% endif %}
+                                    <!-- HAMBURGER BUTTON (Mobile) -->
+                                    <button id="hamburger-btn" class="md:hidden flex items-center justify-center w-10 h-10 text-white hover:text-primary transition-colors">
+                                        <span class="material-symbols-outlined text-3xl">menu</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </header>
+
+                        <!-- MOBILE MENU (Sidebar) -->
+                        <div id="mobile-menu" class="fixed top-0 right-0 h-full w-[280px] bg-background-dark/98 backdrop-blur-xl border-l border-white/10 transform translate-x-full transition-transform duration-300 ease-in-out z-[60] md:hidden shadow-2xl">
+                            <div class="flex flex-col h-full">
+                                <!-- Close Button -->
+                                <div class="flex items-center justify-between px-6 py-4 border-b border-white/10">
+                                    <div class="flex items-center gap-2 text-white">
+                                        <span class="material-symbols-outlined text-primary">pets</span>
+                                        <span class="font-bold text-sm">Menú</span>
+                                    </div>
+                                    <button id="close-menu-btn" class="flex items-center justify-center w-10 h-10 text-white hover:text-primary transition-colors">
+                                        <span class="material-symbols-outlined text-3xl">close</span>
+                                    </button>
+                                </div>
+
+                                <!-- Navigation Links -->
+                                <nav class="flex flex-col gap-1 px-4 py-6 flex-1 overflow-y-auto">
+                                    <a class="flex items-center gap-3 px-4 py-3 text-white hover:bg-primary/10 hover:text-primary rounded-lg transition-all font-semibold" href="{% url 'index' %}">
+                                        <span class="material-symbols-outlined text-xl">home</span>
+                                        <span>Inicio</span>
+                                    </a>
+                                    <a class="flex items-center gap-3 px-4 py-3 text-white hover:bg-primary/10 hover:text-primary rounded-lg transition-all font-semibold" href="{% url 'nosotros' %}">
+                                        <span class="material-symbols-outlined text-xl">group</span>
+                                        <span>Nosotros</span>
+                                    </a>
+                                    <a class="flex items-center gap-3 px-4 py-3 text-white hover:bg-primary/10 hover:text-primary rounded-lg transition-all font-semibold" href="{% url 'blog:blog' %}">
+                                        <span class="material-symbols-outlined text-xl">article</span>
+                                        <span>Blog</span>
+                                    </a>
+                                    <a class="flex items-center gap-3 px-4 py-3 text-white hover:bg-primary/10 hover:text-primary rounded-lg transition-all font-semibold" href="{% url 'tienda' %}">
+                                        <span class="material-symbols-outlined text-xl">store</span>
+                                        <span>Tienda</span>
+                                    </a>
+                                    <a class="flex items-center gap-3 px-4 py-3 text-white hover:bg-primary/10 hover:text-primary rounded-lg transition-all font-semibold" href="{% url 'turnos:turnos' %}">
+                                        <span class="material-symbols-outlined text-xl">calendar_month</span>
+                                        <span>Turnos</span>
+                                    </a>
+                                    <a class="flex items-center gap-3 px-4 py-3 text-white hover:bg-primary/10 hover:text-primary rounded-lg transition-all font-semibold" href="{% url 'contacto' %}">
+                                        <span class="material-symbols-outlined text-xl">mail</span>
+                                        <span>Contacto</span>
+                                    </a>
+                                </nav>
+
+                                <!-- Carrito y perfil en mobile -->
+                                <div class="px-4 py-3 border-t border-white/10 flex gap-3">
+                                    <a href="{% url 'checkout' %}" class="relative flex items-center justify-center gap-2 flex-1 bg-white/5 hover:bg-white/10 text-white py-3 rounded-lg transition-all font-semibold text-sm">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 512 512">
+                                            <path fill="#e7f3eb" d="M454.65 169.4A31.82 31.82 0 0 0 432 160h-64v-16a112 112 0 0 0-224 0v16H80a32 32 0 0 0-32 32v216c0 39 33 72 72 72h272a72.22 72.22 0 0 0 50.48-20.55a69.48 69.48 0 0 0 21.52-50.2V192a31.75 31.75 0 0 0-9.35-22.6M176 144a80 80 0 0 1 160 0v16H176Z"/>
+                                        </svg>
+                                        <span>Carrito</span>
+                                        <span class="absolute -top-1 -right-1 bg-primary text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">{{ cantidad_total_carro }}</span>
+                                    </a>
+                                    {% if user.is_authenticated %}
+                                        <a href="{% url 'perfil' %}" class="flex items-center justify-center gap-2 flex-1 bg-white/5 hover:bg-white/10 text-white py-3 rounded-lg transition-all font-semibold text-sm">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path fill="#E7F3EB" d="M12 4a4 4 0 1 1 0 8a4 4 0 0 1 0-8m0 16s8 0 8-2c0-2.4-3.9-5-8-5s-8 2.6-8 5c0 2 8 2 8 2"/></svg>
+                                            <span>Mi Perfil</span>
+                                        </a>
+                                    {% else %}
+                                        <a href="{% url 'registro' %}" class="flex items-center justify-center gap-2 flex-1 bg-white/5 hover:bg-white/10 text-white py-3 rounded-lg transition-all font-semibold text-sm">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path fill="#E7F3EB" d="M12 4a4 4 0 1 1 0 8a4 4 0 0 1 0-8m0 16s8 0 8-2c0-2.4-3.9-5-8-5s-8 2.6-8 5c0 2 8 2 8 2"/></svg>
+                                            <span>Registrarse</span>
+                                        </a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- OVERLAY (cuando el menú está abierto) -->
+                        <div id="menu-overlay" class="fixed inset-0 bg-black/50 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300 z-[55]"></div>
+
+                        <section class="relative h-screen w-full flex items-center justify-center overflow-hidden">
+                            <div class="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-transparent"></div>
+                            <img alt="Modern veterinary interior" class="absolute inset-0 w-full h-full object-cover" data-alt="Modern high-end veterinary clinic interior with clean minimalist design, wooden accents, and soft warm ambient lighting reflecting expertise" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC2NT5WUs4LUE5GYlWjsZzgNYkSCqX_P4OlnODKYR7h0irdH2JqzJJ0eHULmZGu563U8BAasA2cdhMie2d1tsijlhogssPHEJV75RdLS7VHog0TSOYeTFLqVsEIYXC79NILnmfUpx4UCFOuNCRjUNJQ1Jp2KaX9mqj892-IhS6BU4U3lL2govNjvecfHKn3rvKfQRLm50aer-h1BULuYlZfiG9BILd2BdsWpjc2zkGruwY0psfcmFfSyzB1oQBxQfD2pccoU_Y80Dg"/>
+                            <div class="absolute inset-0 bg-black/50 dark:bg-black/60"></div>
+                            <div class="relative z-20 text-center max-w-4xl px-6">
+                                <span class="font-headline text-teal-soft bg-primary/30 backdrop-blur-sm px-4 py-1.5 rounded-full text-xs font-bold tracking-widest uppercase mb-6 inline-block">Transparencia y Cuidado</span>
+                                <h1 class="font-headline text-5xl md:text-7xl font-extrabold text-white mb-6 tracking-tighter leading-none">Términos de <span class="text-primary">Servicio</span></h1>
+                                <p class="font-body text-lg md:text-xl text-white/90 max-w-2xl mx-auto leading-relaxed">
+                                                    Nuestra prioridad es la salud de su mascota. Estos términos aseguran una relación clara, ética y profesional en cada atención
+                                                </p>
+                            </div>
+                            <div class="absolute bottom-12 left-1/2 -translate-x-1/2 z-20">
+                                <span class="material-symbols-outlined text-white text-4xl animate-bounce">expand_more</span>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+
+                <!-- JavaScript para el menú hamburguesa -->
+                <script>
+                    const hamburgerBtn = document.getElementById('hamburger-btn');
+                    const closeMenuBtn = document.getElementById('close-menu-btn');
+                    const mobileMenu = document.getElementById('mobile-menu');
+                    const menuOverlay = document.getElementById('menu-overlay');
+
+                    function openMenu() {
+                        mobileMenu.classList.remove('translate-x-full');
+                        mobileMenu.classList.add('translate-x-0');
+                        menuOverlay.classList.remove('opacity-0', 'pointer-events-none');
+                        menuOverlay.classList.add('opacity-100');
+                        document.body.style.overflow = 'hidden';
+                    }
+
+                    function closeMenu() {
+                        mobileMenu.classList.remove('translate-x-0');
+                        mobileMenu.classList.add('translate-x-full');
+                        menuOverlay.classList.remove('opacity-100');
+                        menuOverlay.classList.add('opacity-0', 'pointer-events-none');
+                        document.body.style.overflow = '';
+                    }
+
+                    hamburgerBtn.addEventListener('click', openMenu);
+                    closeMenuBtn.addEventListener('click', closeMenu);
+                    menuOverlay.addEventListener('click', closeMenu);
+
+                    // Cerrar menú al hacer click en un link
+                    const mobileMenuLinks = mobileMenu.querySelectorAll('a');
+                    mobileMenuLinks.forEach(link => {
+                        link.addEventListener('click', closeMenu);
+                    });
+
+                    // Cerrar menú con tecla ESC
+                    document.addEventListener('keydown', (e) => {
+                        if (e.key === 'Escape') {
+                            closeMenu();
+                        }
+                    });
+                </script>
+            {% endblock %}
+            {% block content %}
+                <!-- Main Content Shell -->
+                <main class="relative max-w-screen-2xl mx-auto flex flex-col md:flex-row gap-16 px-8 py-24" id="legal-content">
+                    <!-- Sidebar Navigation -->
+                    <aside class="hidden md:block w-72 shrink-0">
+                        <div class="sticky top-32 space-y-2">
+                            <div class="mb-8">
+                                <h3 class="font-headline text-xs font-bold text-outline uppercase tracking-widest">Navegación Legal</h3>
+                            </div>
+                            <nav class="space-y-1">
+                                <a class="flex items-center gap-3 bg-surface-container-lowest rounded-md p-3 font-headline text-sm font-semibold" href="#intro">
+                                                        Introducción General
+                                                    </a>
+                                <a class="flex items-center gap-3 text-on-surface-variant p-3 font-headline text-sm font-medium hover:bg-surface-container-low transition-all rounded-md" href="#appointments">
+                                                        Cancelación de Turnos
+                                                    </a>
+                                <a class="flex items-center gap-3 text-on-surface-variant p-3 font-headline text-sm font-medium hover:bg-surface-container-low transition-all rounded-md" href="#home-care">
+                                                        Atención a Domicilio
+                                                    </a>
+                                <a class="flex items-center gap-3 text-on-surface-variant p-3 font-headline text-sm font-medium hover:bg-surface-container-low transition-all rounded-md" href="#pet-shop">
+                                                        Condiciones Pet Shop
+                                                    </a>
+                                <a class="flex items-center gap-3 text-on-surface-variant p-3 font-headline text-sm font-medium hover:bg-surface-container-low transition-all rounded-md" href="#privacy">
+                                                        Protección de Datos
+                                                    </a>
+                            </nav>
+                            <div class="mt-12 p-6 bg-tertiary-container rounded-xl text-on-tertiary-container">
+                                <p class="font-headline text-sm font-bold mb-2">¿Necesita ayuda?</p>
+                                <p class="text-xs leading-relaxed opacity-90 mb-4">Si tiene dudas sobre estas condiciones, nuestro equipo legal y médico está a su disposición.</p>
+                                <a class="text-xs font-bold underline flex items-center gap-1" href="{% url 'contacto' %}">
+                                                        Contactar Soporte
+                                                    </a>
+                            </div>
+                        </div>
+                    </aside>
+                    <!-- Editorial Content Area -->
+                    <article class="flex-1 max-w-3xl">
+                        <!-- Section 1 -->
+                        <section class="mb-20" id="intro">
+                            <h2 class="font-headline text-3xl font-bold text-primary mb-6">1.0 Marco de Compromiso Médico</h2>
+                            <div class="space-y-6 text-on-surface-variant leading-relaxed text-lg font-light">
+                                <p>Bienvenido a <strong class="font-semibold text-on-surface">Petit</strong>. Al acceder a nuestros servicios médicos, hospitalarios o comerciales, usted acepta quedar vinculado por los siguientes términos. Estos han sido redactados para garantizar el bienestar animal y la transparencia operativa de nuestra clínica.</p>
+                                <p>Nuestra práctica se rige por los más altos estándares de excelencia veterinaria. Entendemos que su mascota es familia, y nuestro compromiso es tratarla con la precisión de la medicina avanzada y la calidez de un hogar.</p>
+                            </div>
+                        </section>
+                        <!-- Section 2: Appointments (Bento Style Summary) -->
+                        <section class="mb-20" id="appointments">
+                            <div class="flex items-center gap-4 mb-8">
+                                <div class="h-px flex-1 bg-outline-variant/30"></div>
+                                <h2 class="font-headline text-2xl font-bold text-primary px-4">2.0 Turnos y Cancelaciones</h2>
+                                <div class="h-px flex-1 bg-outline-variant/30"></div>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div class="p-8 bg-surface-container-lowest rounded-xl editorial-shadow border border-outline-variant/10">
+                                    <span class="material-symbols-outlined text-primary text-4xl mb-4">event_busy</span>
+                                    <h3 class="font-headline text-lg font-bold text-on-surface mb-3">Política de 24 Horas</h3>
+                                    <p class="text-sm text-on-surface-variant leading-relaxed">Para cancelar o reprogramar, solicitamos un aviso previo de 24 horas. Esto permite que otro paciente en espera pueda recibir atención.</p>
+                                </div>
+                                <div class="p-8 bg-surface-container-low rounded-xl border border-outline-variant/10">
+                                    <span class="material-symbols-outlined text-primary text-4xl mb-4">payments</span>
+                                    <h3 class="font-headline text-lg font-bold text-on-surface mb-3">Depósitos de Reserva</h3>
+                                    <p class="text-sm text-on-surface-variant leading-relaxed">Las cirugías programadas y consultas de especialistas requieren un depósito del 20%, reembolsable solo con aviso previo de 48 horas.</p>
+                                </div>
+                            </div>
+                            <div class="mt-8 p-6 bg-secondary-fixed rounded-xl border border-secondary/10">
+                                <div class="flex gap-4">
+                                    <span class="material-symbols-outlined text-on-secondary-fixed">info</span>
+                                    <div>
+                                        <p class="font-headline text-sm font-bold text-on-secondary-fixed">Nota sobre Emergencias</p>
+                                        <p class="text-xs text-on-secondary-fixed-variant mt-1">Los casos de código rojo (emergencias críticas) tienen prioridad absoluta. Agradecemos su paciencia si su turno regular sufre un leve retraso por este motivo.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                        <!-- Section 3: Home Care -->
+                        <section class="mb-20" id="home-care">
+                            <h2 class="font-headline text-3xl font-bold text-primary mb-8">3.0 Atención a Domicilio</h2>
+                            <div class="space-y-8">
+                                <div class="flex gap-6 items-start">
+                                    <div class="w-12 h-12 shrink-0 bg-primary/5 rounded-full flex items-center justify-center text-[#85D5C5] font-headline font-bold">01</div>
+                                    <div>
+                                        <h4 class="font-headline font-bold text-on-surface text-lg mb-2">Entorno Seguro</h4>
+                                        <p class="text-on-surface-variant leading-relaxed">El tutor es responsable de proveer un espacio limpio, iluminado y libre de otras mascotas o distracciones para realizar el examen físico de manera segura.</p>
+                                    </div>
+                                </div>
+                                <div class="flex gap-6 items-start">
+                                    <div class="w-12 h-12 shrink-0 bg-primary/5 rounded-full flex items-center justify-center text-[#85D5C5] font-headline font-bold">02</div>
+                                    <div>
+                                        <h4 class="font-headline font-bold text-on-surface text-lg mb-2">Responsabilidad de Sujeción</h4>
+                                        <p class="text-on-surface-variant leading-relaxed">Nuestros veterinarios pueden solicitar que el tutor asegure al animal con bozal o correa si se detecta comportamiento reactivo. Petit se reserva el derecho de suspender la atención si hay riesgo para el personal.</p>
+                                    </div>
+                                </div>
+                                <div class="flex gap-6 items-start">
+                                    <div class="w-12 h-12 shrink-0 bg-primary/5 rounded-full flex items-center justify-center text-[#85D5C5] font-headline font-bold">03</div>
+                                    <div>
+                                        <h4 class="font-headline font-bold text-on-surface text-lg mb-2">Alcance de Procedimientos</h4>
+                                        <p class="text-on-surface-variant leading-relaxed">Ciertos diagnósticos o tratamientos complejos no pueden realizarse en domicilio. En tales casos, se coordinará el traslado inmediato a nuestro centro.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                        <!-- Section 4: Pet Shop -->
+                        <section class="mb-20" id="pet-shop">
+                            <div class="bg-surface-container rounded-2xl overflow-hidden flex flex-col md:flex-row">
+                                <div class="md:w-1/3 relative min-h-[200px]">
+                                    <img class="absolute inset-0 w-full h-full object-cover" data-alt="Premium organic pet snacks and artisanal toys displayed on a minimalist wooden shelf with soft natural lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCS7BhEY9bO_-66YtFKfakwWLQWav5iiT-DAPFRQrZotphnIlSe0K4EW49X0ZL-IW_AKGlh3RXWVMgRmnI0up1kUaJXQ4qFa53u5uU5XS6FFM-zVlaqpzq4rkdTh8_IiY3ePqk5CMthjczJQxkKr138PKJBPBROK-JsEYl8xpUAtUY2WZymPAJvEi54_zKLfA_YOeHJPl3trqT626yz6wiPixgkK6zDSMeTaWqvi1GI9jNLWW8XyDtyTl1KkCOQbXolZ6M3C4tiAbk"/>
+                                </div>
+                                <div class="p-10 md:w-2/3">
+                                    <h2 class="font-headline text-2xl font-bold text-primary mb-6">4.0 Pet Shop &amp; Farmacia</h2>
+                                    <ul class="space-y-4">
+                                        <li class="flex items-start gap-3">
+                                            <span class="material-symbols-outlined text-secondary mt-1">check_circle</span>
+                                            <p class="text-sm text-on-surface-variant"><strong>Cambios y Devoluciones:</strong> Productos sellados y en su empaque original pueden devolverse dentro de los 10 días.</p>
+                                        </li>
+                                        <li class="flex items-start gap-3">
+                                            <span class="material-symbols-outlined text-secondary mt-1">check_circle</span>
+                                            <p class="text-sm text-on-surface-variant"><strong>Medicamentos:</strong> Por regulaciones sanitarias, no se aceptan devoluciones de fármacos una vez que han salido de la clínica.</p>
+                                        </li>
+                                        <li class="flex items-start gap-3">
+                                            <span class="material-symbols-outlined text-secondary mt-1">check_circle</span>
+                                            <p class="text-sm text-on-surface-variant"><strong>Prescripciones:</strong> Alimentos terapéuticos requieren la presentación de la orden veterinaria vigente.</p>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </section>
+                    </article>
+                </main>
+                <!-- Simple Contact Floating Action (Suppressed as per rules on Detail screens, but adding a "Back to Top" as a ghost element) -->
+                <a class="fixed bottom-8 right-8 w-12 h-12 bg-surface-container-lowest text-on-surface rounded-full shadow-lg flex items-center justify-center hover:bg-primary hover:text-on-primary transition-all duration-300 group z-40" href="#">
+                    <span class="material-symbols-outlined group-hover:scale-110 transition-transform">arrow_upward</span>
+                </a>
+        </body>
+    {% endblock %}
+</html>

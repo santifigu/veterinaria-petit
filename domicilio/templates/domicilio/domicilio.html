@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+{% extends 'base.html' %}
+{% load static tailwind_tags %}
+{% load static %}
+<html lang="es-ar" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Petit {% block title %}| Domicilio {% endblock %}</title>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-color9 dark:text-white transition-colors duration-300">
+    {% block hero %}
+
+    <!-- Header -->
+    <div class="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden">
+            <div class="layout-container flex h-full grow flex-col">
+                    <header class="flex items-center justify-between backdrop-blur-xl bg-black/10 dark:bg-black/20 border-b border-white/10 px-6 lg:px-20 py-4 fixed top-0 w-full z-50 shadow-sm">
+                    <a class="flex items-center gap-3 text-white" href="{% url 'index' %}">
+                        <div class="size-8 text-primary">
+                            <span class="material-symbols-outlined">pets</span>
+                        </div>
+                        <div class="flex flex-col">
+                            <h2 class="text-lg font-bold leading-tight tracking-tight">Córdoba Veterinaria</h2>
+                            <span class="text-xs font-medium opacity-80 uppercase tracking-tighter">Córdoba Capital</span>
+                        </div>
+                    </a>
+                    
+                    <div class="flex flex-1 justify-end gap-6 items-center">
+                        <!-- Desktop Navigation -->
+                        <nav class="hidden md:flex items-center gap-8 text-[#e7f3eb]">
+                            <a class="text-sm font-semibold hover:text-primary transition-colors" href="{% url 'index' %}">Inicio</a>
+                            <a class="text-sm font-semibold hover:text-primary transition-colors" href="{% url 'nosotros' %}">Nosotros</a>
+                            <a class="text-sm font-semibold hover:text-primary transition-colors" href="{% url 'domicilio' %}">Domicilio</a>
+                            <a class="text-sm font-semibold hover:text-primary transition-colors" href="{% url 'blog:blog' %}">Blog</a>
+                            <a class="text-sm font-semibold hover:text-primary transition-colors" href="{% url 'tienda' %}">Tienda</a>
+                            <a class="text-sm font-semibold hover:text-primary transition-colors" href="{% url 'turnos:turnos' %}">Turnos</a>
+                            <a class="text-sm font-semibold hover:text-primary transition-colors" href="{% url 'contacto' %}">Contacto</a>
+                        </nav>
+
+                        <div class="flex gap-3 items-center">
+                            <!-- CARRITO -->
+                            <a href="{% url 'checkout' %}" class="relative flex items-center justify-center w-10 h-10 rounded-lg hover:scale-105 transition-transform">
+                                <!-- CANTIDAD -->
+                                <span class="absolute -top-1 -right-1 bg-primary text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center shadow-md">{{ cantidad_total_carro }}</span>
+                                <!-- SVG DEL CARRITO -->
+                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 512 512">
+                                    <path fill="#e7f3eb" d="M454.65 169.4A31.82 31.82 0 0 0 432 160h-64v-16a112 112 0 0 0-224 0v16H80a32 32 0 0 0-32 32v216c0 39 33 72 72 72h272a72.22 72.22 0 0 0 50.48-20.55a69.48 69.48 0 0 0 21.52-50.2V192a31.75 31.75 0 0 0-9.35-22.6M176 144a80 80 0 0 1 160 0v16H176Z"/>
+                                </svg>
+                            </a>
+                            {% if user.is_authenticated %}
+                                <a href="{% url 'perfil' %}" class="flex items-center justify-center w-10 h-10 text-white hover:scale-125 transition-transform">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24"><path fill="#E7F3EB" d="M12 4a4 4 0 1 1 0 8a4 4 0 0 1 0-8m0 16s8 0 8-2c0-2.4-3.9-5-8-5s-8 2.6-8 5c0 2 8 2 8 2"/></svg>
+                                </a>
+                            {% else %}
+                                <a href="{% url 'registro' %}" class="flex items-center justify-center w-10 h-10 text-white hover:scale-125 transition-transform">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24"><path fill="#E7F3EB" d="M12 4a4 4 0 1 1 0 8a4 4 0 0 1 0-8m0 16s8 0 8-2c0-2.4-3.9-5-8-5s-8 2.6-8 5c0 2 8 2 8 2"/></svg>
+                                </a>
+                            {% endif %}
+                            <!-- HAMBURGER BUTTON (Mobile) -->
+                            <button id="hamburger-btn" class="md:hidden flex items-center justify-center w-10 h-10 text-white hover:text-primary transition-colors">
+                                <span class="material-symbols-outlined text-3xl">menu</span>
+                            </button>
+                        </div>
+                    </div>
+                </header>
+
+                <!-- MOBILE MENU (Sidebar) -->
+                <div id="mobile-menu" class="fixed top-0 right-0 h-full w-[280px] bg-background-dark/98 backdrop-blur-xl border-l border-white/10 transform translate-x-full transition-transform duration-300 ease-in-out z-[60] md:hidden shadow-2xl">
+                    <div class="flex flex-col h-full">
+                        <!-- Close Button -->
+                        <div class="flex items-center justify-between px-6 py-4 border-b border-white/10">
+                            <div class="flex items-center gap-2 text-white">
+                                <span class="material-symbols-outlined text-primary">pets</span>
+                                <span class="font-bold text-sm">Menú</span>
+                            </div>
+                            <button id="close-menu-btn" class="flex items-center justify-center w-10 h-10 text-white hover:text-primary transition-colors">
+                                <span class="material-symbols-outlined text-3xl">close</span>
+                            </button>
+                        </div>
+
+                        <!-- Navigation Links -->
+                        <nav class="flex flex-col gap-1 px-4 py-6 flex-1 overflow-y-auto">
+                            <a class="flex items-center gap-3 px-4 py-3 text-white hover:bg-primary/10 hover:text-primary rounded-lg transition-all font-semibold" href="{% url 'index' %}">
+                                <span class="material-symbols-outlined text-xl">home</span>
+                                <span>Inicio</span>
+                            </a>
+                            <a class="flex items-center gap-3 px-4 py-3 text-white hover:bg-primary/10 hover:text-primary rounded-lg transition-all font-semibold" href="{% url 'nosotros' %}">
+                                <span class="material-symbols-outlined text-xl">group</span>
+                                <span>Nosotros</span>
+                            </a>
+                            <a class="flex items-center gap-3 px-4 py-3 text-white hover:bg-primary/10 hover:text-primary rounded-lg transition-all font-semibold" href="{% url 'domicilio' %}">
+                                <span class="material-symbols-outlined text-xl">local_shipping</span>
+                                <span>Domicilio</span>
+                            </a>
+                            <a class="flex items-center gap-3 px-4 py-3 text-white hover:bg-primary/10 hover:text-primary rounded-lg transition-all font-semibold" href="{% url 'blog:blog' %}">
+                                <span class="material-symbols-outlined text-xl">article</span>
+                                <span>Blog</span>
+                            </a>
+                            <a class="flex items-center gap-3 px-4 py-3 text-white hover:bg-primary/10 hover:text-primary rounded-lg transition-all font-semibold" href="{% url 'tienda' %}">
+                                <span class="material-symbols-outlined text-xl">store</span>
+                                <span>Tienda</span>
+                            </a>
+                            <a class="flex items-center gap-3 px-4 py-3 text-white hover:bg-primary/10 hover:text-primary rounded-lg transition-all font-semibold" href="{% url 'turnos:turnos' %}">
+                                <span class="material-symbols-outlined text-xl">calendar_month</span>
+                                <span>Turnos</span>
+                            </a>
+                            <a class="flex items-center gap-3 px-4 py-3 text-white hover:bg-primary/10 hover:text-primary rounded-lg transition-all font-semibold" href="{% url 'contacto' %}">
+                                <span class="material-symbols-outlined text-xl">mail</span>
+                                <span>Contacto</span>
+                            </a>
+                        </nav>
+
+                        <!-- Bottom Action Button -->
+                        <div class="px-6 py-4 border-t border-white/10">
+                            <a href="{% url 'turnos:turnos' %}" class="flex items-center justify-center gap-2 w-full bg-primary text-teal-soft py-3 rounded-lg font-bold hover:bg-primary/90 transition-all">
+                                <span class="material-symbols-outlined">event_available</span>
+                                <span>Reservar Turno</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- OVERLAY (cuando el menú está abierto) -->
+                <div id="menu-overlay" class="fixed inset-0 bg-black/50 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300 z-[55]"></div>
+                <section class="relative w-full overflow-hidden">
+                    <div class="relative w-full min-h-[100vh] flex flex-col items-center justify-center px-4 py-18 text-center">
+                        <div class="absolute inset-0 z-0">
+                            <img alt="Modern veterinary interior" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD0DfmX_mKNpmhRTQVelse5KAPOYSNwZAalV4NiMewyTgViIJyl5tVCUUYf6VA6hGEZ8FN3L8JOmXcjtbyTj8mRomOAiLNgFv7zGyfzJBUVX1YG5xStFQEoYlrs5dLOR2z6ghNoykDsrpC7iOrSOxBY0f8A83yY7nEamQDuL6SbUEN1hIBauKqYTlyi6eX5DXlUbbnq2kQKpr4Z9o4YlnoHbXy4o0ZwXdWwvO_dxNaXdzugz6XB2pE94pjM6-tCF3rOGVh22mSKb6Q"/>
+                            <div class="absolute inset-0 bg-black/50 dark:bg-black/60"></div>
+                        </div>
+                        <div class="relative z-10 max-w-4xl mx-auto flex flex-col items-center gap-8">
+                            <span class="inline-block px-4 py-2 bg-primary/60 backdrop-blur-sm text-teal-soft text-xs font-bold uppercase tracking-[0.2em] rounded-full mb-6 mt-10">
+                                        Cuidados veterinarios
+                            </span>
+                            <div class="flex flex-col gap-6">
+                                <h1 class="text-5xl md:text-7xl font-black leading-tight tracking-tight mb-6 text-white">
+                                    Atención Veterinaria a la puerta de su <span class="text-primary">Domicilio</span>
+                                </h1>
+                                <p class="text-xl md:text-2xl text-white/90 font-light max-w-2xl mx-auto leading-relaxed mb-10">
+                                                        Servicios veterinarios profesionales sin salir de casa. Comodidad y tranquilidad para vos y tu mascota.
+                                                    </p>
+                            </div>
+                            <div class="flex justify-center">
+                                <a class="bg-primary hover:bg-primary/90 text-teal-soft px-10 py-5 rounded-full font-bold text-lg transition-all flex items-center gap-3 shadow-xl hover:-translate-y-[-3px]" href="#request-form">
+                                    Solicitar Visita
+                                                <span class="material-symbols-outlined">arrow_downward</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+    {% endblock %}
+    {% block content %}
+    <!-- Sección de Beneficios -->
+    <script>
+    tailwind.config = {
+        darkMode: 'class',
+        theme: {
+        extend: {
+            colors: {
+                        "primary": "#52ACB5",
+                        "secondary": "#52B58C",
+                        "terciary": "#527BB5",
+                        "background-light": "#F6F8F6",
+                        "background-dark": "#102216",
+                        "teal-soft": "#E7F3EB",
+                        "wood-warm": "#D97706",
+                        "color1": "#EDF7F7",
+                        "color2": "#CDE7EA",
+                        "color3": "#ADD8DC",
+                        "color4": "#8DC9CE",
+                        "color5": "#6DB9C0",
+                        "color6": "#3F8B92",
+                        "color7": "#316D72",
+                        "color8": "#234E52",
+                        "color9": "#153032",
+                        "color10": "#081112",
+                        "coloraso": "#0D1B12",
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+        }
+        }
+    }
+    </script>
+    <style>
+    /* ── Fondo sutil con manchas ── */
+    .dark .bg-organic {
+        background-color: #0b1f1a;
+        background-image:
+        radial-gradient(ellipse 55% 45% at 85% 5%,  rgba(13,158,128,.12) 0%, transparent 65%),
+        radial-gradient(ellipse 40% 50% at 5%  90%, rgba(13,158,128,.08) 0%, transparent 60%);
+    }
+    
+    /* ── Card glass ── */
+    .card-glass {
+        background: rgba(255,255,255,.80);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(13,158,128,.14);
+    }
+    .dark .card-glass {
+        background: rgba(21,42,27,.75);
+        border: 1px solid rgba(13,158,128,.18);
+    }
+    
+    /* ── Número del paso (gradiente) ── */
+    .step-num {
+        background: linear-gradient(135deg, #52ACB5, #9dd6c8);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    
+    /* ── Línea de tiempo vertical ── */
+    .timeline-line {
+        background: linear-gradient(to bottom, #9dd6c8, transparent);
+    }
+    .dark .timeline-line { background: linear-gradient(to bottom, #076b56, transparent); }
+    
+    /* ── Chips radio mascota ── */
+    .chip-pet input[type="radio"] { display: none; }
+    .chip-pet span {
+        display: flex; align-items: center; justify-content: center; gap: 6px;
+        padding: 10px 18px; border-radius: 12px;
+        border: 1.5px solid #ede7d9;
+        background: #f5f0e8;
+        font-size: 13px; font-weight: 500; color: #5a7a72;
+        cursor: pointer; transition: all .2s; user-select: none;
+    }
+    .chip-pet span:hover { border-color: #9dd6c8; color: #52ACB5; background: #e6f7f3; }
+    .chip-pet input:checked + span {
+        background: #52ACB5; border-color: #52ACB5; color: #fff;
+        box-shadow: 0 4px 14px rgba(13,158,128,.3);
+    }
+    .dark .chip-pet span { background: #0b1f1a; border-color: rgba(255,255,255,.08); color: #9dd6c8; }
+    .dark .chip-pet span:hover { background: #1a3329; border-color: #52ACB5; }
+    .dark .chip-pet input:checked + span { background: #52ACB5; border-color: #52ACB5; color: #fff; }
+    
+    /* ── Chips radio horario ── */
+    .chip-time input[type="radio"] { display: none; }
+    .chip-time span {
+        display: inline-flex; align-items: center; gap: 6px;
+        padding: 8px 16px; border-radius: 40px;
+        border: 1.5px solid #ede7d9; background: #f5f0e8;
+        font-size: 12px; font-weight: 500; color: #52ACB5;
+        cursor: pointer; transition: all .2s; user-select: none; white-space: nowrap;
+    }
+    .chip-time span:hover { border-color: #9dd6c8; color: #52ACB5; }
+    .chip-time input:checked + span {
+        background: #e6f7f3; border-color: #52ACB5; color: #52ACB5; font-weight: 600;
+    }
+    .dark .chip-time span { background: #0b1f1a; border-color: rgba(255,255,255,.08); color: #9dd6c8; }
+    .dark .chip-time input:checked + span { background: #112318; border-color: #52ACB5; color: #3dbfa0; }
+    
+    /* ── Inputs ── */
+    .f-input {
+        width: 100%; background: #E7F3EB;
+        border: 1.5px solid transparent; border-radius: 12px;
+        padding: 13px 16px; font-family: 'DM Sans', sans-serif;
+        font-size: 14px; color: #52ACB5; outline: none;
+        transition: border-color .2s, background .2s, box-shadow .2s;
+        -webkit-appearance: none;
+    }
+    .f-input::placeholder { color: #a9bfb9; }
+    .f-input:hover { background: #eef9f6; border-color: #9dd6c8; }
+    .f-input:focus { background: #fff; border-color: #0d9e80; box-shadow: 0 0 0 4px rgba(13,158,128,.1); }
+    .dark .f-input { background: #0b1f1a; color: #e6f7f3; border-color: rgba(255,255,255,.07); }
+    .dark .f-input:hover { background: #112318; border-color: #076b56; }
+    .dark .f-input:focus { background: #0b1f1a; border-color: #0d9e80; }
+    
+    /* select arrow */
+    .f-select {
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%230d9e80' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 14px center;
+        padding-right: 36px; cursor: pointer;
+    }
+    
+    /* ── Icono dentro del input ── */
+    .fi-wrap { position: relative; }
+    .fi-wrap .f-input { padding-left: 42px; }
+    .fi-wrap .fi {
+        position: absolute; left: 13px; top: 50%; transform: translateY(-50%);
+        color: #9dd6c8; pointer-events: none; font-size: 18px;
+        transition: color .2s;
+    }
+    .fi-wrap:focus-within .fi { color: #0d9e80; }
+    
+    /* ── Progreso ── */
+    #progressFill {
+        height: 100%; width: 0%;
+        background: linear-gradient(90deg, #9dd6c8, #0d9e80);
+        border-radius: 2px;
+        transition: width .4s cubic-bezier(.4,0,.2,1);
+    }
+    
+    /* ── Fade-up entrada ── */
+    @keyframes fadeUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+    .fade-in { animation: fadeUp .6s ease both; }
+    .fade-in-2 { animation: fadeUp .6s .1s ease both; }
+    .fade-in-3 { animation: fadeUp .6s .2s ease both; }
+    </style>
+    </head>
+    <body class="bg-organic min-h-screen">
+    
+    <!-- ══════════════════════════════════════════
+        SECCIÓN 1 — BENEFICIOS
+    ═══════════════════════════════════════════ -->
+    <section class="py-24 px-6 md:px-16">
+    <div class="max-w-5xl mx-auto">
+    
+        <!-- Encabezado -->
+        <div class="text-center mb-16 fade-in">
+            <h2 class="text-3xl md:text-5xl font-bold tracking-tight mb-4 text-color9">
+                ¿Por qué elegir <br>
+                Cuidados a <span class="text-primary">Domicilio</span>?
+            </h2>
+            <div class="h-1.5 w-24 bg-primary rounded-full mx-auto mt-4 mb-6"></div>
+            <p class="text-color9/60 dark:text-white/60 text-lg font-light max-w-md mx-auto leading-relaxed">
+                Traemos la experiencia clínica directamente a su hogar
+            </p>
+        </div>
+    
+        <!-- Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 fade-in-2">
+    
+        <!-- Card 1 -->
+        <div class="card-glass rounded-3xl p-8 group hover:-translate-y-1 transition-all duration-300 hover:shadow-xl hover:shadow-teal-500/10">
+            <div class="w-14 h-14 rounded-2xl bg-teal-50 border border-teal-soft flex items-center justify-center mb-6 group-hover:bg-primary group-hover:border-primary transition-all duration-300">
+            <span class="material-symbols-outlined text-primary group-hover:text-white transition-colors duration-300" style="font-size:22px;">sentiment_satisfied</span>
+            </div>
+            <h3 class="font-semibold text-xl text-[#0D1B12] mb-3">Cuidado Sin Estrés</h3>
+            <p class="text-sm leading-relaxed text-primary/60 font-light">
+            Ideal para mascotas que sufren de "síndrome del traje blanco" en clínicas tradicionales. Su entorno familiar los calma.
+            </p>
+            <div class="mt-6 pt-5 border-t border-cream-200 flex items-center gap-2 text-xs text-primary font-medium">
+                <span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+                Menos ansiedad, mejor diagnóstico
+            </div>
+        </div>
+    
+        <!-- Card 2 — destacada -->
+        <div class="relative rounded-3xl p-8 group hover:-translate-y-1 transition-all duration-300 overflow-hidden"
+            style="background: linear-gradient(145deg, #68b9c0, #52ACB5); box-shadow: 0 16px 48px rgba(37, 208, 191, 0.35);">
+            <div class="absolute top-0 right-0 w-40 h-40 rounded-full opacity-10"
+                style="background:radial-gradient(circle, #fff 0%, transparent 70%); transform:translate(30%,-30%);"></div>
+            <div class="w-14 h-14 rounded-2xl bg-white/15 border border-white/20 flex items-center justify-center mb-6">
+                <span class="material-symbols-outlined text-teal-soft" style="font-size:22px;">commute</span>
+            </div>
+            <span class="absolute top-6 right-6 text-xs font-semibold bg-white/20 text-teal-soft px-3 py-1 rounded-full">Más popular</span>
+            <h3 class="text-xl text-white mb-3">Sin Necesidad de Viajar</h3>
+            <p class="text-sm leading-relaxed text-white/75 font-light">
+                Ahorre tiempo en tráfico. Cubrimos todos los vecindarios principales de Córdoba, incluyendo Cerro y General Paz.
+            </p>
+            <div class="mt-6 pt-5 border-t border-white/15 flex items-center gap-2 text-xs text-white/80 font-medium">
+                <span class="w-1.5 h-1.5 rounded-full bg-teal-soft/60"></span>
+                Toda Córdoba Capital
+            </div>
+        </div>
+    
+        <!-- Card 3 -->
+        <div class="card-glass rounded-3xl p-8 group hover:-translate-y-1 transition-all duration-300 hover:shadow-xl hover:shadow-teal-500/10">
+            <div class="w-14 h-14 rounded-2xl bg-teal-50 border border-teal-100 flex items-center justify-center mb-6 group-hover:bg-primary group-hover:border-primary transition-all duration-300">
+            <span class="material-symbols-outlined text-primary group-hover:text-white transition-colors duration-300" style="font-size:22px;">person</span>
+            </div>
+            <h3 class="font-semibold text-xl text-[#0D1B12] mb-3">Atención Personalizada</h3>
+            <p class="text-sm leading-relaxed text-primary/60 font-light">
+            Enfoque exclusivo en tu mascota en su entorno natural, permitiendo una evaluación más precisa del comportamiento.
+            </p>
+            <div class="mt-6 pt-5 border-t border-cream-200 flex items-center gap-2 text-xs text-primary font-medium">
+                <span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+                Evaluación más precisa
+            </div>
+        </div>
+    
+        </div>
+    </div>
+    </section>
+    
+    
+    <!-- ══════════════════════════════════════════
+        SECCIÓN 2 — CÓMO FUNCIONA
+    ═══════════════════════════════════════════ -->
+    <section class="py-24 px-6 md:px-16">
+    <div class="max-w-5xl mx-auto">
+    
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+    
+        <!-- Texto izquierda -->
+        <div class="fade-in">
+            <span class="inline-flex items-center gap-2 bg-teal-50 text-primary text-xs font-semibold uppercase tracking-widest px-4 py-2 rounded-full border border-teal-100 mb-6">
+            <span class="material-symbols-outlined" style="font-size:14px;">route</span>
+            Proceso simple
+            </span>
+            <h2 class="text-4xl md:text-5xl text-[#0D1B12] mb-5 font-semibold">
+            Cómo<br><p class="font-semibold text-primary">Funciona</p>
+            </h2>
+            <p class="text-color9/60 font-light leading-relaxed text-base max-w-sm">
+            En tres pasos sencillos tu mascota recibe la atención que merece, sin salir de casa.
+            </p>
+        </div>
+    
+        <!-- Pasos derecha -->
+        <div class="relative fade-in-2">
+    
+            <!-- Paso 1 -->
+            <div class="flex gap-6 mb-0 group">
+            <div class="flex flex-col items-center">
+                <div class="w-12 h-12 rounded-full border-2 border-primary bg-primary/5 flex items-center justify-center flex-shrink-0 group-hover:bg-primary transition-all duration-300 z-10">
+                <span class="step-num font-bold text-lg group-hover:[background:none] group-hover:[-webkit-background-clip:unset] group-hover:[-webkit-text-fill-color:white]">1</span>
+                </div>
+                <div class="w-px grow timeline-line mt-2 mb-2 min-h-[56px]"></div>
+            </div>
+            <div class="pb-10 pt-2">
+                <div class="flex items-center gap-3 mb-2">
+                <span class="material-symbols-outlined text-primary" style="font-size:18px;">edit_calendar</span>
+                <h3 class="font-semibold text-xl text-[#0D1B12]">Agendar Online</h3>
+                </div>
+                <p class="text-sm text-primary/55 font-light leading-relaxed">
+                Elegí tu fecha y horario preferido desde el formulario. Confirmamos en menos de 2 horas.
+                </p>
+            </div>
+            </div>
+    
+            <!-- Paso 2 -->
+            <div class="flex gap-6 mb-0 group">
+            <div class="flex flex-col items-center">
+                <div class="w-12 h-12 rounded-full border-2 border-primary bg-primary/5 flex items-center justify-center flex-shrink-0 group-hover:bg-primary transition-all duration-300 z-10">
+                <span class="step-num font-bold text-lg group-hover:[background:none] group-hover:[-webkit-background-clip:unset] group-hover:[-webkit-text-fill-color:white]">2</span>
+                </div>
+                <div class="w-px grow timeline-line mt-2 mb-2 min-h-[56px]"></div>
+            </div>
+            <div class="pb-10 pt-2">
+                <div class="flex items-center gap-3 mb-2">
+                <span class="material-symbols-outlined text-primary" style="font-size:18px;">medical_services</span>
+                <h3 class="font-semibold text-xl text-[#0D1B12]">Visita a Domicilio</h3>
+                </div>
+                <p class="text-sm text-primary/55 font-light leading-relaxed">
+                Un veterinario certificado llega con equipo portátil para revisiones, vacunaciones o recolección de muestras.
+                </p>
+            </div>
+            </div>
+    
+            <!-- Paso 3 -->
+            <div class="flex gap-6 group">
+            <div class="flex flex-col items-center">
+                <div class="w-12 h-12 rounded-full border-2 border-primary bg-primary flex items-center justify-center flex-shrink-0 z-10">
+                <span class="font-bold text-lg text-teal-soft">3</span>
+                </div>
+            </div>
+            <div class="pt-2">
+                <div class="flex items-center gap-3 mb-2">
+                <span class="material-symbols-outlined text-primary" style="font-size:18px;">description</span>
+                <h3 class="font-semibold text-xl text-[#0D1B12]">Registro Médico Digital</h3>
+                </div>
+                <p class="text-sm text-primary/55 font-light leading-relaxed">
+                Recibí un informe completo, recetas y plan de seguimiento directamente en tu teléfono o correo electrónico.
+                </p>
+            </div>
+            </div>
+    
+        </div>
+        </div>
+    </div>
+    </section>
+    <!-- ══════════════════════════════════════════
+        SECCIÓN 3 — FORMULARIO
+    ═══════════════════════════════════════════ -->
+    <section class="py-24 px-6 md:px-16">
+    <div class="max-w-2xl mx-auto">
+    
+        <!-- Encabezado -->
+        <div class="text-center mb-10 fade-in">
+        <span class="inline-flex items-center gap-2 bg-teal-50 text-primary text-xs font-semibold uppercase tracking-widest px-4 py-2 rounded-full border border-teal-100 mb-5">
+            <span class="material-symbols-outlined" style="font-size:14px;">calendar_month</span>
+            Reservá tu turno
+        </span>
+        <h2 class="font-semibold text-4xl md:text-5xl text-forest-800 leading-tight mb-3">
+            Solicitá tu<br><p class="font-semibold text-primary">visita ahora</p>
+        </h2>
+        <p class="text-primary/55 font-light">Completá el formulario y confirmamos en menos de 2 horas.</p>
+        </div>
+    
+        <!-- Card formulario -->
+        <div class="card-glass rounded-4xl overflow-hidden shadow-2xl shadow-teal-900/10 fade-in-2">
+    
+        <!-- Barra de progreso -->
+        <div class="h-1 bg-cream-200"><div id="progressFill"></div></div>
+    
+        <!-- ── Sección mascota ── -->
+        <div class="p-8 md:p-10">
+            <div class="flex items-center gap-3 pb-5 mb-7 border-b border-cream-200">
+            <div class="w-9 h-9 rounded-xl bg-teal-50 border border-teal-100 flex items-center justify-center flex-shrink-0">
+                <span class="material-symbols-outlined text-primary" style="font-size:18px;">pets</span>
+            </div>
+            <span class="font-serif text-lg text-primary">Información de la Mascota</span>
+            <span class="ml-auto text-xs text-primary/40 font-semibold tracking-widest">01 / 03</span>
+            </div>
+    
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div>
+                <label class="block text-xs font-semibold uppercase tracking-widest text-primary/50 mb-2">Nombre de la mascota</label>
+                <div class="fi-wrap">
+                <input class="f-input" type="text" placeholder="Ej. Milo" data-track/>
+                <span class="material-symbols-outlined fi">favorite</span>
+                </div>
+            </div>
+            <div>
+                <label class="block text-xs font-semibold uppercase tracking-widest text-primary/50 mb-2">Tipo de mascota</label>
+                <div class="flex gap-3 flex-wrap">
+                <label class="chip-pet flex-1"><input type="radio" name="pet_type" value="perro" checked/><span>🐶 Perro</span></label>
+                <label class="chip-pet flex-1"><input type="radio" name="pet_type" value="gato"/><span>🐱 Gato</span></label>
+                <label class="chip-pet flex-1"><input type="radio" name="pet_type" value="otro"/><span>🐾 Otro</span></label>
+                </div>
+            </div>
+            </div>
+        </div>
+    
+        <div class="mx-8 md:mx-10 h-px bg-cream-200"></div>
+    
+        <!-- ── Sección dueño ── -->
+        <div class="p-8 md:p-10">
+            <div class="flex items-center gap-3 pb-5 mb-7 border-b border-cream-200">
+            <div class="w-9 h-9 rounded-xl bg-teal-50 border border-teal-100 flex items-center justify-center flex-shrink-0">
+                <span class="material-symbols-outlined text-primary" style="font-size:18px;">person</span>
+            </div>
+            <span class="font-serif text-lg text-primary">Información del Dueño</span>
+            <span class="ml-auto text-xs text-primary/40 font-semibold tracking-widest">02 / 03</span>
+            </div>
+    
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div>
+                <label class="block text-xs font-semibold uppercase tracking-widest text-primary/50 mb-2">Nombre</label>
+                <input class="f-input" type="text" placeholder="Juan" data-track/>
+            </div>
+            <div>
+                <label class="block text-xs font-semibold uppercase tracking-widest text-primary/50 mb-2">Apellido</label>
+                <input class="f-input" type="text" placeholder="Martínez" data-track/>
+            </div>
+            <div>
+                <label class="block text-xs font-semibold uppercase tracking-widest text-primary/50 mb-2">Email</label>
+                <div class="fi-wrap">
+                <input class="f-input" type="email" placeholder="juan@ejemplo.com" data-track/>
+                <span class="material-symbols-outlined fi">mail</span>
+                </div>
+            </div>
+            <div>
+                <label class="block text-xs font-semibold uppercase tracking-widest text-primary/50 mb-2">Teléfono</label>
+                <div class="fi-wrap">
+                <input class="f-input" type="tel" placeholder="+54 351 ..." data-track/>
+                <span class="material-symbols-outlined fi">call</span>
+                </div>
+            </div>
+            <div class="md:col-span-2">
+                <label class="block text-xs font-semibold uppercase tracking-widest text-primary/50 mb-2">Dirección en Córdoba</label>
+                <div class="fi-wrap">
+                <input class="f-input" type="text" placeholder="Calle 123, Número 456, Departamento A" data-track/>
+                <span class="material-symbols-outlined fi">location_on</span>
+                </div>
+            </div>
+            </div>
+        </div>
+    
+        <div class="mx-8 md:mx-10 h-px bg-cream-200"></div>
+    
+        <!-- ── Sección agenda ── -->
+        <div class="p-8 md:p-10">
+            <div class="flex items-center gap-3 pb-5 mb-7 border-b border-cream-200">
+            <div class="w-9 h-9 rounded-xl bg-teal-50 border border-teal-100 flex items-center justify-center flex-shrink-0">
+                <span class="material-symbols-outlined text-primary" style="font-size:18px;">calendar_month</span>
+            </div>
+            <span class="font-serif text-lg text-primary">Agenda &amp; Urgencia</span>
+            <span class="ml-auto text-xs text-primary/40 font-semibold tracking-widest">03 / 03</span>
+            </div>
+    
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-6">
+            <div>
+                <label class="block text-xs font-semibold uppercase tracking-widest text-primary/70 mb-2">Fecha preferida</label>
+                <input class="f-input" type="date" data-track/>
+            </div>
+            <div>
+                <label class="block text-xs font-semibold uppercase tracking-widest text-primary/70 mb-2">Nivel de urgencia</label>
+                <div class="fi-wrap">
+                <select class="f-input f-select" data-track>
+                    <option>Normal (24–48h)</option>
+                    <option>Urgente (mismo día)</option>
+                    <option>Emergencia (inmediato)</option>
+                </select>
+                <span class="material-symbols-outlined fi">schedule</span>
+                </div>
+            </div>
+            </div>
+    
+            <div>
+            <label class="block text-xs font-semibold uppercase tracking-widest text-primary/50 mb-3">Franja horaria preferida</label>
+            <div class="flex flex-wrap gap-2">
+                <label class="chip-time"><input type="radio" name="timeslot" value="morning" checked/><span><span class="material-symbols-outlined" style="font-size:14px;">wb_sunny</span>Mañana 9–12h</span></label>
+                <label class="chip-time"><input type="radio" name="timeslot" value="afternoon"/><span><span class="material-symbols-outlined" style="font-size:14px;">partly_cloudy_day</span>Tarde 14–16h</span></label>
+                <label class="chip-time"><input type="radio" name="timeslot" value="evening"/><span><span class="material-symbols-outlined" style="font-size:14px;">nightlight</span>Noche 16–20h</span></label>
+                <label class="chip-time"><input type="radio" name="timeslot" value="saturday"/><span><span class="material-symbols-outlined" style="font-size:14px;">weekend</span>Sábados 9–12h</span></label>
+            </div>
+            </div>
+        </div>
+    
+        <div class="mx-8 md:mx-10 h-px bg-cream-200"></div>
+    
+        <!-- ── Notas + botón ── -->
+        <div class="p-8 md:p-10">
+            <div class="mb-7">
+            <label class="block text-xs font-semibold uppercase tracking-widest text-teal-700/50 mb-2">Notas adicionales / síntomas</label>
+            <textarea class="f-input resize-y min-h-[110px] leading-relaxed" placeholder="Describí cualquier inquietud o síntoma que experimente tu mascota..." data-track></textarea>
+            </div>
+    
+            <button id="btnSubmit" type="submit"
+            class="w-full flex items-center justify-center gap-3 bg-teal-500 hover:bg-teal-600 active:scale-[.98] text-white font-semibold text-base rounded-2xl py-5 transition-all duration-200 relative overflow-hidden"
+            style="box-shadow: 0 6px 24px rgba(13,158,128,.35);">
+            <span class="absolute inset-0" style="background:linear-gradient(135deg,rgba(255,255,255,.12) 0%,transparent 60%);"></span>
+            <span class="material-symbols-outlined" style="font-size:20px;">send</span>
+            Enviar Solicitud de Visita
+            </button>
+    
+            <p class="text-center text-xs text-teal-700/35 mt-5 leading-relaxed">
+            Tu privacidad es nuestra prioridad. Al enviar aceptás nuestros
+            <a href="#" class="text-teal-500 hover:underline">términos de servicios profesionales de salud</a>.
+            </p>
+        </div>
+    
+        </div>
+    </div>
+    </section>
+    
+    <script>
+    const tracked = document.querySelectorAll('[data-track]');
+    const fill    = document.getElementById('progressFill');
+    
+    function updateProgress() {
+        let filled = 0;
+        tracked.forEach(el => {
+        if (el.type === 'date' && el.value) filled++;
+        else if (el.value && el.value.trim()) filled++;
+        });
+        fill.style.width = Math.round((filled / tracked.length) * 100) + '%';
+    }
+    tracked.forEach(el => el.addEventListener('input', updateProgress));
+    
+    document.getElementById('btnSubmit').addEventListener('click', e => {
+        e.preventDefault();
+        fill.style.width = '100%';
+        const btn = e.currentTarget;
+        btn.innerHTML = `<span class="material-symbols-outlined" style="font-size:20px;">check_circle</span> ¡Solicitud enviada!`;
+        btn.style.background = '#076b56';
+    });
+    </script>
+    
+    <!-- JavaScript para el menú hamburguesa -->
+        <script>
+            const hamburgerBtn = document.getElementById('hamburger-btn');
+            const closeMenuBtn = document.getElementById('close-menu-btn');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const menuOverlay = document.getElementById('menu-overlay');
+
+            function openMenu() {
+                mobileMenu.classList.remove('translate-x-full');
+                mobileMenu.classList.add('translate-x-0');
+                menuOverlay.classList.remove('opacity-0', 'pointer-events-none');
+                menuOverlay.classList.add('opacity-100');
+                document.body.style.overflow = 'hidden';
+            }
+
+            function closeMenu() {
+                mobileMenu.classList.remove('translate-x-0');
+                mobileMenu.classList.add('translate-x-full');
+                menuOverlay.classList.remove('opacity-100');
+                menuOverlay.classList.add('opacity-0', 'pointer-events-none');
+                document.body.style.overflow = '';
+            }
+
+            hamburgerBtn.addEventListener('click', openMenu);
+            closeMenuBtn.addEventListener('click', closeMenu);
+            menuOverlay.addEventListener('click', closeMenu);
+
+            // Cerrar menú al hacer click en un link
+            const mobileMenuLinks = mobileMenu.querySelectorAll('a');
+            mobileMenuLinks.forEach(link => {
+                link.addEventListener('click', closeMenu);
+            });
+
+            // Cerrar menú con tecla ESC
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    closeMenu();
+                }
+            });
+        </script>
+    {% endblock %}
+</body>
+</html>

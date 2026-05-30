@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="min-h-screen bg-background-light dark:bg-background-dark flex items-center justify-center py-20 px-4">
+    <div class="max-w-2xl w-full">
+        <div class="bg-white dark:bg-[#162a1c] rounded-3xl p-8 border border-[#e7f3eb] dark:border-[#1a3321] shadow-2xl">
+            <div class="text-center mb-8">
+                <div class="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span class="material-symbols-outlined text-primary text-5xl">pets</span>
+                </div>
+                <h1 class="text-3xl font-black text-[#0d1b12] dark:text-white mb-2">Registrate como Tutor</h1>
+                <p class="text-gray-600 dark:text-gray-400">Completa tus datos para continuar</p>
+            </div>
+
+            <form method="POST" action="{% url 'tutor:registro' %}" class="space-y-6">
+                {% csrf_token %}
+                
+                <input type="hidden" name="email" value="{{ email }}">
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Nombre</label>
+                        <input type="text" name="nombre" required
+                            class="w-full bg-background-light dark:bg-background-dark border border-gray-300 dark:border-[#1a3321] rounded-lg p-3 focus:ring-2 focus:ring-primary focus:outline-none"
+                            placeholder="Tu nombre">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Apellido</label>
+                        <input type="text" name="apellido" required
+                            class="w-full bg-background-light dark:bg-background-dark border border-gray-300 dark:border-[#1a3321] rounded-lg p-3 focus:ring-2 focus:ring-primary focus:outline-none"
+                            placeholder="Tu apellido">
+                    </div>
+
+                    <div class="md:col-span-2">
+                        <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Email</label>
+                        <input type="email" name="email" value="{{ email }}" readonly
+                            class="w-full bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-[#1a3321] rounded-lg p-3 cursor-not-allowed">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Teléfono</label>
+                        <input type="text" name="telefono" required
+                            class="w-full bg-background-light dark:bg-background-dark border border-gray-300 dark:border-[#1a3321] rounded-lg p-3 focus:ring-2 focus:ring-primary focus:outline-none"
+                            placeholder="+54 351 123-4567">
+                    </div>
+
+                    <div class="md:col-span-2">
+                        <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Dirección</label>
+                        <textarea name="direccion" required rows="2"
+                            class="w-full bg-background-light dark:bg-background-dark border border-gray-300 dark:border-[#1a3321] rounded-lg p-3 focus:ring-2 focus:ring-primary focus:outline-none"
+                            placeholder="Calle, Número, Ciudad"></textarea>
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full bg-primary text-teal-soft py-4 rounded-xl font-bold hover:shadow-lg transition-all flex items-center justify-center gap-2">
+                    <span class="material-symbols-outlined">check_circle</span>
+                    <span>Completar Registro</span>
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

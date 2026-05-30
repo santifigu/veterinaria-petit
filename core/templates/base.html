@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+{% block header %}
+{% load static %}
+{% load static tailwind_tags %}
+<html lang="es-ar">
+<head>
+    {% tailwind_css %}
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Petit {% block title %}- Veterinaria{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link rel="icon" href="/static/img/icono.png" type="image" sizes="32x32">
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+    <!--Sweet Alert -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- Script -->
+    <script id="tailwind-config">
+            tailwind.config = {
+                darkMode: "class",
+                theme: {
+                    extend: {
+                        colors: {
+                            "primary": "#52ACB5",
+                            "secondary": "#52B58C",
+                            "terciary": "#527BB5",
+                            "background-light": "#F6F8F6",
+                            "background-dark": "#102216",
+                            "teal-soft": "#E7F3EB",
+                            "wood-warm": "#D97706",
+                            "color1": "#EDF7F7",
+                            "color2": "#CDE7EA",
+                            "color3": "#ADD8DC",
+                            "color4": "#8DC9CE",
+                            "color5": "#6DB9C0",
+                            "color6": "#3F8B92",
+                            "color7": "#316D72",
+                            "color8": "#234E52",
+                            "color9": "#153032",
+                            "color10": "#081112",
+                            "coloraso": "#0D1B12",
+                        },
+                        fontFamily: {
+                            "display": ["Manrope", "sans-serif"]
+                        },
+                        borderRadius: {
+                            "DEFAULT": "0.25rem",
+                            "lg": "0.5rem",
+                            "xl": "0.75rem",
+                            "full": "9999px"
+                        },
+                    },
+                },
+            }
+    </script>
+    <style>
+    /* Botón de WhatsApp */
+    .whatsapp-btn {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        background-color: #25d366;
+        color: white;
+        border-radius: 50px;
+        padding: 12px 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        z-index: 999;
+        box-shadow: 0 10px 25px rgba(37, 211, 102, 0.3);
+        text-decoration: none;
+        transition: all 0.3s ease;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .whatsapp-btn:hover {
+        transform: translateY(-5px) scale(1.05);
+        background-color: #20ba5a;
+        box-shadow: 0 15px 30px rgba(37, 211, 102, 0.4);
+        color: white;
+    }
+
+    .whatsapp-text {
+        font-size: 14px;
+        font-weight: 700;
+    }
+
+    /* Ajuste para móviles para no tapar la barra inferior */
+    @media (max-width: 768px) {
+        .whatsapp-btn {
+            bottom: 85px; /* Sube para que no lo tape el Mobile Bottom Nav */
+            right: 20px;
+            padding: 10px;
+        }
+        .whatsapp-text {
+            display: none; /* En móvil solo mostramos el icono para no saturar */
+        }
+    }
+    </style>
+
+    <!-- Style -->
+    <style type="text/tailwindcss">
+            @layer base {
+                body {
+                    font-family: 'Manrope', sans-serif;
+                }
+            }
+            .material-symbols-outlined {
+                font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-[#0d1b12] dark:text-white transition-colors duration-300">
+{% endblock %}
+{% block hero %}
+        <div class="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden">
+            <div class="layout-container flex h-full grow flex-col">
+                <header class="flex items-center justify-between backdrop-blur-xl bg-black/10 dark:bg-black/20 border-b border-white/10 px-6 lg:px-20 py-4 fixed top-0 w-full z-50 shadow-sm">
+                    <a class="flex items-center gap-3 text-white" href="{% url 'index' %}">
+                        <div class="size-8 text-primary">
+                            <span class="material-symbols-outlined">pets</span>
+                        </div>
+                        <div class="flex flex-col">
+                            <h2 class="text-lg font-bold leading-tight tracking-tight">Córdoba Veterinaria</h2>
+                            <span class="text-xs font-medium opacity-80 uppercase tracking-tighter">Córdoba Capital</span>
+                        </div>
+                    </a>
+                    
+                    <div class="flex flex-1 justify-end gap-6 items-center">
+                        <!-- Desktop Navigation -->
+                        <nav class="hidden md:flex items-center gap-8 text-[#e7f3eb]">
+                            <a class="text-sm font-semibold hover:text-primary transition-colors" href="{% url 'index' %}">Inicio</a>
+                            <a class="text-sm font-semibold hover:text-primary transition-colors" href="{% url 'nosotros' %}">Nosotros</a>
+                            <!--<a class="text-sm font-semibold hover:text-primary transition-colors" href="{% url 'domicilio' %}">Domicilio</a>-->
+                            <a class="text-sm font-semibold hover:text-primary transition-colors" href="{% url 'blog:blog' %}">Blog</a>
+                            <a class="text-sm font-semibold hover:text-primary transition-colors" href="{% url 'tienda' %}">Tienda</a>
+                            <a class="text-sm font-semibold hover:text-primary transition-colors" href="{% url 'turnos:turnos' %}">Turnos</a>
+                            <a class="text-sm font-semibold hover:text-primary transition-colors" href="{% url 'contacto' %}">Contacto</a>
+                        </nav>
+
+                        <div class="flex gap-3 items-center">
+                            <!-- CARRITO -->
+                            <a href="{% url 'checkout' %}" class="relative flex items-center justify-center w-10 h-10 rounded-lg hover:scale-105 transition-transform">
+                                <!-- BADGE -->
+                                <span class="absolute -top-1 -right-1 bg-primary text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center shadow-md">{{ cantidad_total_carro }}</span>
+                                <!-- SVG DEL CARRITO -->
+                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 512 512">
+                                    <path fill="#e7f3eb" d="M454.65 169.4A31.82 31.82 0 0 0 432 160h-64v-16a112 112 0 0 0-224 0v16H80a32 32 0 0 0-32 32v216c0 39 33 72 72 72h272a72.22 72.22 0 0 0 50.48-20.55a69.48 69.48 0 0 0 21.52-50.2V192a31.75 31.75 0 0 0-9.35-22.6M176 144a80 80 0 0 1 160 0v16H176Z"/>
+                                </svg>
+                            </a>
+                            <!-- PERFIL -->
+                            {% if user.is_authenticated %}
+                                <a href="{% url 'perfil' %}" class="flex items-center justify-center w-10 h-10 text-white hover:scale-125 transition-transform">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24"><path fill="#E7F3EB" d="M12 4a4 4 0 1 1 0 8a4 4 0 0 1 0-8m0 16s8 0 8-2c0-2.4-3.9-5-8-5s-8 2.6-8 5c0 2 8 2 8 2"/></svg>
+                                </a>
+                            {% else %}
+                                <a href="{% url 'registro' %}" class="flex items-center justify-center w-10 h-10 text-white hover:scale-125 transition-transform">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24"><path fill="#E7F3EB" d="M12 4a4 4 0 1 1 0 8a4 4 0 0 1 0-8m0 16s8 0 8-2c0-2.4-3.9-5-8-5s-8 2.6-8 5c0 2 8 2 8 2"/></svg>
+                                </a>
+                            {% endif %}
+
+                            <!-- HAMBURGER BUTTON (Mobile) -->
+                            <button id="hamburger-btn" class="md:hidden flex items-center justify-center w-10 h-10 text-white hover:text-primary transition-colors">
+                                <span class="material-symbols-outlined text-3xl">menu</span>
+                            </button>
+                        </div>
+                    </div>
+                </header>
+                                {% if messages %}
+                                    {% for message in messages %}
+                                        <div class="bg-{{ message.tags }} text-green-400 rounded-lg text-center">
+                                            {{ message }}
+                                        </div>
+                                    {% endfor %}
+                                {% endif %}
+                <!-- MOBILE MENU (Sidebar) -->
+                <div id="mobile-menu" class="fixed top-0 right-0 h-full w-[280px] bg-background-dark/98 backdrop-blur-xl border-l border-white/10 transform translate-x-full transition-transform duration-300 ease-in-out z-[60] md:hidden shadow-2xl">
+                    <div class="flex flex-col h-full">
+                        <!-- Close Button -->
+                        <div class="flex items-center justify-between px-6 py-4 border-b border-white/10">
+                            <a class="flex items-center gap-2 text-white" href="{% url 'index' %}">
+                                <span class="material-symbols-outlined text-primary">pets</span>
+                                <span class="font-bold text-sm">Petit</span>
+                            </a>
+                            <button id="close-menu-btn" class="flex items-center justify-center w-10 h-10 text-white hover:text-primary transition-colors">
+                                <span class="material-symbols-outlined text-3xl">close</span>
+                            </button>
+                        </div>
+
+                        <!-- Navigation Links -->
+                        <nav class="flex flex-col gap-1 px-4 py-6 flex-1 overflow-y-auto">
+                            <a class="flex items-center gap-3 px-4 py-3 text-white hover:bg-primary/10 hover:text-primary rounded-lg transition-all font-semibold" href="{% url 'index' %}">
+                                <span class="material-symbols-outlined text-xl">home</span>
+                                <span>Inicio</span>
+                            </a>
+                            <a class="flex items-center gap-3 px-4 py-3 text-white hover:bg-primary/10 hover:text-primary rounded-lg transition-all font-semibold" href="{% url 'nosotros' %}">
+                                <span class="material-symbols-outlined text-xl">group</span>
+                                <span>Nosotros</span>
+                            </a>
+                            <!--<a class="flex items-center gap-3 px-4 py-3 text-white hover:bg-primary/10 hover:text-primary rounded-lg transition-all font-semibold" href="{% url 'domicilio' %}">
+                                <span class="material-symbols-outlined text-xl">local_shipping</span>
+                                <span>Domicilio</span>
+                            </a>-->
+                            <a class="flex items-center gap-3 px-4 py-3 text-white hover:bg-primary/10 hover:text-primary rounded-lg transition-all font-semibold" href="{% url 'blog:blog' %}">
+                                <span class="material-symbols-outlined text-xl">article</span>
+                                <span>Blog</span>
+                            </a>
+                            <a class="flex items-center gap-3 px-4 py-3 text-white hover:bg-primary/10 hover:text-primary rounded-lg transition-all font-semibold" href="{% url 'tienda' %}">
+                                <span class="material-symbols-outlined text-xl">store</span>
+                                <span>Tienda</span>
+                            </a>
+                            <!--<a class="flex items-center gap-3 px-4 py-3 text-white hover:bg-primary/10 hover:text-primary rounded-lg transition-all font-semibold" href="{% url 'turnos:turnos' %}">
+                                <span class="material-symbols-outlined text-xl">calendar_month</span>
+                                <span>Turnos</span>
+                            </a>-->
+                            <a class="flex items-center gap-3 px-4 py-3 text-white hover:bg-primary/10 hover:text-primary rounded-lg transition-all font-semibold" href="{% url 'contacto' %}">
+                                <span class="material-symbols-outlined text-xl">mail</span>
+                                <span>Contacto</span>
+                            </a>
+                        </nav>
+
+                        <!-- Bottom Action Button -->
+                        <!--<div class="px-6 py-4 border-t border-white/10">
+                            <a href="{% url 'turnos:turnos' %}" class="flex items-center justify-center gap-2 w-full bg-primary text-teal-soft py-3 rounded-lg font-bold hover:bg-primary/90 transition-all">
+                                <span class="material-symbols-outlined">event_available</span>
+                                <span>Reservar Turno</span>
+                            </a>
+                        </div>-->
+                    </div>
+                </div>
+
+                <!-- OVERLAY (cuando el menú está abierto) -->
+                <div id="menu-overlay" class="fixed inset-0 bg-black/50 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300 z-[55]"></div>
+
+                <section class="relative min-h-[90vh] flex items-center justify-start overflow-hidden">
+                    <div class="absolute inset-0 z-0">
+                        <div class="w-full h-full bg-cover bg-center" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDrHefd2TwtenEikZkFoNNgRznTYrIrUaEVImF2wXUBjCxQXAOMROGOOSlv1BQCxROpNLPif3WThr9ItC-4D9uFGx-cAm6Tqn4zyFmLawVPRRn1shsSkrh_YUSJHNLRe24dgtmLeCEc1d_JYWxMEKajbBnnkW45MuURfAWnK3COWzfw9wzaDKriodYJjZ07361nmq47tYD6bxjlydfyOZ4T4AcvNxetykpFH0z0bpIfsX5TkGmjn7MjSCqgeN4sLm2TgfZoqX68hcI");'></div>
+                        <div class="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-transparent"></div>
+                    </div>
+                    
+                    <div class="relative z-10 px-6 lg:px-40 py-28 w-full mt-16 md:mt-0">
+                        <div class="max-w-[700px] flex flex-col gap-6 md:gap-8">
+                            <div class="flex flex-col gap-4 md:gap-6">
+                                <div class="flex items-center gap-2">
+                                    <span class="bg-primary px-3 py-2 md:py-3 rounded-full text-[9px] md:text-[10px] font-black uppercase tracking-[0.2em] text-teal-soft">Turnos Disponibles</span>
+                                    <div class="h-[1px] w-8 md:w-12 bg-primary/50"></div>
+                                </div>
+
+                                <h1 class="text-white text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black leading-[1.1] tracking-tight">
+                                    Veterinaria para <span class="text-primary">Mascotas Felices</span>
+                                </h1>
+
+                                <p class="text-white/90 text-sm md:text-base lg:text-lg font-medium leading-relaxed max-w-[540px]">
+                                    Combinamos la excelencia médica con la calidez de la atención. Servicios clínicos expertos y cómodas visitas a domicilio en Córdoba Capital.
+                                </p>
+                            </div>
+
+                            <div class="flex flex-col sm:flex-row flex-wrap gap-3 md:gap-4 pt-2 md:pt-4">
+                                <a class="flex min-w-[180px] sm:min-w-[200px] cursor-pointer items-center justify-center rounded-full h-14 md:h-16 px-6 md:px-8 bg-primary text-[#0d1b12] text-base md:text-lg font-bold shadow-2xl shadow-primary/30 hover:scale-105 transition-all" href="{% url 'turnos:turnos' %}">
+                                    <span class="truncate text-teal-soft">Reservar Turno</span>
+                                </a>
+                                <a class="flex min-w-[180px] sm:min-w-[200px] cursor-pointer items-center justify-center rounded-full h-14 md:h-16 px-6 md:px-8 bg-white/10 backdrop-blur-md border border-white/30 text-white text-base md:text-lg font-bold hover:bg-white/20 transition-all" href="https://wa.link/84kqz8">
+                                    <span class="truncate text-sm md:text-base">Solicitar Visita a Domicilio</span>
+                                </a>
+                            </div>
+
+                            <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6 pt-6 md:pt-10 border-t border-white/10 mt-2 md:mt-4">
+                                <!-- Consigna 1 -->
+                                <!-- Promedio de Rating -->
+                                <div class="flex items-center gap-3">
+                                    <!-- Estrellas de rating -->
+                                    <div class="flex flex-col">
+                                        <div class="flex text-primary">
+                                            <span class="material-symbols-outlined text-xs md:text-sm">star</span>
+                                            <span class="material-symbols-outlined text-xs md:text-sm">star</span>
+                                            <span class="material-symbols-outlined text-xs md:text-sm">star</span>
+                                            <span class="material-symbols-outlined text-xs md:text-sm">star</span>
+                                            <span class="material-symbols-outlined text-xs md:text-sm">star</span>
+                                        </div>
+                                        <!-- Promedio de rating -->
+                                        <p class="text-white/80 text-xs md:text-sm font-bold tracking-wide">5.0 Promedio de Rating en Google Maps</p>
+                                    </div>
+                                </div>
+
+                                <div class="hidden sm:block h-10 w-[1px] bg-white/10"></div>
+                                
+                                <!-- Ubicación -->
+                                <div class="block">
+                                    <p class="text-white/60 text-[10px] md:text-xs uppercase tracking-[0.2em] font-bold mt-1">Ubicación</p>
+                                    <p class="text-white text-xs md:text-sm font-bold">Cerro las Rosas 123 - Córdoba</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+            <!-- JavaScript para el menú hamburguesa -->
+            <script>
+                const hamburgerBtn = document.getElementById('hamburger-btn');
+                const closeMenuBtn = document.getElementById('close-menu-btn');
+                const mobileMenu = document.getElementById('mobile-menu');
+                const menuOverlay = document.getElementById('menu-overlay');
+
+                function openMenu() {
+                    mobileMenu.classList.remove('translate-x-full');
+                    mobileMenu.classList.add('translate-x-0');
+                    menuOverlay.classList.remove('opacity-0', 'pointer-events-none');
+                    menuOverlay.classList.add('opacity-100');
+                    document.body.style.overflow = 'hidden';
+                }
+
+                function closeMenu() {
+                    mobileMenu.classList.remove('translate-x-0');
+                    mobileMenu.classList.add('translate-x-full');
+                    menuOverlay.classList.remove('opacity-100');
+                    menuOverlay.classList.add('opacity-0', 'pointer-events-none');
+                    document.body.style.overflow = '';
+                }
+
+                hamburgerBtn.addEventListener('click', openMenu);
+                closeMenuBtn.addEventListener('click', closeMenu);
+                menuOverlay.addEventListener('click', closeMenu);
+
+                // Cerrar menú al hacer click en un link
+                const mobileMenuLinks = mobileMenu.querySelectorAll('a');
+                mobileMenuLinks.forEach(link => {
+                    link.addEventListener('click', closeMenu);
+                });
+
+                // Cerrar menú con tecla ESC
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape') {
+                        closeMenu();
+                    }
+                });
+            </script>
+        {% endblock %}
+        {% block content %}
+        <div class="px-6 lg:px-40 py-24 bg-background-light dark:bg-background-dark">
+            <div class="layout-content-container flex flex-col max-w-[1200px] mx-auto flex-1">
+                <div class="flex flex-col gap-12 @container">
+                    <div class="flex flex-col gap-3 text-center items-center">
+                    <h2 class="text-primary font-bold text-sm tracking-[0.3em] uppercase">Servicios</h2>
+                    <h2 class="text-color9 dark:text-white text-4xl md:text-5xl font-black leading-tight tracking-tight">
+                                                    Todo lo que tu mascota necesita
+                                                </h2>
+                    <div class="h-1.5 w-24 bg-primary rounded-full mt-2"></div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-6">
+                        <!-- Consigna 2 -->
+                        <div class="group flex flex-col gap-6 rounded-2xl bg-white dark:bg-white/5 p-10 shadow-sm border border-teal-soft/50 hover:shadow-2xl hover:-translate-y-1 transition-all duration-200">
+                            <div class="bg-teal-soft text-primary w-16 h-16 rounded-2xl flex items-center justify-center">
+                                <span class="material-symbols-outlined text-3xl font-light">stethoscope</span>
+                            </div>
+                            <div class="flex flex-col gap-3">
+                                <h3 class="text-color9 dark:text-white text-2xl font-bold">Cuidado Clínico</h3>
+                                <p class="text-color9/60 dark:text-white/60 text-base leading-relaxed">
+                                                                    Brindamos atención médica integral para tu mascota, desde controles preventivos hasta el tratamiento de enfermedades. Diagnósticos precisos y un cuidado responsable en cada consulta.
+                                                                </p>
+                            </div>
+                            <a class="mt-4 text-sm font-bold text-primary flex items-center gap-1 group-hover:gap-2 transition-all" href="#">
+                                                                Leer más <span class="material-symbols-outlined text-sm">arrow_forward</span>
+                            </a>
+                        </div>
+                        <div class="group flex flex-col gap-6 rounded-2xl bg-white dark:bg-white/5 p-10 shadow-sm border border-teal-soft/50 hover:shadow-2xl hover:-translate-y-1 transition-all duration-200">
+                            <div class="bg-teal-soft text-primary w-16 h-16 rounded-2xl flex items-center justify-center">
+                                <span class="material-symbols-outlined text-3xl font-light">syringe</span>
+                            </div>
+                            <div class="flex flex-col gap-3">
+                                <h3 class="text-color9 dark:text-white text-2xl font-bold">Vacunación y Desparasitación</h3>
+                                <p class="text-color9/60 dark:text-white/60 text-base leading-relaxed">
+                                                                    Protegemos a tu mascota contra enfermedades y parásitos con un plan sanitario completo y actualizado. Atención rápida, segura y sin estrés.
+                                                                </p>
+                            </div>
+                            <a class="mt-4 text-sm font-bold text-primary flex items-center gap-1 group-hover:gap-2 transition-all" href="#">
+                                                                Leer más <span class="material-symbols-outlined text-sm">arrow_forward</span>
+                            </a>
+                        </div>
+                        <div class="group flex flex-col gap-6 rounded-2xl bg-white dark:bg-white/5 p-10 shadow-sm border border-teal-soft/50 hover:shadow-2xl hover:-translate-y-1 transition-all duration-200">
+                            <div class="bg-teal-soft text-primary w-16 h-16 rounded-2xl flex items-center justify-center">
+                                <span class="material-symbols-outlined text-3xl font-light">biotech</span>
+                            </div>
+                            <div class="flex flex-col gap-3">
+                                <h3 class="text-color9 dark:text-white text-2xl font-bold">Laboratorio</h3>
+                                <p class="text-color9/60 dark:text-white/60 text-base leading-relaxed">
+                                                                    Realizamos estudios de laboratorio y ecografías para diagnósticos precisos. Tecnología moderna para cuidar la salud interna de tu mascota.
+                                                                </p>
+                            </div>
+                            <a class="mt-4 text-sm font-bold text-primary flex items-center gap-1 group-hover:gap-2 transition-all" href="#">
+                                                                Leer más <span class="material-symbols-outlined text-sm">arrow_forward</span>
+                            </a>
+                        </div>
+                        <div class="group flex flex-col gap-6 rounded-2xl bg-white dark:bg-white/5 p-10 shadow-sm border border-teal-soft/50 hover:shadow-2xl hover:-translate-y-1 transition-all duration-200">
+                            <div class="bg-teal-soft text-primary w-16 h-16 rounded-2xl flex items-center justify-center">
+                                <span class="material-symbols-outlined text-3xl font-light">content_cut</span>
+                            </div>
+                            <div class="flex flex-col gap-3">
+                                <h3 class="text-color9 dark:text-white text-2xl font-bold">Peluquería</h3>
+                                <p class="text-color9/60 dark:text-white/60 text-base leading-relaxed">
+                                                                    Mantenemos la higiene y el bienestar de tu mascota con baños, cortes y tratamientos personalizados. Cuidamos su piel y su pelo con productos profesionales.
+                                                                </p>
+                            </div>
+                            <a class="mt-4 text-sm font-bold text-primary flex items-center gap-1 group-hover:gap-2 transition-all" href="#">
+                                                                Leer más <span class="material-symbols-outlined text-sm">arrow_forward</span>
+                            </a>
+                        </div>
+                        <div class="group flex flex-col gap-6 rounded-2xl bg-white dark:bg-white/5 p-10 shadow-sm border border-teal-soft/50 hover:shadow-2xl hover:-translate-y-1 transition-all duration-200">
+                            <div class="bg-teal-soft text-primary w-16 h-16 rounded-2xl flex items-center justify-center">
+                                <span class="material-symbols-outlined text-3xl font-light">verified_user</span>
+                            </div>
+                            <div class="flex flex-col gap-3">
+                                <h3 class="text-color9 dark:text-white text-2xl font-bold">Certificados de Salud y Microchips</h3>
+                                <p class="text-color9/60 dark:text-white/60 text-base leading-relaxed">
+                                                                    Emitimos certificados de salud oficiales y colocamos microchips para una identificación segura. Todo conforme a la normativa vigente.
+                                                                </p>
+                            </div>
+                            <a class="mt-4 text-sm font-bold text-primary flex items-center gap-1 group-hover:gap-2 transition-all" href="#">
+                                                                Leer más <span class="material-symbols-outlined text-sm">arrow_forward</span>
+                            </a>
+                        </div>
+                        <div class="group flex flex-col gap-6 rounded-2xl bg-white dark:bg-white/5 p-10 shadow-sm border border-teal-soft/50 hover:shadow-2xl hover:-translate-y-1 transition-all duration-200">
+                            <div class="bg-teal-soft text-primary w-16 h-16 rounded-2xl flex items-center justify-center">
+                                <span class="material-symbols-outlined text-3xl font-light">home</span>
+                            </div>
+                            <div class="flex flex-col gap-3">
+                                <h3 class="text-color9 dark:text-white text-2xl font-bold">Atención a Domicilio</h3>
+                                <p class="text-color9/60 dark:text-white/60 text-base leading-relaxed">
+                                                                    Vamos hasta tu casa para revisiones, controles y tratamientos básicos. Comodidad para vos y menos estrés para tu mascota.
+                                                                </p>
+                            </div>
+                            <a class="mt-4 text-sm font-bold text-primary flex items-center gap-1 group-hover:gap-2 transition-all" href="{% url 'domicilio' %}">
+                                                                Solicitar Turno <span class="material-symbols-outlined text-sm">arrow_forward</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sección de Emergencia -->
+        <div class="px-6 lg:px-40 py-20">
+            <div class="relative overflow-hidden rounded-3xl bg-background-dark dark:bg-black p-10 lg:p-20 text-white shadow-2xl">
+                <div class="absolute top-0 right-0 -mr-20 -mt-20 size-80 bg-primary/20 blur-[120px] rounded-full"></div>
+                <div class="absolute bottom-0 left-0 -ml-20 -mb-20 size-80 bg-primary/10 blur-[100px] rounded-full"></div>
+                <div class="relative z-10 flex flex-col items-center text-center gap-8">
+                    <div class="bg-primary/20 p-4 rounded-full animate-pulse">
+                        <span class="material-symbols-outlined text-primary text-4xl">emergency_home</span>
+                    </div>
+                    <div class="flex flex-col gap-4">
+                        <h2 class="text-3xl md:text-5xl font-black tracking-tight">Emergencia 24/7</h2>
+                        <p class="text-white/70 text-lg max-w-[640px] mx-auto">
+                                                    Cada segundo cuenta. Nuestro equipo de urgencias está disponible las 24 horas para emergencias, accidentes y situaciones críticas de salud.
+                                                </p>
+                    </div>
+                    <!-- Debe redirigir al WhatsApp de la veterinaria -->
+                    <div class="flex flex-col md:flex-row gap-4 w-full justify-center">
+                        <a class="flex min-w-[240px] cursor-pointer items-center justify-center rounded-xl h-16 px-8 bg-primary text-[#e7f3eb] text-xl font-black shadow-2xl shadow-primary/40 hover:scale-105 transition-transform" href="https://wa.link/84kqz8" target="_blank" >
+                        <svg xmlns="http://www.w3.org/2000/svg" class="mr-2" width="26" height="26" viewBox="0 0 24 24"><path fill="#e7f3eb" d="M16.6 14c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1s-.6.8-.8 1c-.1.2-.3.2-.5.1c-.7-.3-1.4-.7-2-1.2c-.5-.5-1-1.1-1.4-1.7c-.1-.2 0-.4.1-.5s.2-.3.4-.4c.1-.1.2-.3.2-.4c.1-.1.1-.3 0-.4S9.7 8.5 9.5 8c-.1-.7-.3-.7-.5-.7h-.5c-.2 0-.5.2-.6.3Q7 8.5 7 9.7c.1.9.4 1.8 1 2.6c1.1 1.6 2.5 2.9 4.2 3.7c.5.2.9.4 1.4.5c.5.2 1 .2 1.6.1c.7-.1 1.3-.6 1.7-1.2c.2-.4.2-.8.1-1.2zm2.5-9.1C15.2 1 8.9 1 5 4.9c-3.2 3.2-3.8 8.1-1.6 12L2 22l5.3-1.4c1.5.8 3.1 1.2 4.7 1.2c5.5 0 9.9-4.4 9.9-9.9c.1-2.6-1-5.1-2.8-7m-2.7 14c-1.3.8-2.8 1.3-4.4 1.3c-1.5 0-2.9-.4-4.2-1.1l-.3-.2l-3.1.8l.8-3l-.2-.3c-2.4-4-1.2-9 2.7-11.5S16.6 3.7 19 7.5c2.4 3.9 1.3 9-2.6 11.4"/></svg>                                                    
+                        351 812 4836
+                                                </a>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sección de Nuestros Clientes -->
+        <div class="px-6 lg:px-40 pb-20">
+            <div class="layout-content-container flex flex-col max-w-[1200px] mx-auto">
+                
+                <div class="flex items-center justify-between mb-10">
+                    <h2 class="text-2xl md:text-3xl font-bold tracking-tight text-color9 dark:text-white">
+                        Lo que Nuestros Clientes Dicen
+                    </h2>
+                    <div class="flex gap-2">
+                        <button id="btn-prev" class="size-10 rounded-full border border-teal-soft dark:border-white/10 flex items-center justify-center hover:bg-primary hover:text-white transition-all duration-200">
+                            <span class="material-symbols-outlined">chevron_left</span>
+                        </button>
+                        <button id="btn-next" class="size-10 rounded-full border border-teal-soft dark:border-white/10 flex items-center justify-center hover:bg-primary hover:text-white transition-all duration-200">
+                            <span class="material-symbols-outlined">chevron_right</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Cards -->
+                <div id="reviews-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 transition-opacity duration-300"></div>
+
+                <!-- Dots -->
+                <div id="reviews-dots" class="flex justify-center gap-2 mt-8"></div>
+            </div>
+        </div>
+
+        <script>
+        const reviews = [
+            { stars: 5, text: "Expeditivas, responsables, comprometidas y profesionales. Impresionante su atención. Son mis nuevas veterinarias de cabecera después de haberlas atendido a mis dos gatitas bebes. La atención que recibí de ellas fue impresionante y estuvo a la altura de las vidas que puse en sus manos. siempre agradecida.", initials: "IG", name: "Irene Galli", pet: "Tutora de sus gatitas" },
+            { stars: 5, text: "Felices con Homero de que hayan llegado cerca de nuestra casa. Homero va feliz a bañarse y cortarse el pelo con las mejores atenciónes. Gracias y sigan así. 🐶🐾", initials: "JL", name: "Javier Ludueña", pet: "Tutor de Homero" },
+            { stars: 5, text: "Excelente servicio de peluquería. Dejan hermosos a los perritos y los tratan muy bien ❣️", initials: "MB", name: "Milagros Bustos", pet: "Tutora de su perrita" },
+            { stars: 5, text: "Excelentes. Mi gata tuvo problemas del hígado por estrés y le hicieron todos los controles necesarios para descartar otras cosas, algo que me parece muy necesario. Me cobraron lo justo y necesario, no más, y la ultima vez que la controlaron ni me cobraron la consulta. Las chicas muy buena onda y amables con la gata. Mis vetes favoritas hasta el momento.", initials: "GP", name: "Gabriela Perri", pet: "Tutora de su gata" },
+            { stars: 5, text: "Hola, el sabado fui por una urgencia con mi perra. Me atendió Flor y una genia, le explique lo que me pasaba con mi gorda y me supo decir que tenia. Super amable, buena y atenta! Seguimos por wsp y la verdad que la gorda esta mejorando. Super recomiendo, agradecida de su atención.", initials: "DM", name: "Debora Mencia", pet: "Tutora de su perra" },
+            { stars: 5, text: "Excelente el servicio de peluqueria, mi perrito salió hermoso y contento.", initials: "AF", name: "Andrea Ferreyra", pet: "Tutora de su perrito" },
+            { stars: 5, text: "Excelente atención de Florencia muy amable.", initials: "KB", name: "Karina Bastidas", pet: "Clienta" },
+            { stars: 5, text: "Excelente atención ☺️ super cálidas las vetes.", initials: "AT", name: "Agostina Tracz", pet: "Clienta" },
+            { stars: 5, text: "Excelente veterinaria y atención! Las mejores!", initials: "DS", name: "Dalit Schor", pet: "Clienta" },
+            { stars: 5, text: "Lleve a mi perrita para baño y corte de pelo, todo muy excelente. Rápido tiempo de respuesta a mensajes.", initials: "CA", name: "Camila Alvarez", pet: "Tutora de su perrita" },
+            { stars: 5, text: "Me respondieron rapidísimo y el trato fue muy amable.", initials: "IF", name: "Ignacio Fernández", pet: "Cliente" },
+            { stars: 5, text: "Conocíamos a Flor de la otra vete, siempre muy profesional y súper amorosa… obvio que seguimos con ella!!! Mi Joaquina feliz.", initials: "JL", name: "Josefina Lenarduzzi", pet: "Tutora de Joaquina" },
+            { stars: 5, text: "Lleve a mis gatos y la atención es increíble, mucho cuidado y las veterinarias súper amables. También hacen peluquería de perro y recomiendo. buen trato para nuestras mascotas.", initials: "PB", name: "Paulina Baselica", pet: "Tutora de sus gatos" },
+            { stars: 5, text: "Excelente atención y gran solvencia profesional. Atendieron a mi perra viejita por una larga dolencia y hoy está muy bien.", initials: "IB", name: "Ignacio Baselica", pet: "Tutor de su perra" },
+            { stars: 5, text: "Excelente atención muy profesionales! Las vetes son lo más 🤍🤍🤍", initials: "MT", name: "Macarena Torres", pet: "Clienta" },
+            { stars: 5, text: "Excelente lugar y atencion.", initials: "KV", name: "Kevork Donigian", pet: "Cliente" },
+            { stars: 5, text: "Tienen muy buena atención! Y muy linda la veteee! Mi perris felizz", initials: "AF", name: "Analía Fleytas", pet: "Tutora de su perrita" },
+            { stars: 5, text: "Fueron muy amables con mi perro Tobi, además tienen excelentes precios, lo recomiendo.", initials: "CC", name: "Cretas Clothing", pet: "Tutor de Tobi" },
+            { stars: 5, text: "Gracias por atender a mi perrita tan bien 🙂 hermosa la veterinaria!!!! Y las doctoras me explicaron todo muy bien.", initials: "ED", name: "Esmeralda Di Bártolo", pet: "Tutora de su perrita" },
+            { stars: 5, text: "Las vetes unas divinas, atendieron muy bien a mi perrita y tiene de todo.", initials: "BR", name: "Bruno", pet: "Cliente" },
+        ];
+
+        const MAX_CHARS = 120;
+
+        function getVisible() {
+            if (window.innerWidth >= 1024) return 3;
+            if (window.innerWidth >= 768) return 2;
+            return 1;
+        }
+
+        let current = 0;
+        let isAnimating = false;
+
+        function maxIndex() {
+            return reviews.length - getVisible();
+        }
+
+        function buildCards(slice) {
+            return slice.map((r, idx) => {
+                const isLong = r.text.length > MAX_CHARS;
+                const preview = isLong ? r.text.slice(0, MAX_CHARS).trimEnd() + '…' : r.text;
+                const cardId = `card-text-${current + idx}`;
+
+                return `
+                    <div class="bg-white dark:bg-white/5 p-8 rounded-xl border border-teal-soft dark:border-white/10 flex flex-col gap-4">
+                        <div class="flex text-yellow-500 gap-0.5">
+                            ${'<span class="material-symbols-outlined text-lg" style="font-variation-settings: \'FILL\' 1">star</span>'.repeat(r.stars)}
+                        </div>
+                        <div class="flex flex-col gap-2">
+                            <p id="${cardId}" class="italic text-color9/80 dark:text-white/80 leading-relaxed text-sm">"${preview}"</p>
+                            ${isLong ? `
+                                <button 
+                                    onclick="toggleText('${cardId}', \`${r.text.replace(/`/g, '\\`')}\`, '${preview.replace(/'/g, "\\'")}')"
+                                    class="text-primary text-xs font-bold text-left hover:underline w-fit"
+                                >Ver más</button>
+                            ` : ''}
+                        </div>
+                        <div class="flex items-center gap-3 mt-auto">
+                            <div class="size-10 rounded-full bg-teal-soft flex items-center justify-center font-bold text-primary text-sm flex-shrink-0">${r.initials}</div>
+                            <div class="flex flex-col">
+                                <span class="text-sm font-bold text-color9 dark:text-white">${r.name}</span>
+                                <span class="text-xs opacity-60 italic">${r.pet || ''}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function toggleText(id, full, preview) {
+            const p = document.getElementById(id);
+            const btn = p.nextElementSibling;
+            const isExpanded = btn.textContent.trim() === 'Ver menos';
+            p.innerHTML = isExpanded ? `"${preview}"` : `"${full}"`;
+            btn.textContent = isExpanded ? 'Ver más' : 'Ver menos';
+        }
+
+        function buildDots() {
+            const total = maxIndex() + 1;
+            return Array.from({length: total}, (_, i) => `
+                <button 
+                    data-index="${i}"
+                    class="h-2 rounded-full transition-all duration-300 ${i === current 
+                        ? 'w-6 bg-primary' 
+                        : 'w-2 bg-zinc-300 dark:bg-white/20'}"
+                ></button>
+            `).join('');
+        }
+
+        // Dirección de la animación: 'left' o 'right'
+        function render(animate = true, direction = 'right') {
+            if (isAnimating) return;
+            const grid = document.getElementById('reviews-grid');
+            const dots = document.getElementById('reviews-dots');
+
+            if (animate) {
+                isAnimating = true;
+
+                // Salida: hacia la dirección opuesta del avance
+                const exitX = direction === 'right' ? '-60px' : '60px';
+                const enterX = direction === 'right' ? '60px' : '-60px';
+
+                grid.style.transition = 'opacity 0.25s ease, transform 0.25s ease';
+                grid.style.opacity = '0';
+                grid.style.transform = `translateX(${exitX})`;
+
+                setTimeout(() => {
+                    grid.innerHTML = buildCards(reviews.slice(current, current + getVisible()));
+                    dots.innerHTML = buildDots();
+                    attachDotListeners();
+
+                    // Posición inicial del enter (lado opuesto)
+                    grid.style.transition = 'none';
+                    grid.style.opacity = '0';
+                    grid.style.transform = `translateX(${enterX})`;
+
+                    requestAnimationFrame(() => {
+                        requestAnimationFrame(() => {
+                            grid.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+                            grid.style.opacity = '1';
+                            grid.style.transform = 'translateX(0)';
+                            setTimeout(() => { isAnimating = false; }, 300);
+                        });
+                    });
+                }, 250);
+
+            } else {
+                grid.style.opacity = '1';
+                grid.style.transform = 'translateX(0)';
+                grid.innerHTML = buildCards(reviews.slice(current, current + getVisible()));
+                dots.innerHTML = buildDots();
+                attachDotListeners();
+            }
+        }
+
+        function goTo(i, direction) {
+            const next = Math.max(0, Math.min(i, maxIndex()));
+            if (next === current) return;
+            // Si no se pasa dirección explícita, la inferimos por el índice
+            const dir = direction || (next > current ? 'right' : 'left');
+            current = next;
+            render(true, dir);
+        }
+
+        function attachDotListeners() {
+            document.querySelectorAll('#reviews-dots button').forEach(btn => {
+                btn.addEventListener('click', () => goTo(+btn.dataset.index));
+            });
+        }
+
+        document.getElementById('btn-prev').addEventListener('click', () => goTo(current - 1, 'left'));
+        document.getElementById('btn-next').addEventListener('click', () => goTo(current + 1, 'right'));
+        window.addEventListener('resize', () => { current = 0; render(false); });
+
+        render(false);
+        </script>
+        <a href="https://wa.link/84kqz8" class="whatsapp-btn" target="_blank" rel="noopener noreferrer">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24">
+                <path fill="currentColor" d="M19.05 4.91A9.816 9.816 0 0 0 12.04 2c-5.46 0-9.91 4.45-9.91 9.91c0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21c5.46 0 9.91-4.45 9.91-9.91c0-2.65-1.03-5.14-2.9-7.01m-7.01 15.24c-1.48 0-2.93-.4-4.2-1.15l-.3-.18l-3.12.82l.83-3.04l-.2-.31a8.191 8.191 0 0 1-1.26-4.38c0-4.51 3.67-8.18 8.18-8.18c2.19 0 4.24.85 5.78 2.4c1.55 1.55 2.4 3.6 2.4 5.78c0 4.51-3.67 8.18-8.19 8.18m4.48-6.13c-.24-.12-1.45-.72-1.68-.8s-.38-.12-.54.12s-.62.8-.76.96s-.28.18-.52.06s-1.01-.37-1.92-1.18c-.71-.63-1.18-1.42-1.32-1.66s-.01-.38.11-.49c.11-.1.24-.28.36-.42s.16-.24.24-.4s.04-.31-.02-.43s-.54-1.31-.74-1.79c-.19-.47-.39-.4-.54-.41c-.14-.01-.3-.01-.46-.01s-.42.06-.64.29c-.22.23-.84.82-.84 2s.86 2.32.98 2.49c.12.17 1.68 2.57 4.07 3.6c.57.24 1.01.39 1.36.5c.57.18 1.09.15 1.51.09c.46-.07 1.45-.59 1.65-1.16c.21-.57.21-1.06.15-1.16s-.23-.17-.47-.29"/>
+            </svg>
+            <span class="whatsapp-text">👩🏻‍⚕️¿Necesitas ayuda?</span>
+        </a>
+    {% endblock %}
+    {% block footer %}
+    <!-- Footer -->
+    <footer class="bg-teal-soft dark:bg-background-dark/50 px-6 lg:px-40 py-20 border-t border-teal-soft dark:border-white/10">
+    <div class="layout-content-container max-w-[1200px] mx-auto grid grid-cols-1 md:grid-cols-4 gap-16">
+        <div class="flex flex-col gap-6 md:col-span-1">
+            <div class="flex items-center gap-3 text-primary">
+                <span class="material-symbols-outlined text-4xl">pets</span>
+                <span class="text-2xl font-bold text-color6 dark:text-white tracking-tight">Clinica Córdoba</span>
+            </div>
+            <p class="text-base text-[#4d5050]/70 dark:text-white/70 leading-relaxed">
+                                        Atención veterinaria profesional para Córdoba desde 2025. Tratamos a tus mascotas como familia.
+                                    </p>
+            <div class="flex gap-4">
+                <a class="size-11 rounded-full bg-white dark:bg-white/10 flex items-center justify-center hover:bg-primary/20 ease-in duration-200 transition-colors text-white shadow-sm" href="https://www.instagram.com/petit.veterinariacba/" target="_blank">
+                    <svg class="hover:text-white ease-in duration-200" xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24"><g fill="none" stroke="#52ACB5" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8A4 4 0 0 1 16 11.37m1.5-4.87h.01"/></g></svg>
+                </a>
+            </div>
+        </div>
+        <div>
+            <h4 class="font-bold text-lg mb-8 text-color6 dark:text-white">Quick Links</h4>
+            <ul class="flex flex-col gap-5 text-base text-color9/70 dark:text-white/70">
+                <li><a class="hover:text-primary transition-colors" href="{% url 'index' %}">Inicio</a></li>
+                    <li><a class="hover:text-primary transition-colors" href="{% url 'nosotros' %}">Nosotros</a></li>
+                    <!-- <li><a class="hover:text-primary transition-colors" href="{% url 'domicilio' %}">Domicilio</a></li> -->
+                    <li><a class="hover:text-primary transition-colors" href="{% url 'blog:blog' %}">Blog</a></li>
+                    <li><a class="hover:text-primary transition-colors" href="{% url 'tienda' %}">Tienda</a></li>
+                    <li><a class="hover:text-primary transition-colors" href="{% url 'turnos:turnos' %}">Turnos</a></li>
+                    <li><a class="hover:text-primary transition-colors" href="{% url 'contacto' %}">Contacto</a></li>
+                </li>
+            </ul>
+        </div>
+        <div>
+            <h4 class="font-bold text-lg mb-8 text-color6 dark:text-white">Visita Nuestra Clínica</h4>
+            <ul class="flex flex-col gap-5 text-base text-color9/70 dark:text-white/70">
+                <li class="flex gap-3 items-start">
+                    <span class="material-symbols-outlined text-primary text-xl">location_on</span>
+                    <span>Cerro las Rosas 123,<br/>Alberdi, X5000</span>
+                </li>
+                <li class="flex gap-3">
+                    <span class="material-symbols-outlined text-primary text-xl">mail</span>
+                                                clinicacordoba@gmail.com
+                                            </li>
+                <li class="flex gap-3">
+                    <span class="material-symbols-outlined text-primary text-xl">phone</span>
+                                                +54 351 812 1234
+                                            </li>
+            </ul>
+        </div>
+        <div>
+            <h4 class="font-bold text-lg mb-8 text-color6 dark:text-white">Horarios</h4>
+            <ul class="flex flex-col gap-4 text-sm text-color9/70 dark:text-white/70">
+                <li class="flex justify-between border-b border-[#0d1b12]/10 pb-2">
+                    <span>Lunes - Viernes</span>
+                    <span class="font-bold text-color9/70 dark:text-white">09:00 - 20:30</span>
+                </li>
+                <li class="flex justify-between border-b border-[#0d1b12]/10 pb-2">
+                    <span>Sábados</span>
+                    <span class="font-bold text-color9/70 dark:text-white">09:00 - 13:30</span>
+                </li>
+                    <li class="flex justify-between text-primary font-bold">
+                    <span>Emergencia</span>
+                <span>24 Horas / 365 Días</span>
+            </li>
+            </ul>
+        </div>
+    </div>
+    <div class="max-w-[1200px] mx-auto mt-20 pt-10 border-t border-[#0d1b12]/10 dark:border-white/10 flex flex-col md:flex-row justify-between items-center gap-6">
+        <p class="text-sm text-color9/50 dark:text-white/50">© 2025 Clinica Veterinaria Córdoba. Exelencia en Cuidado de Mascotas.</p>
+        <div class="flex gap-8 text-sm text-color9/50 dark:text-white/50">
+            <a class="hover:underline" href="{% url 'politica' %}">Políticas de Privacidad</a>
+            <a class="hover:underline" href="{% url 'terminos' %}">Términos de Servicio</a>
+            <!-- Consigna 4 -->
+            <a class="hover:underline" href="{% url 'cookies' %}">Cookies</a>
+        </div>
+    </div>
+    </footer>
+    {% endblock %}
+</body>
+</html>

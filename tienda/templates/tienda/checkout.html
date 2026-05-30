@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+{% extends 'base.html' %}
+{% load static tailwind_tags %}
+{% load static %}
+<html lang="es-ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Petit {% block title %}| Checkout {% endblock %}</title>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-color9 dark:text-white transition-colors duration-300">
+    {% block hero %}
+    <!-- Header -->
+    <div class="relative flex h-auto w-full flex-col group/design-root overflow-x-hidden">
+        <div class="layout-container flex h-full grow flex-col">
+            <header class="flex items-center justify-between backdrop-blur-xl bg-black/20 dark:bg-black/20 border-b border-white/10 px-6 lg:px-20 py-4 fixed top-0 w-full z-50 shadow-sm">
+                <a class="flex items-center gap-3 text-white" href="{% url 'index' %}">
+                    <div class="size-8 text-primary">
+                        <span class="material-symbols-outlined">pets</span>
+                    </div>
+                    <div class="flex flex-col">
+                        <h2 class="text-lg font-bold leading-tight tracking-tight">Córdoba Veterinaria</h2>
+                        <span class="text-xs font-medium opacity-80 uppercase tracking-tighter">Córdoba Capital</span>
+                    </div>
+                </a>
+
+                <div class="flex flex-1 justify-end gap-6 items-center">
+                    <!-- Desktop Navigation -->
+                    <nav class="hidden md:flex items-center gap-8 text-[#e7f3eb]">
+                        <a class="text-sm font-semibold hover:text-primary transition-colors" href="{% url 'index' %}">Inicio</a>
+                        <a class="text-sm font-semibold hover:text-primary transition-colors" href="{% url 'nosotros' %}">Nosotros</a>
+                        <a class="text-sm font-semibold hover:text-primary transition-colors" href="{% url 'blog:blog' %}">Blog</a>
+                        <a class="text-sm font-semibold hover:text-primary transition-colors" href="{% url 'tienda' %}">Tienda</a>
+                        <a class="text-sm font-semibold hover:text-primary transition-colors" href="{% url 'turnos:turnos' %}">Turnos</a>
+                        <a class="text-sm font-semibold hover:text-primary transition-colors" href="{% url 'contacto' %}">Contacto</a>
+                    </nav>
+
+                    <div class="flex gap-3 items-center">
+                        <!-- CARRITO -->
+                        <a href="{% url 'checkout' %}" class="relative flex items-center justify-center w-10 h-10 rounded-lg hover:scale-105 transition-transform">
+                            <span class="absolute -top-1 -right-1 bg-primary text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center shadow-md">{{ cantidad_total_carro }}</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 512 512">
+                                <path fill="#e7f3eb" d="M454.65 169.4A31.82 31.82 0 0 0 432 160h-64v-16a112 112 0 0 0-224 0v16H80a32 32 0 0 0-32 32v216c0 39 33 72 72 72h272a72.22 72.22 0 0 0 50.48-20.55a69.48 69.48 0 0 0 21.52-50.2V192a31.75 31.75 0 0 0-9.35-22.6M176 144a80 80 0 0 1 160 0v16H176Z"/>
+                            </svg>
+                        </a>
+
+                        <!-- PERFIL -->
+                        {% if user.is_authenticated %}
+                            <a href="{% url 'perfil' %}" class="flex items-center justify-center w-10 h-10 text-white hover:scale-125 transition-transform">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24"><path fill="#E7F3EB" d="M12 4a4 4 0 1 1 0 8a4 4 0 0 1 0-8m0 16s8 0 8-2c0-2.4-3.9-5-8-5s-8 2.6-8 5c0 2 8 2 8 2"/></svg>
+                            </a>
+                        {% else %}
+                            <a href="{% url 'registro' %}" class="flex items-center justify-center w-10 h-10 text-white hover:scale-125 transition-transform">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24"><path fill="#E7F3EB" d="M12 4a4 4 0 1 1 0 8a4 4 0 0 1 0-8m0 16s8 0 8-2c0-2.4-3.9-5-8-5s-8 2.6-8 5c0 2 8 2 8 2"/></svg>
+                            </a>
+                        {% endif %}
+
+                        <!-- HAMBURGER BUTTON -->
+                        <button id="hamburger-btn" class="md:hidden flex items-center justify-center w-10 h-10 text-white hover:text-primary transition-colors">
+                            <span class="material-symbols-outlined text-3xl">menu</span>
+                        </button>
+                    </div>
+                </div>
+            </header>
+
+            <!-- OVERLAY -->
+            <div id="menu-overlay" class="fixed inset-0 bg-black/50 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300 z-[55]"></div>
+
+            <!-- MOBILE MENU -->
+            <div id="mobile-menu" class="fixed top-0 right-0 h-full w-[280px] bg-background-dark/98 backdrop-blur-xl border-l border-white/10 transform translate-x-full transition-transform duration-300 ease-in-out z-[60] md:hidden shadow-2xl">
+                <div class="flex flex-col h-full">
+                    <div class="flex items-center justify-between px-6 py-5 border-b border-white/10">
+                        <div class="flex items-center gap-2 text-white">
+                            <span class="material-symbols-outlined text-primary">pets</span>
+                            <span class="font-bold text-sm">Menú</span>
+                        </div>
+                        <button id="close-menu-btn" class="flex items-center justify-center w-10 h-10 text-white hover:text-primary transition-colors rounded-lg hover:bg-white/10">
+                            <span class="material-symbols-outlined text-3xl">close</span>
+                        </button>
+                    </div>
+
+                    <nav class="flex flex-col gap-1 px-4 py-6 flex-1 overflow-y-auto">
+                        <a class="flex items-center gap-3 px-4 py-3 text-white hover:bg-primary/10 hover:text-primary rounded-lg transition-all font-semibold" href="{% url 'index' %}">
+                            <span class="material-symbols-outlined text-xl">home</span><span>Inicio</span>
+                        </a>
+                        <a class="flex items-center gap-3 px-4 py-3 text-white hover:bg-primary/10 hover:text-primary rounded-lg transition-all font-semibold" href="{% url 'nosotros' %}">
+                            <span class="material-symbols-outlined text-xl">group</span><span>Nosotros</span>
+                        </a>
+                        <a class="flex items-center gap-3 px-4 py-3 text-white hover:bg-primary/10 hover:text-primary rounded-lg transition-all font-semibold" href="{% url 'blog:blog' %}">
+                            <span class="material-symbols-outlined text-xl">article</span><span>Blog</span>
+                        </a>
+                        <a class="flex items-center gap-3 px-4 py-3 text-white hover:bg-primary/10 hover:text-primary rounded-lg transition-all font-semibold" href="{% url 'tienda' %}">
+                            <span class="material-symbols-outlined text-xl">store</span><span>Tienda</span>
+                        </a>
+                        <a class="flex items-center gap-3 px-4 py-3 text-white hover:bg-primary/10 hover:text-primary rounded-lg transition-all font-semibold" href="{% url 'turnos:turnos' %}">
+                            <span class="material-symbols-outlined text-xl">calendar_month</span><span>Turnos</span>
+                        </a>
+                        <a class="flex items-center gap-3 px-4 py-3 text-white hover:bg-primary/10 hover:text-primary rounded-lg transition-all font-semibold" href="{% url 'contacto' %}">
+                            <span class="material-symbols-outlined text-xl">mail</span><span>Contacto</span>
+                        </a>
+                    </nav>
+
+                    <div class="px-4 py-3 border-t border-white/10 flex gap-3">
+                        <a href="{% url 'checkout' %}" class="relative flex items-center justify-center gap-2 flex-1 bg-white/5 hover:bg-white/10 text-white py-3 rounded-lg transition-all font-semibold text-sm">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 512 512">
+                                <path fill="#e7f3eb" d="M454.65 169.4A31.82 31.82 0 0 0 432 160h-64v-16a112 112 0 0 0-224 0v16H80a32 32 0 0 0-32 32v216c0 39 33 72 72 72h272a72.22 72.22 0 0 0 50.48-20.55a69.48 69.48 0 0 0 21.52-50.2V192a31.75 31.75 0 0 0-9.35-22.6M176 144a80 80 0 0 1 160 0v16H176Z"/>
+                            </svg>
+                            <span>Carrito</span>
+                            <span class="absolute -top-1 -right-1 bg-primary text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">{{ cantidad_total_carro }}</span>
+                        </a>
+                        {% if user.is_authenticated %}
+                            <a href="{% url 'perfil' %}" class="flex items-center justify-center gap-2 flex-1 bg-white/5 hover:bg-white/10 text-white py-3 rounded-lg transition-all font-semibold text-sm">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path fill="#E7F3EB" d="M12 4a4 4 0 1 1 0 8a4 4 0 0 1 0-8m0 16s8 0 8-2c0-2.4-3.9-5-8-5s-8 2.6-8 5c0 2 8 2 8 2"/></svg>
+                                <span>Mi Perfil</span>
+                            </a>
+                        {% else %}
+                            <a href="{% url 'registro' %}" class="flex items-center justify-center gap-2 flex-1 bg-white/5 hover:bg-white/10 text-white py-3 rounded-lg transition-all font-semibold text-sm">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path fill="#E7F3EB" d="M12 4a4 4 0 1 1 0 8a4 4 0 0 1 0-8m0 16s8 0 8-2c0-2.4-3.9-5-8-5s-8 2.6-8 5c0 2 8 2 8 2"/></svg>
+                                <span>Registrarse</span>
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <script>
+                const hamburgerBtn = document.getElementById('hamburger-btn');
+                const closeMenuBtn = document.getElementById('close-menu-btn');
+                const mobileMenu   = document.getElementById('mobile-menu');
+                const menuOverlay  = document.getElementById('menu-overlay');
+
+                function openMenu() {
+                    mobileMenu.classList.remove('translate-x-full');
+                    mobileMenu.classList.add('translate-x-0');
+                    menuOverlay.classList.remove('opacity-0', 'pointer-events-none');
+                    menuOverlay.classList.add('opacity-100');
+                    document.body.style.overflow = 'hidden';
+                }
+                function closeMenu() {
+                    mobileMenu.classList.remove('translate-x-0');
+                    mobileMenu.classList.add('translate-x-full');
+                    menuOverlay.classList.remove('opacity-100');
+                    menuOverlay.classList.add('opacity-0', 'pointer-events-none');
+                    document.body.style.overflow = '';
+                }
+
+                hamburgerBtn.addEventListener('click', openMenu);
+                closeMenuBtn.addEventListener('click', closeMenu);
+                menuOverlay.addEventListener('click', closeMenu);
+                mobileMenu.querySelectorAll('a').forEach(l => l.addEventListener('click', closeMenu));
+                document.addEventListener('keydown', e => { if (e.key === 'Escape') closeMenu(); });
+            </script>
+        </div>
+    </div>
+    {% endblock %}
+
+    {% block content %}
+    <main class="flex-1 max-w-[1200px] mx-auto w-full px-4 py-24">
+
+        <!-- Breadcrumb -->
+        <div class="flex items-center gap-2 mb-6">
+            <a class="text-gray-400 text-sm font-medium" href="{% url 'tienda' %}">Tienda</a>
+            <span class="text-gray-400 text-sm material-symbols-outlined">chevron_right</span>
+            <span class="text-primary dark:text-white text-sm font-bold">Checkout</span>
+            <span class="text-gray-400 text-sm material-symbols-outlined">chevron_right</span>
+            <span class="text-gray-400 text-sm font-medium">Confirmación</span>
+        </div>
+
+        <h1 class="text-[#0d1b19] dark:text-white tracking-tight text-3xl font-extrabold mb-8">Checkout de Compras</h1>
+
+        {% if request.session.carro.items %}
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-10">
+
+            <!-- ── Columna izquierda: resumen del pedido ── -->
+            <div class="lg:col-span-7 flex flex-col gap-6">
+                <div class="bg-white dark:bg-[#152a26] rounded-xl border border-[#e7f3f1] dark:border-[#2a3d3a] overflow-hidden shadow-sm">
+                    <div class="p-6 border-b border-[#e7f3f1] dark:border-[#2a3d3a] flex items-center gap-2">
+                        <span class="material-symbols-outlined text-primary">shopping_bag</span>
+                        <h2 class="text-[#0d1b19] dark:text-white text-xl font-bold">Resumen del Pedido</h2>
+                    </div>
+
+                    <div class="divide-y divide-[#e7f3f1] dark:divide-[#2a3d3a]">
+                        {% for key, value in request.session.carro.items %}
+                        <div class="flex items-center gap-4 px-6 py-4">
+                            <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-lg size-20 border border-gray-100 shrink-0"
+                                 style='background-image: url("{{ value.imagen }}");'></div>
+
+                            <div class="flex-1">
+                                <p class="text-[#0d1b19] dark:text-white text-base font-bold">{{ value.nombre }}</p>
+                                <p class="text-primary dark:text-teal-400 text-sm font-bold mb-2">${{ value.precio_unitario }}</p>
+
+                                <div class="flex items-center gap-4">
+                                    <div class="flex items-center border border-[#e7f3f1] dark:border-[#2a3d3a] rounded-lg bg-gray-50 dark:bg-[#1a312d]">
+                                        <a href="{% url 'carro:restar' value.producto_id %}" class="px-2 py-1 hover:text-primary transition-colors">
+                                            <span class="material-symbols-outlined text-sm flex items-center">remove</span>
+                                        </a>
+                                        <span class="px-3 py-1 text-sm font-bold dark:text-white border-x border-[#e7f3f1] dark:border-[#2a3d3a]">
+                                            {{ value.cantidad }}
+                                        </span>
+                                        <a href="{% url 'carro:agregar' value.producto_id %}" class="px-2 py-1 hover:text-primary transition-colors">
+                                            <span class="material-symbols-outlined text-sm flex items-center">add</span>
+                                        </a>
+                                    </div>
+                                    <a href="{% url 'carro:eliminar' value.producto_id %}" class="text-gray-400 hover:text-red-500 transition-colors flex items-center gap-1">
+                                        <span class="material-symbols-outlined text-lg">delete</span>
+                                        <span class="text-xs font-medium">Quitar</span>
+                                    </a>
+                                </div>
+                            </div>
+
+                            <div class="text-right shrink-0">
+                                <p class="text-[#0d1b19] dark:text-white text-lg font-black">${{ value.precio }}</p>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="bg-[#fcfdfd] dark:bg-[#1a312d] p-6 space-y-3">
+                        <div class="flex justify-between text-sm text-gray-600 dark:text-gray-300">
+                            <span>Subtotal</span>
+                            <span>${{ importe_total_carro }}</span>
+                        </div>
+                        <div class="flex justify-between text-sm text-gray-600 dark:text-gray-300">
+                            <span>Retiro en sucursal</span>
+                            <span class="text-primary font-medium">Gratis</span>
+                        </div>
+                        <div class="pt-3 border-t border-[#e7f3f1] dark:border-[#2a3d3a] flex justify-between items-center">
+                            <span class="text-lg font-bold dark:text-white">Total</span>
+                            <span class="text-2xl font-extrabold text-[#0d1b19] dark:text-white">${{ importe_total_carro }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── Columna derecha: contacto + pago ── -->
+            <div class="lg:col-span-5 flex flex-col gap-6">
+
+                <!-- Detalles de Contacto -->
+                <div class="bg-white dark:bg-[#152a26] rounded-xl border border-[#e7f3f1] dark:border-[#2a3d3a] p-6 shadow-sm">
+                    <div class="flex items-center gap-2 mb-6">
+                        <span class="material-symbols-outlined text-primary">mail</span>
+                        <h2 class="text-[#0d1b19] dark:text-white text-xl font-bold">Detalles de Contacto</h2>
+                    </div>
+                    <div class="space-y-4">
+
+                        <!-- Nombre (readonly si está logueado) -->
+                        <div>
+                            <label class="block text-sm font-semibold text-[#0d1b19] dark:text-gray-300 mb-1">Nombre</label>
+                            <input id="campo-nombre"
+                                class="w-full rounded-lg border border-[#e7f3f1] dark:border-[#2a3d3a] bg-gray-50 dark:bg-[#1a312d] dark:text-white px-4 py-2 focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none transition-all"
+                                type="text"
+                                value="{{ nombre }}"
+                                placeholder="Tu nombre completo"
+                                {% if user.is_authenticated %}readonly{% endif %}
+                            />
+                        </div>
+
+                        <!-- Email (siempre editable) -->
+                        <div>
+                            <label class="block text-sm font-semibold text-[#0d1b19] dark:text-gray-300 mb-1">Email</label>
+                            <input id="campo-email"
+                                class="w-full rounded-lg border border-[#e7f3f1] dark:border-[#2a3d3a] bg-white dark:bg-[#1a312d] dark:text-white px-4 py-2 focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none transition-all"
+                                type="email"
+                                value="{{ email }}"
+                                placeholder="Ejemplo@gmail.com"
+                                required
+                            />
+                            <p id="error-email" class="hidden text-red-500 text-xs font-semibold mt-1 ml-1">
+                                Ingresá un email válido para continuar.
+                            </p>
+                        </div>
+
+                        <!-- Teléfono (siempre editable) -->
+                        <div>
+                            <label class="block text-sm font-semibold text-[#0d1b19] dark:text-gray-300 mb-1">Teléfono</label>
+                            <input id="campo-telefono"
+                                class="w-full rounded-lg border border-[#e7f3f1] dark:border-[#2a3d3a] bg-white dark:bg-[#1a312d] dark:text-white px-4 py-2 focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none transition-all"
+                                type="tel"
+                                value="{{ telefono }}"
+                                placeholder="Ej: 3512345678"
+                            />
+                            <p class="text-xs text-gray-400 mt-1 ml-1">La veterinaria puede contactarte por este número.</p>
+                        </div>
+
+                        {% if not user.is_authenticated %}
+                        <div class="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg p-3 flex items-center gap-2">
+                            <span class="material-symbols-outlined text-amber-500 text-lg">warning</span>
+                            <p class="text-amber-700 dark:text-amber-400 text-xs font-semibold">
+                                <a href="{% url 'registro' %}" class="underline">Iniciá sesión</a> para completar tu compra.
+                            </p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Método de Pago -->
+                <div class="bg-white dark:bg-[#152a26] rounded-xl border border-[#e7f3f1] dark:border-[#2a3d3a] p-6 shadow-sm">
+                    <div class="flex items-center gap-2 mb-6">
+                        <span class="material-symbols-outlined text-primary">payments</span>
+                        <h2 class="text-[#0d1b19] dark:text-white text-xl font-bold">Método de Pago</h2>
+                    </div>
+                    <div class="grid grid-cols-1 gap-3" id="metodos-pago">
+
+                        <label class="metodo-pago-label flex items-center p-4 border-2 border-[#e7f3f1] dark:border-[#2a3d3a] hover:border-primary/50 rounded-xl cursor-pointer transition-all gap-3">
+                            <input class="hidden" name="payment" type="radio" value="tarjeta"/>
+                            <span class="material-symbols-outlined text-primary metodo-icono">credit_card</span>
+                            <div class="flex flex-col">
+                                <span class="font-bold text-[#0d1b19] dark:text-white">Tarjeta de Débito/Crédito</span>
+                                <span class="text-xs text-gray-500">Visa, Mastercard — en el local</span>
+                            </div>
+                            <span class="ml-auto material-symbols-outlined text-primary check-icon">radio_button_unchecked</span>
+                        </label>
+
+                        <label class="metodo-pago-label flex items-center p-4 border-2 border-[#e7f3f1] dark:border-[#2a3d3a] hover:border-primary/50 rounded-xl cursor-pointer transition-all gap-3">
+                            <input class="hidden" name="payment" type="radio" value="transferencia"/>
+                            <span class="material-symbols-outlined text-primary metodo-icono">account_balance</span>
+                            <div class="flex flex-col">
+                                <span class="font-bold text-[#0d1b19] dark:text-white">Transferencia Bancaria</span>
+                                <span class="text-xs text-gray-500">CBU / Alias</span>
+                            </div>
+                            <span class="ml-auto material-symbols-outlined text-gray-300 check-icon">radio_button_unchecked</span>
+                        </label>
+
+                        <label class="metodo-pago-label flex items-center p-4 border-2 border-[#e7f3f1] dark:border-[#2a3d3a] hover:border-primary/50 rounded-xl cursor-pointer transition-all gap-3">
+                            <input class="hidden" name="payment" type="radio" value="qr"/>
+                            <span class="material-symbols-outlined text-primary metodo-icono">qr_code_2</span>
+                            <div class="flex flex-col">
+                                <span class="font-bold text-[#0d1b19] dark:text-white">QR en el Local</span>
+                                <span class="text-xs text-gray-500">Mercado Pago, MODO u otro</span>
+                            </div>
+                            <span class="ml-auto material-symbols-outlined text-gray-300 check-icon">radio_button_unchecked</span>
+                        </label>
+
+                        <label class="metodo-pago-label flex items-center p-4 border-2 border-[#e7f3f1] dark:border-[#2a3d3a] hover:border-primary/50 rounded-xl cursor-pointer transition-all gap-3">
+                            <input class="hidden" name="payment" type="radio" value="efectivo"/>
+                            <span class="material-symbols-outlined text-primary metodo-icono">payments</span>
+                            <div class="flex flex-col">
+                                <span class="font-bold text-[#0d1b19] dark:text-white">Efectivo al Retirar</span>
+                                <span class="text-xs text-gray-500">Disponible en Córdoba Capital</span>
+                            </div>
+                            <span class="ml-auto material-symbols-outlined text-gray-300 check-icon">radio_button_unchecked</span>
+                        </label>
+
+                    </div>
+                    <!-- Aviso si no eligió método -->
+                    <p id="aviso-pago" class="hidden text-red-500 text-xs font-semibold mt-3">
+                        Seleccioná un método de pago para continuar.
+                    </p>
+                </div>
+
+                <!-- Botón confirmar -->
+                <button type="button" id="submit-btn"
+                    class="w-full bg-primary hover:bg-primary/90 text-white font-extrabold text-lg py-4 rounded-xl shadow-lg flex items-center justify-center gap-2"
+                    onclick="procesarCompra(this)">
+                    <span id="btn-text">Confirmar Compra</span>
+                    <span class="material-symbols-outlined">arrow_forward</span>
+                    <div id="btn-loader" class="hidden animate-spin size-5 border-2 border-white/30 border-t-white rounded-full"></div>
+                </button>
+                <p class="text-center text-xs text-gray-500 mt-2">Al confirmar, aceptás nuestros Términos de Servicio</p>
+
+            </div>
+        </div>
+
+        {% else %}
+        <!-- Carrito vacío -->
+        <div class="text-center py-20 dark:bg-[#152a26] rounded-3xl">
+            <span class="material-symbols-outlined text-6xl text-gray-300 mb-4">shopping_cart_off</span>
+            <p class="text-gray-500 dark:text-gray-400 text-xl font-medium">Tu carrito está vacío.</p>
+            <a href="{% url 'tienda' %}" class="text-primary font-bold hover:underline mt-4 inline-block">Volver a la tienda</a>
+        </div>
+        {% endif %}
+
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+
+    // ── Helpers para el campo email ──
+    const campoEmail  = document.getElementById('campo-email');
+    const errorEmail  = document.getElementById('error-email');
+    const emailRegex  = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    function mostrarErrorEmail() {
+        campoEmail.classList.add('border-red-400');
+        campoEmail.classList.remove('border-[#e7f3f1]');
+        errorEmail.classList.remove('hidden');
+    }
+
+    function limpiarErrorEmail() {
+        campoEmail.classList.remove('border-red-400');
+        campoEmail.classList.add('border-[#e7f3f1]');
+        errorEmail.classList.add('hidden');
+    }
+
+    // Limpiar el error mientras el usuario escribe
+    campoEmail.addEventListener('input', limpiarErrorEmail);
+
+    // ── Selección visual de método de pago ──
+    const labels = document.querySelectorAll('.metodo-pago-label');
+    labels.forEach(label => {
+        label.addEventListener('click', () => {
+            labels.forEach(l => {
+                l.classList.remove('border-primary', 'bg-primary/5');
+                l.classList.add('border-[#e7f3f1]');
+                l.querySelector('.check-icon').textContent = 'radio_button_unchecked';
+                l.querySelector('.check-icon').classList.remove('text-primary');
+                l.querySelector('.metodo-icono').classList.remove('text-primary');
+                l.querySelector('.metodo-icono').classList.add('text-primary');
+            });
+            label.classList.add('border-primary', 'bg-primary/5');
+            label.classList.remove('border-[#e7f3f1]');
+            label.querySelector('.check-icon').textContent = 'check_circle';
+            label.querySelector('.check-icon').classList.add('text-primary');
+            label.querySelector('.metodo-icono').classList.add('text-primary');
+            label.querySelector('.metodo-icono').classList.remove('text-gray-400');
+            document.getElementById('aviso-pago').classList.add('hidden');
+        });
+    });
+
+    // ── Procesar compra ──
+    function procesarCompra(btn) {
+
+        // 1. Validar método de pago
+        const metodoSeleccionado = document.querySelector('input[name="payment"]:checked');
+        if (!metodoSeleccionado) {
+            document.getElementById('aviso-pago').classList.remove('hidden');
+            return;
+        }
+
+        // 2. Leer campos
+        const nombre   = document.getElementById('campo-nombre').value.trim();
+        const email    = campoEmail.value.trim();
+        const telefono = document.getElementById('campo-telefono').value.trim();
+        const metodo   = metodoSeleccionado.value;
+
+        // 3. Validar email — muestra error inline, NO popup
+        if (!emailRegex.test(email)) {
+            mostrarErrorEmail();
+            campoEmail.focus();
+            return;
+        }
+
+        // 4. Todo OK → bloquear botón y enviar
+        const btnText   = document.getElementById('btn-text');
+        const btnLoader = document.getElementById('btn-loader');
+        btn.disabled = true;
+        btnText.textContent = 'Procesando...';
+        btnLoader.classList.remove('hidden');
+
+        fetch("{% url 'procesar_pedido' %}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}',
+                'X-Requested-With': 'XMLHttpRequest',
+            },
+            body: JSON.stringify({ nombre, email, telefono, metodo_pago: metodo })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.ok) {
+                Swal.fire({
+                    title: '¡Pedido Confirmado!',
+                    html: `
+                        Tu compra se realizó con éxito.<br><br>
+                        <b>Pedido #${data.pedido_id}</b><br>
+                        <span style="color:#6b7280;font-size:13px;">
+                            Mencioná este número al retirar.<br>
+                            Método elegido: <b>${metodo}</b>
+                        </span>
+                    `,
+                    icon: 'success',
+                    confirmButtonColor: '#10b981',
+                    confirmButtonText: 'Genial',
+                    customClass: {
+                        popup: 'rounded-2xl',
+                        confirmButton: 'rounded-xl px-8 py-3 font-bold'
+                    }
+                }).then(() => {
+                    window.location.href = "/";
+                });
+            } else {
+                throw new Error(data.error || 'Error desconocido');
+            }
+        })
+        .catch(err => {
+            btn.disabled = false;
+            btnText.textContent = 'Confirmar Compra';
+            btnLoader.classList.add('hidden');
+            Swal.fire('Error', err.message || 'No se pudo procesar el pedido.', 'error');
+        });
+    }
+    </script>
+    {% endblock %}
+
+</body>
+</html>

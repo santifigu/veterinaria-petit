@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+{% extends 'base.html' %}
+{% load static tailwind_tags %}
+{% load static %}
+<html lang="es-ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vete {% block title %}| Blog {% endblock %}</title>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-color9 dark:text-white transition-colors duration-300 background-light">
+    {% block hero %}
+        <div class="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden">
+            <div class="layout-container flex h-full grow flex-col">
+                <header class="flex items-center justify-between backdrop-blur-xl bg-black/10 dark:bg-black/20 border-b border-white/10 px-6 lg:px-20 py-4 fixed top-0 w-full z-50 shadow-sm">
+                    <a class="flex items-center gap-3 text-white" href="{% url 'index' %}">
+                        <div class="size-8 text-primary">
+                            <span class="material-symbols-outlined">pets</span>
+                        </div>
+                        <div class="flex flex-col">
+                            <h2 class="text-lg font-bold leading-tight tracking-tight">Córdoba Veterinaria</h2>
+                            <span class="text-xs font-medium opacity-80 uppercase tracking-tighter">Córdoba Capital</span>
+                        </div>
+                    </a>
+
+                    <div class="flex flex-1 justify-end gap-6 items-center">
+                        <nav class="hidden md:flex items-center gap-8 text-[#e7f3eb]">
+                            <a class="text-sm font-semibold hover:text-primary transition-colors" href="{% url 'index' %}">Inicio</a>
+                            <a class="text-sm font-semibold hover:text-primary transition-colors" href="{% url 'nosotros' %}">Nosotros</a>
+                            <a class="text-sm font-semibold hover:text-primary transition-colors" href="{% url 'blog:blog' %}">Blog</a>
+                            <a class="text-sm font-semibold hover:text-primary transition-colors" href="{% url 'tienda' %}">Tienda</a>
+                            <a class="text-sm font-semibold hover:text-primary transition-colors" href="{% url 'turnos:turnos' %}">Turnos</a>
+                            <a class="text-sm font-semibold hover:text-primary transition-colors" href="{% url 'contacto' %}">Contacto</a>
+                        </nav>
+                        <div class="flex gap-3 items-center">
+                            <a href="{% url 'checkout' %}" class="relative flex items-center justify-center w-10 h-10 rounded-lg hover:scale-105 transition-transform">
+                                <span class="absolute -top-1 -right-1 bg-primary text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center shadow-md">{{ cantidad_total_carro }}</span>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 512 512">
+                                    <path fill="#e7f3eb" d="M454.65 169.4A31.82 31.82 0 0 0 432 160h-64v-16a112 112 0 0 0-224 0v16H80a32 32 0 0 0-32 32v216c0 39 33 72 72 72h272a72.22 72.22 0 0 0 50.48-20.55a69.48 69.48 0 0 0 21.52-50.2V192a31.75 31.75 0 0 0-9.35-22.6M176 144a80 80 0 0 1 160 0v16H176Z"/>
+                                </svg>
+                            </a>
+                            {% if user.is_authenticated %}
+                                <a href="{% url 'perfil' %}" class="flex items-center justify-center w-10 h-10 text-white hover:scale-125 transition-transform">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24"><path fill="#E7F3EB" d="M12 4a4 4 0 1 1 0 8a4 4 0 0 1 0-8m0 16s8 0 8-2c0-2.4-3.9-5-8-5s-8 2.6-8 5c0 2 8 2 8 2"/></svg>
+                                </a>
+                            {% else %}
+                                <a href="{% url 'registro' %}" class="flex items-center justify-center w-10 h-10 text-white hover:scale-125 transition-transform">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24"><path fill="#E7F3EB" d="M12 4a4 4 0 1 1 0 8a4 4 0 0 1 0-8m0 16s8 0 8-2c0-2.4-3.9-5-8-5s-8 2.6-8 5c0 2 8 2 8 2"/></svg>
+                                </a>
+                            {% endif %}
+                            <button id="hamburger-btn" class="md:hidden flex items-center justify-center w-10 h-10 text-white hover:text-primary transition-colors">
+                                <span class="material-symbols-outlined text-3xl">menu</span>
+                            </button>
+                        </div>
+                    </div>
+                </header>
+
+                <!-- MOBILE MENU -->
+                <div id="mobile-menu" class="fixed top-0 right-0 h-full w-[280px] bg-background-dark/98 backdrop-blur-xl border-l border-white/10 transform translate-x-full transition-transform duration-300 ease-in-out z-[60] md:hidden shadow-2xl">
+                    <div class="flex flex-col h-full">
+                        <div class="flex items-center justify-between px-6 py-4 border-b border-white/10">
+                            <div class="flex items-center gap-2 text-white">
+                                <span class="material-symbols-outlined text-primary">pets</span>
+                                <span class="font-bold text-sm">Menú</span>
+                            </div>
+                            <button id="close-menu-btn" class="flex items-center justify-center w-10 h-10 text-white hover:text-primary transition-colors">
+                                <span class="material-symbols-outlined text-3xl">close</span>
+                            </button>
+                        </div>
+                        <nav class="flex flex-col gap-1 px-4 py-6 flex-1 overflow-y-auto">
+                            <a class="flex items-center gap-3 px-4 py-3 text-white hover:bg-primary/10 hover:text-primary rounded-lg transition-all font-semibold" href="{% url 'index' %}">
+                                <span class="material-symbols-outlined text-xl">home</span><span>Inicio</span>
+                            </a>
+                            <a class="flex items-center gap-3 px-4 py-3 text-white hover:bg-primary/10 hover:text-primary rounded-lg transition-all font-semibold" href="{% url 'nosotros' %}">
+                                <span class="material-symbols-outlined text-xl">group</span><span>Nosotros</span>
+                            </a>
+                            <a class="flex items-center gap-3 px-4 py-3 text-white hover:bg-primary/10 hover:text-primary rounded-lg transition-all font-semibold" href="{% url 'blog:blog' %}">
+                                <span class="material-symbols-outlined text-xl">article</span><span>Blog</span>
+                            </a>
+                            <a class="flex items-center gap-3 px-4 py-3 text-white hover:bg-primary/10 hover:text-primary rounded-lg transition-all font-semibold" href="{% url 'tienda' %}">
+                                <span class="material-symbols-outlined text-xl">store</span><span>Tienda</span>
+                            </a>
+                            <a class="flex items-center gap-3 px-4 py-3 text-white hover:bg-primary/10 hover:text-primary rounded-lg transition-all font-semibold" href="{% url 'turnos:turnos' %}">
+                                <span class="material-symbols-outlined text-xl">calendar_month</span><span>Turnos</span>
+                            </a>
+                            <a class="flex items-center gap-3 px-4 py-3 text-white hover:bg-primary/10 hover:text-primary rounded-lg transition-all font-semibold" href="{% url 'contacto' %}">
+                                <span class="material-symbols-outlined text-xl">mail</span><span>Contacto</span>
+                            </a>
+                        </nav>
+                        <div class="px-4 py-3 border-t border-white/10 flex gap-3">
+                            <a href="{% url 'checkout' %}" class="relative flex items-center justify-center gap-2 flex-1 bg-white/5 hover:bg-white/10 text-white py-3 rounded-lg transition-all font-semibold text-sm">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 512 512">
+                                    <path fill="#e7f3eb" d="M454.65 169.4A31.82 31.82 0 0 0 432 160h-64v-16a112 112 0 0 0-224 0v16H80a32 32 0 0 0-32 32v216c0 39 33 72 72 72h272a72.22 72.22 0 0 0 50.48-20.55a69.48 69.48 0 0 0 21.52-50.2V192a31.75 31.75 0 0 0-9.35-22.6M176 144a80 80 0 0 1 160 0v16H176Z"/>
+                                </svg>
+                                <span>Carrito</span>
+                                <span class="absolute -top-1 -right-1 bg-primary text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">{{ cantidad_total_carro }}</span>
+                            </a>
+                            {% if user.is_authenticated %}
+                                <a href="{% url 'perfil' %}" class="flex items-center justify-center gap-2 flex-1 bg-white/5 hover:bg-white/10 text-white py-3 rounded-lg transition-all font-semibold text-sm">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path fill="#E7F3EB" d="M12 4a4 4 0 1 1 0 8a4 4 0 0 1 0-8m0 16s8 0 8-2c0-2.4-3.9-5-8-5s-8 2.6-8 5c0 2 8 2 8 2"/></svg>
+                                    <span>Mi Perfil</span>
+                                </a>
+                            {% else %}
+                                <a href="{% url 'registro' %}" class="flex items-center justify-center gap-2 flex-1 bg-white/5 hover:bg-white/10 text-white py-3 rounded-lg transition-all font-semibold text-sm">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path fill="#E7F3EB" d="M12 4a4 4 0 1 1 0 8a4 4 0 0 1 0-8m0 16s8 0 8-2c0-2.4-3.9-5-8-5s-8 2.6-8 5c0 2 8 2 8 2"/></svg>
+                                    <span>Registrarse</span>
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div id="menu-overlay" class="fixed inset-0 bg-black/50 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300 z-[55]"></div>
+
+                <!-- HERO -->
+                <section class="relative w-full overflow-hidden">
+                    <div class="relative w-full min-h-[100vh] flex flex-col items-center justify-center px-4 py-18 text-center">
+                        <div class="absolute inset-0 z-0">
+                            <img alt="Interior veterinario moderno" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCqhD2JmQBCHqhwGUcdVG7f4emC7_Hpgsk-lfmiUJKBlovuXwM5QCD2VRybLi-2B5pD74AlQzw4OlbZ4JyFOhx0Z6XiMq11tS4tKxSpCXmRv2cmW8qgn5H3pKVPnnuil_9vLvOu6dpyyiu3Qa5AaGMCiCJ9_fALjVocVvnotNm1GvnzWJB9XgBUgDVNb5Pz57BUvraodpdQcCtW56-lqks_gWiFcOBa0pUNvmWKODg9UnRupWH3jTn1GSglP_U4XOmvtfETUVYA1e8"/>
+                            <div class="absolute inset-0 bg-black/50 dark:bg-black/60"></div>
+                        </div>
+                        <div class="relative z-10 max-w-4xl mx-auto flex flex-col items-center gap-8">
+                            <span class="inline-block px-4 py-2 bg-primary/60 backdrop-blur-sm text-white text-xs font-bold uppercase tracking-[0.2em] rounded-full mb-6 mt-10">
+                                Blog Salud Animal
+                            </span>
+                            <div class="flex flex-col gap-6">
+                                <h1 class="text-5xl md:text-7xl font-black leading-tight tracking-tight mb-6 text-white">
+                                    <span class="text-primary">Blog</span> para conocer el Cuidado y la Salud de tu Mascota
+                                </h1>
+                                <p class="text-xl md:text-2xl text-white/90 font-light max-w-2xl mx-auto leading-relaxed mb-10">
+                                    Consejos médicos, guías nutricionales y consejos de conducta para tus queridos compañeros.
+                                </p>
+                            </div>
+                            <div class="flex justify-center">
+                                <a class="bg-primary hover:bg-primary/90 text-teal-soft px-10 py-5 rounded-full font-bold text-lg transition-all flex items-center gap-3 shadow-xl hover:translate-x-[4px]"
+                                href="{% url 'blog:ultimo_post' %}">
+                                    Leer último Blog
+                                    <span class="material-symbols-outlined">arrow_forward</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+    {% endblock %}
+
+    {% block content %}
+    <div class="relative flex h-auto min-h-screen w-full flex-col overflow-x-hidden">
+        <main class="flex flex-col gap-16 px-6 lg:px-20 py-20">
+            <div class="flex flex-col gap-12 max-w-5xl mx-auto w-full">
+
+                <!-- Encabezado -->
+                <div class="flex flex-col md:flex-row justify-between items-end gap-6" id="blog">
+                    <div class="flex flex-col gap-4 max-w-2xl">
+                        <h1 class="text-[#0d1b12] dark:text-white text-5xl font-black leading-tight tracking-tight">Blog de Cuidado Animal</h1>
+                        <p class="text-[#0d1b12]/70 dark:text-[#a0d9b4] text-lg font-medium">Asesoramiento médico, guías nutricionales y consejos de comportamiento para tus queridos compañeros.</p>
+                    </div>
+                </div>
+
+                <!-- Buscador y Filtros -->
+                <div class="flex flex-col gap-6">
+                    <form method="get" action="{% url 'blog:blog' %}" class="w-full">
+                        <label class="flex flex-col w-full h-14">
+                            <div class="flex w-full flex-1 items-stretch rounded-xl overflow-hidden shadow-sm hover:border-primary ease-in duration-100 dark:border-[#1a3d24] border border-[#e7f3eb]">
+                                <div class="text-primary flex bg-[#e7f3eb] dark:bg-[#102216] items-center justify-center px-5">
+                                    <button type="submit">
+                                        <span class="material-symbols-outlined">search</span>
+                                    </button>
+                                </div>
+                                <input
+                                    type="text"
+                                    name="query"
+                                    value="{{ query|default:'' }}"
+                                    class="form-input flex w-full flex-1 border-none bg-white dark:bg-[#0d1b12] text-[#0d1b12]/90 dark:text-white focus:ring-1 focus:ring-primary h-full placeholder:text-[#0d1b12]/70 px-4 text-base font-medium"
+                                    placeholder="Buscar salud, razas, alimentación, vacunas..."
+                                />
+                            </div>
+                        </label>
+                    </form>
+
+                    <!-- Filtro por categoría -->
+                    <div class="flex gap-3 overflow-x-auto pb-2 no-scrollbar">
+                        <a href="{% url 'blog:blog' %}"
+                        class="flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-full px-6 border transition-all cursor-pointer font-bold text-sm
+                        {% if not categoria_seleccionada %}bg-primary text-teal-soft shadow-md border-primary{% else %}bg-white dark:bg-[#1a3d24] text-[#0d1b12]/90 dark:text-white border-[#e7f3eb] dark:border-transparent hover:border-primary{% endif %}">
+                            Todos
+                        </a>
+                        {% for cat in categorias %}
+                        <a href="{% url 'blog:categoria' cat.slug %}"
+                        class="flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-full px-6 border transition-all cursor-pointer font-bold text-sm
+                        {% if categoria_seleccionada.id == cat.id %}bg-primary text-teal-soft shadow-md border-primary{% else %}bg-white dark:bg-[#1a3d24] text-[#0d1b12]/90 dark:text-white border-[#e7f3eb] dark:border-transparent hover:border-primary{% endif %}">
+                            {{ cat.nombre }}
+                        </a>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- POST DESTACADO (el más reciente) -->
+                {% if posts %}
+                {% with posts.0 as destacado %}
+                <div class="flex flex-col lg:flex-row items-stretch justify-start rounded-2xl overflow-hidden shadow-xl bg-white dark:bg-[#0d1b12] border border-[#e7f3eb] dark:border-[#1a3d24] hover:shadow-2xl transition-shadow duration-300">
+                    {% if destacado.imagen %}
+                    <div class="w-full lg:w-3/5 bg-center bg-no-repeat aspect-video lg:aspect-auto bg-cover"
+                        style="background-image: url('{{ destacado.imagen.url }}');"></div>
+                    {% else %}
+                    <div class="w-full lg:w-3/5 bg-center bg-no-repeat aspect-video lg:aspect-auto bg-cover bg-[#1a3d24] flex items-center justify-center">
+                        <span class="material-symbols-outlined text-primary text-8xl opacity-30">pets</span>
+                    </div>
+                    {% endif %}
+                    <div class="flex w-full lg:w-2/5 flex-col justify-center gap-4 p-8 lg:p-10 overflow-hidden">
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-[10px] font-bold tracking-widest uppercase bg-primary/20 text-color7 dark:text-primary w-fit">
+                            {% if destacado.categoria.all %}{{ destacado.categoria.all.0.nombre }}{% else %}Destacado{% endif %}
+                        </span>
+                        <h2 class="text-color9 dark:text-white text-3xl font-extrabold leading-tight tracking-tight">
+                            {{ destacado.titulo }}
+                        </h2>
+                        <p class="text-[#0d1b12]/60 dark:text-[#a0d9b4] text-base leading-relaxed line-clamp-4">
+                            {{ destacado.bajada }}
+                        </p>
+                        <div class="flex flex-col gap-4 mt-2">
+                            <div class="flex items-center gap-3">
+                                <div class="size-10 rounded-full bg-primary/20 flex items-center justify-center">
+                                    <span class="material-symbols-outlined text-primary text-xl">person</span>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-bold text-[#0d1b12] dark:text-white">
+                                        Escrito por {{ destacado.autor.get_full_name|default:destacado.autor.username }}
+                                    </p>
+                                    <div class="flex items-center gap-1 text-xs text-primary">
+                                        <span>Veterinario • {{ destacado.tiempo }} min de lectura</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <a href="{% url 'blog:post' destacado.id %}" class="flex items-center justify-center gap-2 w-full lg:w-fit rounded-xl h-12 px-8 bg-primary text-teal-soft text-sm font-bold shadow-lg shadow-primary/20 hover:translate-x-[3px] transition-all">
+                                Leer Artículo <span class="material-symbols-outlined text-sm">arrow_forward</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% endwith %}
+                <!-- Grilla de posts restantes -->
+                {% if posts|length > 1 %}
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    {% for p in posts %}
+                    {% if not forloop.first %}
+                    <article class="group flex flex-col bg-white dark:bg-[#0d1b12] rounded-2xl overflow-hidden border border-[#e7f3eb] dark:border-[#1a3d24] shadow-sm hover:shadow-lg transition-all">
+                        <div class="relative h-48 overflow-hidden">
+                            {% if p.imagen %}
+                            <div class="absolute inset-0 bg-center bg-cover transition-transform duration-500 group-hover:scale-105"
+                                style="background-image: url('{{ p.imagen.url }}');"></div>
+                            {% else %}
+                            <div class="absolute inset-0 bg-[#1a3d24] flex items-center justify-center transition-transform duration-500 group-hover:scale-105">
+                                <span class="material-symbols-outlined text-primary text-6xl opacity-30">pets</span>
+                            </div>
+                            {% endif %}
+                            <div class="absolute top-4 left-4">
+                                {% if p.categoria.all %}
+                                <span class="px-3 py-1 bg-white/90 backdrop-blur rounded-full text-[10px] font-bold text-[#0d1b12] uppercase">
+                                    {{ p.categoria.all.0.nombre }}
+                                </span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="p-6 flex flex-col flex-1 gap-3">
+                            <h3 class="text-xl font-bold leading-tight group-hover:text-primary transition-colors">
+                                {{ p.titulo }}
+                            </h3>
+                            <p class="text-sm text-[#0d1b12]/70 dark:text-[#a0d9b4] line-clamp-3">
+                                {{ p.bajada }}
+                            </p>
+                            <div class="mt-auto pt-4 flex items-center justify-between">
+                                <div class="flex items-center gap-1 text-xs font-medium text-primary dark:text-[#a0d9b4]">
+                                    <span>• {{ p.tiempo }} min</span>
+                                </div>
+                                <a class="text-primary text-sm font-bold flex items-center gap-1" href="{% url 'blog:post' p.id %}">
+                                    Ver más <span class="material-symbols-outlined text-sm">open_in_new</span>
+                                </a>
+                            </div>
+                        </div>
+                    </article>
+                    {% endif %}
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                {% else %}
+                <!-- Sin resultados -->
+                <div class="flex flex-col items-center gap-4 py-20 text-center">
+                    <span class="material-symbols-outlined text-6xl text-primary/40">search_off</span>
+                    <h3 class="text-2xl font-bold text-[#0d1b12] dark:text-white">No encontramos artículos</h3>
+                    <p class="text-[#0d1b12]/60 dark:text-[#a0d9b4]">
+                        {% if query %}Intentá con otras palabras clave.{% else %}Todavía no hay posts publicados.{% endif %}
+                    </p>
+                    {% if query %}
+                    <a href="{% url 'blog:blog' %}" class="mt-2 text-primary font-bold hover:underline">Ver todos los artículos</a>
+                    {% endif %}
+                </div>
+                {% endif %}
+            </div>
+        </main>
+    </div>
+
+    <!-- Script para menú móvil -->
+    <script>
+        const hamburgerBtn = document.getElementById('hamburger-btn');
+        const closeMenuBtn = document.getElementById('close-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const menuOverlay = document.getElementById('menu-overlay');
+
+        function openMenu() {
+            mobileMenu.classList.remove('translate-x-full');
+            mobileMenu.classList.add('translate-x-0');
+            menuOverlay.classList.remove('opacity-0', 'pointer-events-none');
+            menuOverlay.classList.add('opacity-100');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeMenu() {
+            mobileMenu.classList.remove('translate-x-0');
+            mobileMenu.classList.add('translate-x-full');
+            menuOverlay.classList.remove('opacity-100');
+            menuOverlay.classList.add('opacity-0', 'pointer-events-none');
+            document.body.style.overflow = '';
+        }
+
+        hamburgerBtn.addEventListener('click', openMenu);
+        closeMenuBtn.addEventListener('click', closeMenu);
+        menuOverlay.addEventListener('click', closeMenu);
+        mobileMenu.querySelectorAll('a').forEach(link => link.addEventListener('click', closeMenu));
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeMenu(); });
+    </script>
+    {% endblock %}
+</body>
+</html>

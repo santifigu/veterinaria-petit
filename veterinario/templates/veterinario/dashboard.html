@@ -1,0 +1,191 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="min-h-screen bg-background-light dark:bg-background-dark">
+    <!-- Header con info del veterinario -->
+    <div class="bg-gradient-to-r from-primary to-secondary text-white py-8">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-20">
+            <div class="flex flex-col md:flex-row items-center gap-6">
+                <div class="w-24 h-24 bg-white rounded-full flex items-center justify-center overflow-hidden">
+                    {% if veterinario.foto %}
+                    <img src="{{ veterinario.foto.url }}" alt="{{ veterinario.get_nombre_completo }}" class="w-full h-full object-cover">
+                    {% else %}
+                    <span class="material-symbols-outlined text-primary text-5xl">person</span>
+                    {% endif %}
+                </div>
+                <div class="text-center md:text-left">
+                    <h1 class="text-3xl md:text-4xl font-black mb-2">{{ veterinario.get_nombre_completo }}</h1>
+                    <p class="text-white/80">Mat. {{ veterinario.matricula }}{% if veterinario.especialidad %} • {{ veterinario.especialidad }}{% endif %}</p>
+                    <p class="text-white/70 text-sm mt-1">{{ veterinario.email }} • {{ veterinario.telefono }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container mx-auto px-4 sm:px-6 lg:px-20 py-8">
+        <!-- Estadísticas -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+            <div class="bg-white dark:bg-[#162a1c] rounded-xl p-6 border border-[#e7f3eb] dark:border-[#1a3321] shadow-lg">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 mb-1">Turnos Hoy</p>
+                        <p class="text-3xl font-black text-primary">{{ turnos_hoy.count }}</p>
+                    </div>
+                    <div class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
+                        <span class="material-symbols-outlined text-primary text-2xl">today</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white dark:bg-[#162a1c] rounded-xl p-6 border border-[#e7f3eb] dark:border-[#1a3321] shadow-lg">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 mb-1">Pendientes</p>
+                        <p class="text-3xl font-black text-yellow-500">{{ turnos_pendientes }}</p>
+                    </div>
+                    <div class="w-12 h-12 bg-yellow-500/10 rounded-full flex items-center justify-center">
+                        <span class="material-symbols-outlined text-yellow-500 text-2xl">schedule</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white dark:bg-[#162a1c] rounded-xl p-6 border border-[#e7f3eb] dark:border-[#1a3321] shadow-lg">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 mb-1">Esta Semana</p>
+                        <p class="text-3xl font-black text-blue-500">{{ proximos_turnos.count }}</p>
+                    </div>
+                    <div class="w-12 h-12 bg-blue-500/10 rounded-full flex items-center justify-center">
+                        <span class="material-symbols-outlined text-blue-500 text-2xl">calendar_month</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white dark:bg-[#162a1c] rounded-xl p-6 border border-[#e7f3eb] dark:border-[#1a3321] shadow-lg">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 mb-1">Pacientes</p>
+                        <p class="text-3xl font-black text-emerald-500">{{ mascotas_recientes.count }}</p>
+                    </div>
+                    <div class="w-12 h-12 bg-emerald-500/10 rounded-full flex items-center justify-center">
+                        <span class="material-symbols-outlined text-emerald-500 text-2xl">pets</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Turnos de Hoy -->
+            <div class="lg:col-span-2">
+                <div class="bg-white dark:bg-[#162a1c] rounded-2xl p-6 border border-[#e7f3eb] dark:border-[#1a3321] shadow-lg">
+                    <h2 class="text-2xl font-bold text-[#0d1b12] dark:text-white mb-6 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-primary">event</span>
+                        Turnos de Hoy
+                    </h2>
+                    
+                    {% if turnos_hoy %}
+                    <div class="space-y-4">
+                        {% for turno in turnos_hoy %}
+                        <div class="flex items-center gap-4 p-4 bg-background-light dark:bg-background-dark rounded-xl hover:shadow-md transition-all cursor-pointer" onclick="window.location.href='{% if turno.mascota %}{% url 'veterinario:detalle_paciente' turno.mascota.id %}{% else %}#{% endif %}'">
+                            <div class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0">
+                                <span class="material-symbols-outlined text-primary">pets</span>
+                            </div>
+                            <div class="flex-1">
+                                <h3 class="font-bold text-[#0d1b12] dark:text-white">{{ turno.nombre_mascota }}</h3>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">{{ turno.servicio.nombre }}</p>
+                            </div>
+                            <div class="text-right">
+                                <p class="font-bold text-primary">{{ turno.hora|time:"H:i" }}</p>
+                                <span class="text-xs px-2 py-1 rounded-full {% if turno.estado == 'confirmado' %}bg-emerald-500/20 text-emerald-600{% elif turno.estado == 'en_curso' %}bg-blue-500/20 text-blue-600{% endif %}">
+                                    {{ turno.get_estado_display }}
+                                </span>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="text-center py-12">
+                        <div class="w-20 h-20 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <span class="material-symbols-outlined text-gray-400 text-4xl">event_available</span>
+                        </div>
+                        <p class="text-gray-500 dark:text-gray-400">No tienes turnos programados para hoy</p>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Próximos Turnos -->
+                <div class="bg-white dark:bg-[#162a1c] rounded-2xl p-6 border border-[#e7f3eb] dark:border-[#1a3321] shadow-lg mt-6">
+                    <h2 class="text-2xl font-bold text-[#0d1b12] dark:text-white mb-6 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-primary">calendar_month</span>
+                        Próximos Turnos
+                    </h2>
+                    
+                    {% if proximos_turnos %}
+                    <div class="space-y-3">
+                        {% for turno in proximos_turnos %}
+                        <div class="flex items-center gap-4 p-3 bg-background-light dark:bg-background-dark rounded-lg">
+                            <div class="text-center min-w-[60px]">
+                                <p class="text-xs text-gray-500">{{ turno.fecha|date:"M" }}</p>
+                                <p class="text-2xl font-bold text-primary">{{ turno.fecha|date:"d" }}</p>
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="font-bold text-sm text-[#0d1b12] dark:text-white">{{ turno.nombre_mascota }}</h4>
+                                <p class="text-xs text-gray-600 dark:text-gray-400">{{ turno.servicio.nombre }} • {{ turno.hora|time:"H:i" }}</p>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <p class="text-center text-gray-500 dark:text-gray-400 py-8">No hay turnos próximos</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="space-y-6">
+                <!-- Accesos Rápidos -->
+                <div class="bg-white dark:bg-[#162a1c] rounded-2xl p-6 border border-[#e7f3eb] dark:border-[#1a3321] shadow-lg">
+                    <h3 class="text-lg font-bold text-[#0d1b12] dark:text-white mb-4">Accesos Rápidos</h3>
+                    <div class="space-y-2">
+                        <a href="#" class="flex items-center gap-3 p-3 bg-background-light dark:bg-background-dark rounded-lg hover:bg-primary/10 transition-colors">
+                            <span class="material-symbols-outlined text-primary">add_circle</span>
+                            <span class="text-sm font-medium">Nuevo Historial</span>
+                        </a>
+                        <a href="#" class="flex items-center gap-3 p-3 bg-background-light dark:bg-background-dark rounded-lg hover:bg-primary/10 transition-colors">
+                            <span class="material-symbols-outlined text-primary">vaccines</span>
+                            <span class="text-sm font-medium">Registrar Vacuna</span>
+                        </a>
+                        <a href="#" class="flex items-center gap-3 p-3 bg-background-light dark:bg-background-dark rounded-lg hover:bg-primary/10 transition-colors">
+                            <span class="material-symbols-outlined text-primary">search</span>
+                            <span class="text-sm font-medium">Buscar Paciente</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Pacientes Recientes -->
+                <div class="bg-white dark:bg-[#162a1c] rounded-2xl p-6 border border-[#e7f3eb] dark:border-[#1a3321] shadow-lg">
+                    <h3 class="text-lg font-bold text-[#0d1b12] dark:text-white mb-4">Pacientes Recientes</h3>
+                    {% if mascotas_recientes %}
+                    <div class="space-y-3">
+                        {% for mascota in mascotas_recientes %}
+                        <a href="{% url 'veterinario:detalle_paciente' mascota.id %}" class="flex items-center gap-3 p-3 bg-background-light dark:bg-background-dark rounded-lg hover:bg-primary/10 transition-colors">
+                            <div class="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
+                                <span class="material-symbols-outlined text-primary text-xl">pets</span>
+                            </div>
+                            <div class="flex-1">
+                                <p class="font-bold text-sm text-[#0d1b12] dark:text-white">{{ mascota.nombre }}</p>
+                                <p class="text-xs text-gray-600 dark:text-gray-400">{{ mascota.get_tipo_display }} • {{ mascota.raza }}</p>
+                            </div>
+                        </a>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <p class="text-center text-gray-500 dark:text-gray-400 text-sm py-4">No hay pacientes recientes</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="min-h-screen bg-background-light dark:bg-background-dark py-20">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-20 py-8">
+        <div class="max-w-4xl mx-auto">
+            <a href="{% url 'veterinario:detalle_paciente' mascota.id %}" class="inline-flex items-center gap-2 text-primary hover:underline mb-6">
+                <span class="material-symbols-outlined">arrow_back</span>
+                <span>Volver al Paciente</span>
+            </a>
+
+            <div class="bg-white dark:bg-[#162a1c] rounded-3xl p-8 border border-[#e7f3eb] dark:border-[#1a3321] shadow-2xl">
+                <div class="mb-8">
+                    <div class="flex items-center gap-4 mb-4">
+                        <div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center">
+                            <span class="material-symbols-outlined text-primary text-3xl">medical_services</span>
+                        </div>
+                        <div>
+                            <h1 class="text-3xl font-black text-[#0d1b12] dark:text-white">Nuevo Registro Médico</h1>
+                            <p class="text-gray-600 dark:text-gray-400">Paciente: {{ mascota.nombre }} ({{ mascota.get_tipo_display }})</p>
+                        </div>
+                    </div>
+                </div>
+
+                <form method="POST" class="space-y-6">
+                    {% csrf_token %}
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Tipo de Consulta *</label>
+                            <select name="tipo" required
+                                class="w-full bg-background-light dark:bg-background-dark border border-gray-300 dark:border-[#1a3321] rounded-lg p-3 focus:ring-2 focus:ring-primary focus:outline-none">
+                                <option value="consulta">Consulta General</option>
+                                <option value="cirugia">Cirugía</option>
+                                <option value="emergencia">Emergencia</option>
+                                <option value="control">Control de Rutina</option>
+                                <option value="otro">Otro</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Fecha *</label>
+                            <input type="date" name="fecha" value="{{ 'now'|date:'Y-m-d' }}" required
+                                class="w-full bg-background-light dark:bg-background-dark border border-gray-300 dark:border-[#1a3321] rounded-lg p-3 focus:ring-2 focus:ring-primary focus:outline-none">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Peso (kg)</label>
+                            <input type="number" step="0.01" name="peso"
+                                class="w-full bg-background-light dark:bg-background-dark border border-gray-300 dark:border-[#1a3321] rounded-lg p-3 focus:ring-2 focus:ring-primary focus:outline-none"
+                                placeholder="Ej: 28.5">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Temperatura (°C)</label>
+                            <input type="number" step="0.1" name="temperatura"
+                                class="w-full bg-background-light dark:bg-background-dark border border-gray-300 dark:border-[#1a3321] rounded-lg p-3 focus:ring-2 focus:ring-primary focus:outline-none"
+                                placeholder="Ej: 38.5">
+                        </div>
+
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Motivo de Consulta *</label>
+                            <textarea name="motivo_consulta" rows="2" required
+                                class="w-full bg-background-light dark:bg-background-dark border border-gray-300 dark:border-[#1a3321] rounded-lg p-3 focus:ring-2 focus:ring-primary focus:outline-none"
+                                placeholder="¿Por qué razón asiste el paciente?"></textarea>
+                        </div>
+
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Diagnóstico *</label>
+                            <textarea name="diagnostico" rows="3" required
+                                class="w-full bg-background-light dark:bg-background-dark border border-gray-300 dark:border-[#1a3321] rounded-lg p-3 focus:ring-2 focus:ring-primary focus:outline-none"
+                                placeholder="Diagnóstico o hallazgos del examen"></textarea>
+                        </div>
+
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Tratamiento *</label>
+                            <textarea name="tratamiento" rows="3" required
+                                class="w-full bg-background-light dark:bg-background-dark border border-gray-300 dark:border-[#1a3321] rounded-lg p-3 focus:ring-2 focus:ring-primary focus:outline-none"
+                                placeholder="Tratamiento prescrito, procedimientos realizados"></textarea>
+                        </div>
+
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Medicamentos</label>
+                            <textarea name="medicamentos" rows="2"
+                                class="w-full bg-background-light dark:bg-background-dark border border-gray-300 dark:border-[#1a3321] rounded-lg p-3 focus:ring-2 focus:ring-primary focus:outline-none"
+                                placeholder="Medicamentos prescritos, dosis, frecuencia"></textarea>
+                        </div>
+
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Exámenes / Estudios</label>
+                            <textarea name="examenes" rows="2"
+                                class="w-full bg-background-light dark:bg-background-dark border border-gray-300 dark:border-[#1a3321] rounded-lg p-3 focus:ring-2 focus:ring-primary focus:outline-none"
+                                placeholder="Análisis de sangre, radiografías, ecografías, etc."></textarea>
+                        </div>
+
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Observaciones Adicionales</label>
+                            <textarea name="observaciones" rows="2"
+                                class="w-full bg-background-light dark:bg-background-dark border border-gray-300 dark:border-[#1a3321] rounded-lg p-3 focus:ring-2 focus:ring-primary focus:outline-none"
+                                placeholder="Cualquier información adicional relevante"></textarea>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Próxima Visita</label>
+                            <input type="date" name="proxima_visita"
+                                class="w-full bg-background-light dark:bg-background-dark border border-gray-300 dark:border-[#1a3321] rounded-lg p-3 focus:ring-2 focus:ring-primary focus:outline-none">
+                        </div>
+                    </div>
+
+                    <div class="flex gap-4 pt-6 border-t border-gray-200 dark:border-[#1a3321]">
+                        <button type="submit" class="flex-1 bg-primary text-teal-soft py-4 rounded-xl font-bold hover:shadow-lg transition-all flex items-center justify-center gap-2">
+                            <span class="material-symbols-outlined">save</span>
+                            <span>Guardar Registro</span>
+                        </button>
+                        <a href="{% url 'veterinario:detalle_paciente' mascota.id %}" class="flex-1 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white py-4 rounded-xl font-bold text-center hover:shadow-lg transition-all">
+                            Cancelar
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,337 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="min-h-screen bg-background-light dark:bg-background-dark py-20">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-20 py-8">
+        <!-- Botón Volver -->
+        <a href="{% url 'perfil_veterinario' %}" class="inline-flex items-center gap-2 text-primary hover:underline mb-6">
+            <span class="material-symbols-outlined">arrow_back</span>
+            <span>Volver al Dashboard</span>
+        </a>
+
+        <!-- Header de la Mascota -->
+        <div class="bg-white dark:bg-[#162a1c] rounded-2xl p-6 border border-[#e7f3eb] dark:border-[#1a3321] shadow-lg mb-6">
+            <div class="flex flex-col md:flex-row gap-6">
+                <div class="flex-shrink-0">
+                    <div class="w-32 h-32 bg-primary/10 rounded-2xl flex items-center justify-center overflow-hidden">
+                        {% if mascota.foto %}
+                        <img src="{{ mascota.foto.url }}" alt="{{ mascota.nombre }}" class="w-full h-full object-cover">
+                        {% else %}
+                        <span class="material-symbols-outlined text-primary text-6xl">pets</span>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="flex-1">
+                    <div class="flex flex-col sm:flex-row justify-between items-start gap-4 mb-4">
+                        <div>
+                            <h1 class="text-3xl md:text-4xl font-black text-[#0d1b12] dark:text-white mb-2">{{ mascota.nombre }}</h1>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm font-bold">{{ mascota.get_tipo_display }}</span>
+                                <span class="px-3 py-1 bg-blue-500/10 text-blue-600 rounded-full text-sm font-bold">{{ mascota.raza }}</span>
+                                <span class="px-3 py-1 bg-purple-500/10 text-purple-600 rounded-full text-sm font-bold">{{ mascota.get_sexo_display }}</span>
+                            </div>
+                        </div>
+                        <a href="{% url 'cartilla_sanitaria' mascota.id %}" class="flex items-center gap-2 bg-primary text-teal-soft px-6 py-3 rounded-lg font-bold hover:shadow-lg transition-all whitespace-nowrap">
+                            <span class="material-symbols-outlined">description</span>
+                            <span>Ver Cartilla</span>
+                        </a>
+                    </div>
+
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                        <div>
+                            <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">Edad</p>
+                            <p class="font-bold text-[#0d1b12] dark:text-white">{% if mascota.get_edad %}{{ mascota.get_edad }} años{% else %}-{% endif %}</p>
+                        </div>
+                        <div>
+                            <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">Peso</p>
+                            <p class="font-bold text-[#0d1b12] dark:text-white">{% if mascota.peso %}{{ mascota.peso }} kg{% else %}-{% endif %}</p>
+                        </div>
+                        <div>
+                            <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">Microchip</p>
+                            <p class="font-bold text-[#0d1b12] dark:text-white">{% if mascota.microchip %}{{ mascota.microchip }}{% else %}No{% endif %}</p>
+                        </div>
+                        <div>
+                            <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">Color/Señas</p>
+                            <p class="font-bold text-[#0d1b12] dark:text-white">{{ mascota.color|default:"-" }}</p>
+                        </div>
+                    </div>
+
+                    {% if mascota.observaciones %}
+                    <div class="mt-4 p-3 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg border border-yellow-200 dark:border-yellow-800">
+                        <p class="text-sm text-yellow-800 dark:text-yellow-200"><strong>Observaciones:</strong> {{ mascota.observaciones }}</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Datos del Tutor -->
+            <div class="mt-6 pt-6 border-t border-gray-200 dark:border-[#1a3321]">
+                <h3 class="text-lg font-bold text-[#0d1b12] dark:text-white mb-3 flex items-center gap-2">
+                    <span class="material-symbols-outlined text-primary">person</span>
+                    Datos del Tutor
+                </h3>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">Nombre</p>
+                        <p class="font-bold text-[#0d1b12] dark:text-white">{{ mascota.tutor.get_nombre_completo }}</p>
+                    </div>
+                    <div>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">Teléfono</p>
+                        <p class="font-bold text-[#0d1b12] dark:text-white">{{ mascota.tutor.telefono }}</p>
+                    </div>
+                    <div>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">Email</p>
+                        <p class="font-bold text-[#0d1b12] dark:text-white">{{ mascota.tutor.email }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="bg-white dark:bg-[#162a1c] rounded-2xl border border-[#e7f3eb] dark:border-[#1a3321] shadow-lg overflow-hidden">
+            <!-- Tab Headers -->
+            <div class="flex border-b border-gray-200 dark:border-[#1a3321] overflow-x-auto">
+                <button class="tab-btn active px-6 py-4 font-bold text-sm whitespace-nowrap" data-tab="historial">
+                    <span class="flex items-center gap-2">
+                        <span class="material-symbols-outlined">medical_services</span>
+                        Historial Médico
+                    </span>
+                </button>
+                <button class="tab-btn px-6 py-4 font-bold text-sm whitespace-nowrap" data-tab="vacunas">
+                    <span class="flex items-center gap-2">
+                        <span class="material-symbols-outlined">vaccines</span>
+                        Vacunas
+                    </span>
+                </button>
+                <button class="tab-btn px-6 py-4 font-bold text-sm whitespace-nowrap" data-tab="turnos">
+                    <span class="flex items-center gap-2">
+                        <span class="material-symbols-outlined">event</span>
+                        Turnos
+                    </span>
+                </button>
+                <button class="tab-btn px-6 py-4 font-bold text-sm whitespace-nowrap" data-tab="archivos">
+                    <span class="flex items-center gap-2">
+                        <span class="material-symbols-outlined">folder</span>
+                        Archivos
+                    </span>
+                </button>
+            </div>
+
+            <!-- Tab Contents -->
+            <div class="p-6">
+                <!-- Historial Médico -->
+                <div id="tab-historial" class="tab-content">
+                    {% if historial %}
+                    <div class="space-y-4">
+                        {% for registro in historial %}
+                        <div class="bg-background-light dark:bg-background-dark p-6 rounded-xl">
+                            <div class="flex justify-between items-start mb-4">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
+                                        <span class="material-symbols-outlined text-primary text-xl">{{ registro.tipo }}</span>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold text-[#0d1b12] dark:text-white">{{ registro.get_tipo_display }}</h4>
+                                        <p class="text-sm text-gray-600 dark:text-gray-400">{{ registro.fecha|date:"d/m/Y" }}</p>
+                                    </div>
+                                </div>
+                                {% if registro.veterinario %}
+                                <span class="text-xs text-gray-500 dark:text-gray-400">Dr/a. {{ registro.veterinario.apellido }}</span>
+                                {% endif %}
+                            </div>
+
+                            <div class="space-y-3">
+                                <div>
+                                    <p class="text-xs font-bold text-gray-500 dark:text-gray-400 mb-1">Motivo de Consulta</p>
+                                    <p class="text-sm text-[#0d1b12] dark:text-white">{{ registro.motivo_consulta }}</p>
+                                </div>
+                                <div>
+                                    <p class="text-xs font-bold text-gray-500 dark:text-gray-400 mb-1">Diagnóstico</p>
+                                    <p class="text-sm text-[#0d1b12] dark:text-white">{{ registro.diagnostico }}</p>
+                                </div>
+                                <div>
+                                    <p class="text-xs font-bold text-gray-500 dark:text-gray-400 mb-1">Tratamiento</p>
+                                    <p class="text-sm text-[#0d1b12] dark:text-white">{{ registro.tratamiento }}</p>
+                                </div>
+
+                                {% if registro.peso or registro.temperatura %}
+                                <div class="grid grid-cols-2 gap-4 pt-3 border-t border-gray-200 dark:border-[#1a3321]">
+                                    {% if registro.peso %}
+                                    <div>
+                                        <p class="text-xs text-gray-500 dark:text-gray-400">Peso</p>
+                                        <p class="font-bold text-[#0d1b12] dark:text-white">{{ registro.peso }} kg</p>
+                                    </div>
+                                    {% endif %}
+                                    {% if registro.temperatura %}
+                                    <div>
+                                        <p class="text-xs text-gray-500 dark:text-gray-400">Temperatura</p>
+                                        <p class="font-bold text-[#0d1b12] dark:text-white">{{ registro.temperatura }}°C</p>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="text-center py-12">
+                        <div class="w-20 h-20 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <span class="material-symbols-outlined text-gray-400 text-4xl">medical_services</span>
+                        </div>
+                        <p class="text-gray-500 dark:text-gray-400">No hay registros en el historial médico</p>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Vacunas -->
+                <div id="tab-vacunas" class="tab-content hidden">
+                    {% if vacunas %}
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead>
+                                <tr class="border-b border-gray-200 dark:border-[#1a3321]">
+                                    <th class="text-left py-3 px-4 text-sm font-bold text-gray-600 dark:text-gray-400">Vacuna</th>
+                                    <th class="text-left py-3 px-4 text-sm font-bold text-gray-600 dark:text-gray-400">Fecha Aplicación</th>
+                                    <th class="text-left py-3 px-4 text-sm font-bold text-gray-600 dark:text-gray-400">Próxima Dosis</th>
+                                    <th class="text-left py-3 px-4 text-sm font-bold text-gray-600 dark:text-gray-400">Veterinario</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for vacuna in vacunas %}
+                                <tr class="border-b border-gray-100 dark:border-[#1a3321] hover:bg-background-light dark:hover:bg-background-dark">
+                                    <td class="py-3 px-4 font-bold text-[#0d1b12] dark:text-white">{{ vacuna.nombre_vacuna }}</td>
+                                    <td class="py-3 px-4 text-sm text-gray-600 dark:text-gray-400">{{ vacuna.fecha_aplicacion|date:"d/m/Y" }}</td>
+                                    <td class="py-3 px-4 text-sm">
+                                        {% if vacuna.proxima_dosis %}
+                                        <span class="text-primary font-medium">{{ vacuna.proxima_dosis|date:"d/m/Y" }}</span>
+                                        {% else %}
+                                        <span class="text-gray-400">-</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="py-3 px-4 text-sm text-gray-600 dark:text-gray-400">
+                                        {% if vacuna.veterinario %}Dr/a. {{ vacuna.veterinario.apellido }}{% else %}-{% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-12">
+                        <div class="w-20 h-20 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <span class="material-symbols-outlined text-gray-400 text-4xl">vaccines</span>
+                        </div>
+                        <p class="text-gray-500 dark:text-gray-400">No hay vacunas registradas</p>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Turnos -->
+                <div id="tab-turnos" class="tab-content hidden">
+                    {% if turnos %}
+                    <div class="space-y-3">
+                        {% for turno in turnos %}
+                        <div class="flex items-center justify-between p-4 bg-background-light dark:bg-background-dark rounded-xl">
+                            <div class="flex items-center gap-4">
+                                <div class="text-center min-w-[60px]">
+                                    <p class="text-xs text-gray-500">{{ turno.fecha|date:"M" }}</p>
+                                    <p class="text-2xl font-bold text-primary">{{ turno.fecha|date:"d" }}</p>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-[#0d1b12] dark:text-white">{{ turno.servicio.nombre }}</h4>
+                                    <p class="text-sm text-gray-600 dark:text-gray-400">{{ turno.hora|time:"H:i" }} hs</p>
+                                </div>
+                            </div>
+                            <span class="text-xs px-3 py-1 rounded-full font-bold
+                                {% if turno.estado == 'confirmado' %}bg-emerald-500/20 text-emerald-600
+                                {% elif turno.estado == 'completado' %}bg-blue-500/20 text-blue-600
+                                {% elif turno.estado == 'cancelado' %}bg-red-500/20 text-red-600
+                                {% else %}bg-yellow-500/20 text-yellow-600{% endif %}">
+                                {{ turno.get_estado_display }}
+                            </span>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="text-center py-12">
+                        <div class="w-20 h-20 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <span class="material-symbols-outlined text-gray-400 text-4xl">event</span>
+                        </div>
+                        <p class="text-gray-500 dark:text-gray-400">No hay turnos registrados</p>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Archivos -->
+                <div id="tab-archivos" class="tab-content hidden">
+                    {% if archivos %}
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {% for archivo in archivos %}
+                        <a href="{{ archivo.archivo.url }}" target="_blank" class="block p-4 bg-background-light dark:bg-background-dark rounded-xl hover:shadow-lg transition-all">
+                            <div class="flex items-start gap-3">
+                                <div class="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                                    <span class="material-symbols-outlined text-primary">description</span>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <h4 class="font-bold text-sm text-[#0d1b12] dark:text-white truncate">{{ archivo.titulo }}</h4>
+                                    <p class="text-xs text-gray-600 dark:text-gray-400">{{ archivo.get_tipo_display }}</p>
+                                    <p class="text-xs text-gray-500 dark:text-gray-500 mt-1">{{ archivo.fecha|date:"d/m/Y" }}</p>
+                                </div>
+                            </div>
+                        </a>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="text-center py-12">
+                        <div class="w-20 h-20 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <span class="material-symbols-outlined text-gray-400 text-4xl">folder</span>
+                        </div>
+                        <p class="text-gray-500 dark:text-gray-400">No hay archivos adjuntos</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Sistema de Tabs
+    const tabBtns = document.querySelectorAll('.tab-btn');
+    const tabContents = document.querySelectorAll('.tab-content');
+
+    tabBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const targetTab = btn.dataset.tab;
+            
+            // Remover active de todos
+            tabBtns.forEach(b => b.classList.remove('active', 'text-primary', 'border-b-2', 'border-primary'));
+            tabContents.forEach(c => c.classList.add('hidden'));
+            
+            // Activar el seleccionado
+            btn.classList.add('active', 'text-primary', 'border-b-2', 'border-primary');
+            document.getElementById(`tab-${targetTab}`).classList.remove('hidden');
+        });
+    });
+
+    // Activar el primer tab
+    tabBtns[0].classList.add('text-primary', 'border-b-2', 'border-primary');
+</script>
+
+<style>
+    .tab-btn {
+        transition: all 0.3s;
+        color: #6b7280;
+    }
+    .tab-btn.active {
+        color: var(--primary);
+    }
+    .tab-btn:hover {
+        color: var(--primary);
+        background-color: rgba(var(--primary-rgb), 0.05);
+    }
+</style>
+{% endblock %}
