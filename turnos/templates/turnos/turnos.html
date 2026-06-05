@@ -376,7 +376,7 @@
             <span class="material-symbols-outlined text-5xl">check_circle</span>
         </div>
         <h2 class="text-3xl font-bold">¡Turno Confirmado!</h2>
-        <p class="text-gray-600">Te enviamos un email de confirmación.</p>
+        <p class="text-gray-600">Tu turno fue registrado. Podés ver los detalles en tu perfil.</p>
         <p>Equipo de Petit</p>
         <a href="/" class="inline-block bg-primary text-white px-8 py-3 rounded-xl font-bold">Volver al Inicio</a>
     </div>
@@ -605,8 +605,8 @@ els.btnConfirmar.addEventListener('click',async()=>{
             alert(data.error||'Error al confirmar');
         }
     }catch(error){
-        console.error('Error:',error);
-        alert('Error de conexión');
+    console.error('Error:', error);
+    alert('Hubo un problema al conectar. Tu turno puede haberse registrado igual. Verificá en tu perfil.');
     }finally{
         document.getElementById('btn-text').classList.remove('hidden');
         document.getElementById('btn-spinner').classList.add('hidden');
