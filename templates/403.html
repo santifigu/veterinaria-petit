@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load static tailwind_tags %}
+
+{% block title %}| 403{% endblock %}
+
+{% block hero %}{% endblock %}
+
+{% block content %}
+<div class="min-h-screen flex flex-col items-center justify-center px-6 text-center gap-6 bg-background-light dark:bg-background-dark">
+    <span class="material-symbols-outlined text-primary opacity-40" style="font-size: 96px;">lock</span>
+    <h1 class="text-8xl font-black text-primary">403</h1>
+    <h2 class="text-2xl font-bold text-[#0d1b12] dark:text-white">Acceso prohibido</h2>
+    <p class="text-[#0d1b12]/60 dark:text-[#a0d9b4] max-w-md">
+        No tenés permisos para acceder a esta página.
+    </p>
+    <div class="flex gap-4 mt-2">
+        <a href="{% url 'index' %}" class="bg-primary hover:bg-primary/90 text-white font-bold py-3 px-8 rounded-2xl transition-all">
+            Ir al Inicio
+        </a>
+        <a href="{% url 'registro' %}" class="border border-primary text-primary font-bold py-3 px-8 rounded-2xl hover:bg-primary/10 transition-all">
+            Iniciar Sesión
+        </a>
+    </div>
+</div>
+{% endblock %}
