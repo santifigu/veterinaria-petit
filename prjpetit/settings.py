@@ -90,6 +90,9 @@ AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
 ]
 
+# Configuración de CSRF para no tener problemas en producción con dominios y subdominios
+CSRF_TRUSTED_ORIGINS = os.getenv('CSRF_TRUSTED_ORIGINS', '').split(',')
+
 # Bloquear después de 5 intentos fallidos
 AXES_FAILURE_LIMIT = 5 # Número de intentos fallidos antes de bloquear
 AXES_COOLOFF_TIME = 1  # 1 hora de bloqueo
