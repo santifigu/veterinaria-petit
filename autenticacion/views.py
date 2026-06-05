@@ -11,8 +11,6 @@ from turnos.models import Turno
 from django.contrib.auth.views import PasswordResetView # Importar la vista de restablecimiento de contraseña
 from django.contrib.auth.models import User # Importar el modelo User para verificar la existencia del usuario durante el restablecimiento de contraseña
 
-
-
 @login_required
 def perfil(request):
     try:
