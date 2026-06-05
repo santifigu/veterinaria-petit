@@ -74,7 +74,7 @@ MIDDLEWARE = [
     'axes.middleware.AxesMiddleware',  # al final del middleware
 ]
 
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
 
 # Configuración de validadores de contraseña
 AUTH_PASSWORD_VALIDATORS = [
