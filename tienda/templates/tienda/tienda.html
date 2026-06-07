@@ -431,29 +431,65 @@
         });
         </script>
         <script>
-function mensajeLogin() {
-    Swal.fire({
-        title: '¡Nos alegramos que quieras comprar!',
-        text: "Para agregar productos al carrito y cuidar a tus mascotas, primero debés iniciar sesión.",
-        icon: 'info',
-        showCancelButton: true,
-        confirmButtonColor: '#52ACB5',
-        cancelButtonColor: '#6b7280',
-        confirmButtonText: 'Iniciar Sesión',
-        cancelButtonText: 'Seguir mirando',
-        reverseButtons: true,
-        customClass: {
-            popup: 'rounded-[2rem]',
-            confirmButton: 'rounded-xl font-bold px-6 py-3',
-            cancelButton: 'rounded-xl font-bold px-6 py-3'
+        function mensajeLogin() {
+            if (typeof Swal !== 'undefined') {
+                // SweetAlert disponible
+                Swal.fire({
+                    title: '¡Nos alegramos que quieras comprar!',
+                    text: "Para agregar productos al carrito y cuidar a tus mascotas, primero debés iniciar sesión.",
+                    icon: 'info',
+                    showCancelButton: true,
+                    confirmButtonColor: '#52ACB5',
+                    cancelButtonColor: '#6b7280',
+                    confirmButtonText: 'Iniciar Sesión',
+                    cancelButtonText: 'Seguir mirando',
+                    reverseButtons: true,
+                    customClass: {
+                        popup: 'rounded-[2rem]',
+                        confirmButton: 'rounded-xl font-bold px-6 py-3',
+                        cancelButton: 'rounded-xl font-bold px-6 py-3'
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = "{% url 'registro' %}";
+                    }
+                });
+            } else {
+                // Fallback: modal propio
+                const modal = document.getElementById('modal-login');
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            }
         }
-    }).then((result) => {
-        if (result.isConfirmed) {
-            window.location.href = "{% url 'registro' %}";
+
+        function cerrarModalLogin() {
+            const modal = document.getElementById('modal-login');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
         }
-    });
-}
-</script>
+
+        document.getElementById('modal-login').addEventListener('click', function(e) {
+            if (e.target === this) cerrarModalLogin();
+        });
+        </script>
+        <!-- Modal fallback login -->
+        <div id="modal-login" class="fixed inset-0 z-[100] hidden items-center justify-center p-4 bg-black/50">
+            <div class="bg-white dark:bg-[#152a26] rounded-3xl p-8 max-w-md w-full text-center space-y-6">
+                <div class="w-20 h-20 bg-primary/10 text-primary rounded-full flex items-center justify-center mx-auto">
+                    <span class="material-symbols-outlined text-5xl">login</span>
+                </div>
+                <h2 class="text-2xl font-black text-[#0d1b12] dark:text-white">¡Nos alegramos que quieras comprar!</h2>
+                <p class="text-gray-500 dark:text-gray-400">Para agregar productos al carrito y cuidar a tus mascotas, primero debés iniciar sesión.</p>
+                <div class="flex gap-3 justify-center">
+                    <button onclick="cerrarModalLogin()" class="px-6 py-3 rounded-xl font-bold border border-gray-300 text-gray-600 hover:bg-gray-50 transition-all">
+                        Seguir mirando
+                    </button>
+                    <a href="{% url 'registro' %}" class="px-6 py-3 rounded-xl font-bold bg-primary text-white hover:bg-primary/90 transition-all">
+                        Iniciar Sesión
+                    </a>
+                </div>
+            </div>
+        </div>
     {% endblock %}
 </div>
 </body>

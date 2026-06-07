@@ -136,43 +136,48 @@
 
                 <!-- OVERLAY (cuando el menú está abierto) -->
                 <div id="menu-overlay" class="fixed inset-0 bg-black/50 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300 z-[55]"></div>
-                <!-- JavaScript para el menú hamburguesa -->
                 <script>
-                    const hamburgerBtn = document.getElementById('hamburger-btn');
-                    const closeMenuBtn = document.getElementById('close-menu-btn');
-                    const mobileMenu = document.getElementById('mobile-menu');
-                    const menuOverlay = document.getElementById('menu-overlay');
-
-                    function openMenu() {
-                        mobileMenu.classList.remove('translate-x-full');
-                        mobileMenu.classList.add('translate-x-0');
-                        menuOverlay.classList.remove('opacity-0', 'pointer-events-none');
-                        menuOverlay.classList.add('opacity-100');
+                    document.getElementById('hamburger-btn').addEventListener('click', function() {
+                        document.getElementById('mobile-menu').classList.remove('translate-x-full');
+                        document.getElementById('mobile-menu').classList.add('translate-x-0');
+                        document.getElementById('menu-overlay').classList.remove('opacity-0', 'pointer-events-none');
+                        document.getElementById('menu-overlay').classList.add('opacity-100');
                         document.body.style.overflow = 'hidden';
-                    }
-
-                    function closeMenu() {
-                        mobileMenu.classList.remove('translate-x-0');
-                        mobileMenu.classList.add('translate-x-full');
-                        menuOverlay.classList.remove('opacity-100');
-                        menuOverlay.classList.add('opacity-0', 'pointer-events-none');
-                        document.body.style.overflow = '';
-                    }
-
-                    hamburgerBtn.addEventListener('click', openMenu);
-                    closeMenuBtn.addEventListener('click', closeMenu);
-                    menuOverlay.addEventListener('click', closeMenu);
-
-                    // Cerrar menú al hacer click en un link
-                    const mobileMenuLinks = mobileMenu.querySelectorAll('a');
-                    mobileMenuLinks.forEach(link => {
-                        link.addEventListener('click', closeMenu);
                     });
 
-                    // Cerrar menú con tecla ESC
+                    document.getElementById('close-menu-btn').addEventListener('click', function() {
+                        document.getElementById('mobile-menu').classList.remove('translate-x-0');
+                        document.getElementById('mobile-menu').classList.add('translate-x-full');
+                        document.getElementById('menu-overlay').classList.remove('opacity-100');
+                        document.getElementById('menu-overlay').classList.add('opacity-0', 'pointer-events-none');
+                        document.body.style.overflow = '';
+                    });
+
+                    document.getElementById('menu-overlay').addEventListener('click', function() {
+                        document.getElementById('mobile-menu').classList.remove('translate-x-0');
+                        document.getElementById('mobile-menu').classList.add('translate-x-full');
+                        this.classList.remove('opacity-100');
+                        this.classList.add('opacity-0', 'pointer-events-none');
+                        document.body.style.overflow = '';
+                    });
+
+                    document.getElementById('mobile-menu').querySelectorAll('a').forEach(link => {
+                        link.addEventListener('click', function() {
+                            document.getElementById('mobile-menu').classList.remove('translate-x-0');
+                            document.getElementById('mobile-menu').classList.add('translate-x-full');
+                            document.getElementById('menu-overlay').classList.remove('opacity-100');
+                            document.getElementById('menu-overlay').classList.add('opacity-0', 'pointer-events-none');
+                            document.body.style.overflow = '';
+                        });
+                    });
+
                     document.addEventListener('keydown', (e) => {
                         if (e.key === 'Escape') {
-                            closeMenu();
+                            document.getElementById('mobile-menu').classList.remove('translate-x-0');
+                            document.getElementById('mobile-menu').classList.add('translate-x-full');
+                            document.getElementById('menu-overlay').classList.remove('opacity-100');
+                            document.getElementById('menu-overlay').classList.add('opacity-0', 'pointer-events-none');
+                            document.body.style.overflow = '';
                         }
                     });
                 </script>

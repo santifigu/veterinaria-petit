@@ -10,6 +10,51 @@
 </head>
 <body class="bg-background-light dark:bg-background-dark text-color9 dark:text-white transition-colors duration-300 background-light">
     {% block hero %}
+        <script>
+            document.getElementById('hamburger-btn').addEventListener('click', function() {
+                document.getElementById('mobile-menu').classList.remove('translate-x-full');
+                document.getElementById('mobile-menu').classList.add('translate-x-0');
+                document.getElementById('menu-overlay').classList.remove('opacity-0', 'pointer-events-none');
+                document.getElementById('menu-overlay').classList.add('opacity-100');
+                document.body.style.overflow = 'hidden';
+            });
+
+            document.getElementById('close-menu-btn').addEventListener('click', function() {
+                document.getElementById('mobile-menu').classList.remove('translate-x-0');
+                document.getElementById('mobile-menu').classList.add('translate-x-full');
+                document.getElementById('menu-overlay').classList.remove('opacity-100');
+                document.getElementById('menu-overlay').classList.add('opacity-0', 'pointer-events-none');
+                document.body.style.overflow = '';
+            });
+
+            document.getElementById('menu-overlay').addEventListener('click', function() {
+                document.getElementById('mobile-menu').classList.remove('translate-x-0');
+                document.getElementById('mobile-menu').classList.add('translate-x-full');
+                this.classList.remove('opacity-100');
+                this.classList.add('opacity-0', 'pointer-events-none');
+                document.body.style.overflow = '';
+            });
+
+            document.getElementById('mobile-menu').querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', function() {
+                    document.getElementById('mobile-menu').classList.remove('translate-x-0');
+                    document.getElementById('mobile-menu').classList.add('translate-x-full');
+                    document.getElementById('menu-overlay').classList.remove('opacity-100');
+                    document.getElementById('menu-overlay').classList.add('opacity-0', 'pointer-events-none');
+                    document.body.style.overflow = '';
+                });
+            });
+
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    document.getElementById('mobile-menu').classList.remove('translate-x-0');
+                    document.getElementById('mobile-menu').classList.add('translate-x-full');
+                    document.getElementById('menu-overlay').classList.remove('opacity-100');
+                    document.getElementById('menu-overlay').classList.add('opacity-0', 'pointer-events-none');
+                    document.body.style.overflow = '';
+                }
+            });
+        </script>
         <div class="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden">
             <div class="layout-container flex h-full grow flex-col">
                 <header class="flex items-center justify-between backdrop-blur-xl bg-black/10 dark:bg-black/20 border-b border-white/10 px-6 lg:px-20 py-4 fixed top-0 w-full z-50 shadow-sm">
@@ -298,35 +343,7 @@
         </main>
     </div>
 
-    <!-- Script para menú móvil -->
-    <script>
-        const hamburgerBtn = document.getElementById('hamburger-btn');
-        const closeMenuBtn = document.getElementById('close-menu-btn');
-        const mobileMenu = document.getElementById('mobile-menu');
-        const menuOverlay = document.getElementById('menu-overlay');
-
-        function openMenu() {
-            mobileMenu.classList.remove('translate-x-full');
-            mobileMenu.classList.add('translate-x-0');
-            menuOverlay.classList.remove('opacity-0', 'pointer-events-none');
-            menuOverlay.classList.add('opacity-100');
-            document.body.style.overflow = 'hidden';
-        }
-
-        function closeMenu() {
-            mobileMenu.classList.remove('translate-x-0');
-            mobileMenu.classList.add('translate-x-full');
-            menuOverlay.classList.remove('opacity-100');
-            menuOverlay.classList.add('opacity-0', 'pointer-events-none');
-            document.body.style.overflow = '';
-        }
-
-        hamburgerBtn.addEventListener('click', openMenu);
-        closeMenuBtn.addEventListener('click', closeMenu);
-        menuOverlay.addEventListener('click', closeMenu);
-        mobileMenu.querySelectorAll('a').forEach(link => link.addEventListener('click', closeMenu));
-        document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeMenu(); });
-    </script>
+    
     {% endblock %}
 </body>
 </html>
