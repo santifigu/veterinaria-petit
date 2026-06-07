@@ -243,46 +243,51 @@
 
                 <!-- OVERLAY (cuando el menú está abierto) -->
                 <div id="menu-overlay" class="fixed inset-0 bg-black/50 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300 z-[55]"></div>
-                <!-- JavaScript para el menú hamburguesa -->
-                <script>
-                    const hamburgerBtn = document.getElementById('hamburger-btn');
-                    const closeMenuBtn = document.getElementById('close-menu-btn');
-                    const mobileMenu = document.getElementById('mobile-menu');
-                    const menuOverlay = document.getElementById('menu-overlay');
+                <!-- JavaScript Unificado y Asegurado -->
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const hamburgerBtn = document.getElementById('hamburger-btn');
+        const closeMenuBtn = document.getElementById('close-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const menuOverlay = document.getElementById('menu-overlay');
 
-                    function openMenu() {
-                        mobileMenu.classList.remove('translate-x-full');
-                        mobileMenu.classList.add('translate-x-0');
-                        menuOverlay.classList.remove('opacity-0', 'pointer-events-none');
-                        menuOverlay.classList.add('opacity-100');
-                        document.body.style.overflow = 'hidden';
-                    }
+        // Verificación defensiva para evitar errores si algún elemento falta en otras vistas
+        if (!hamburgerBtn || !closeMenuBtn || !mobileMenu || !menuOverlay) return;
 
-                    function closeMenu() {
-                        mobileMenu.classList.remove('translate-x-0');
-                        mobileMenu.classList.add('translate-x-full');
-                        menuOverlay.classList.remove('opacity-100');
-                        menuOverlay.classList.add('opacity-0', 'pointer-events-none');
-                        document.body.style.overflow = '';
-                    }
+        function openMenu() {
+            mobileMenu.classList.remove('translate-x-full');
+            mobileMenu.classList.add('translate-x-0');
+            menuOverlay.classList.remove('opacity-0', 'pointer-events-none');
+            menuOverlay.classList.add('opacity-100');
+            document.body.style.overflow = 'hidden';
+        }
 
-                    hamburgerBtn.addEventListener('click', openMenu);
-                    closeMenuBtn.addEventListener('click', closeMenu);
-                    menuOverlay.addEventListener('click', closeMenu);
+        function closeMenu() {
+            mobileMenu.classList.remove('translate-x-0');
+            mobileMenu.classList.add('translate-x-full');
+            menuOverlay.classList.remove('opacity-100');
+            menuOverlay.classList.add('opacity-0', 'pointer-events-none');
+            document.body.style.overflow = '';
+        }
 
-                    // Cerrar menú al hacer click en un link
-                    const mobileMenuLinks = mobileMenu.querySelectorAll('a');
-                    mobileMenuLinks.forEach(link => {
-                        link.addEventListener('click', closeMenu);
-                    });
+        hamburgerBtn.addEventListener('click', openMenu);
+        closeMenuBtn.addEventListener('click', closeMenu);
+        menuOverlay.addEventListener('click', closeMenu);
 
-                    // Cerrar menú con tecla ESC
-                    document.addEventListener('keydown', (e) => {
-                        if (e.key === 'Escape') {
-                            closeMenu();
-                        }
-                    });
-                </script>
+        // Cerrar menú al hacer click en cualquier enlace interno
+        const mobileMenuLinks = mobileMenu.querySelectorAll('a');
+        mobileMenuLinks.forEach(link => {
+            link.addEventListener('click', closeMenu);
+        });
+
+        // Cerrar menú con la tecla ESC
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeMenu();
+            }
+        });
+    });
+</script>
                 <section class="relative min-h-[90vh] flex items-center justify-start overflow-hidden">
                     <div class="absolute inset-0 z-0">
                         <div class="w-full h-full bg-cover bg-center" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDrHefd2TwtenEikZkFoNNgRznTYrIrUaEVImF2wXUBjCxQXAOMROGOOSlv1BQCxROpNLPif3WThr9ItC-4D9uFGx-cAm6Tqn4zyFmLawVPRRn1shsSkrh_YUSJHNLRe24dgtmLeCEc1d_JYWxMEKajbBnnkW45MuURfAWnK3COWzfw9wzaDKriodYJjZ07361nmq47tYD6bxjlydfyOZ4T4AcvNxetykpFH0z0bpIfsX5TkGmjn7MjSCqgeN4sLm2TgfZoqX68hcI");'></div>
