@@ -9,7 +9,7 @@
     <title>Petit {% block title %}| Nosotros {% endblock %}</title>
 </head>
 <body class="bg-background-light dark:bg-background-dark text-color9 dark:text-white transition-colors duration-300">
-        {% block hero %}
+        {% block header_nav %}
         <!-- Header -->
         <div class="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden">
             <div class="layout-container flex h-full grow flex-col">
@@ -136,6 +136,48 @@
 
                 <!-- OVERLAY (cuando el menú está abierto) -->
                 <div id="menu-overlay" class="fixed inset-0 bg-black/50 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300 z-[55]"></div>
+                <!-- JavaScript para el menú hamburguesa -->
+                <script>
+                    const hamburgerBtn = document.getElementById('hamburger-btn');
+                    const closeMenuBtn = document.getElementById('close-menu-btn');
+                    const mobileMenu = document.getElementById('mobile-menu');
+                    const menuOverlay = document.getElementById('menu-overlay');
+
+                    function openMenu() {
+                        mobileMenu.classList.remove('translate-x-full');
+                        mobileMenu.classList.add('translate-x-0');
+                        menuOverlay.classList.remove('opacity-0', 'pointer-events-none');
+                        menuOverlay.classList.add('opacity-100');
+                        document.body.style.overflow = 'hidden';
+                    }
+
+                    function closeMenu() {
+                        mobileMenu.classList.remove('translate-x-0');
+                        mobileMenu.classList.add('translate-x-full');
+                        menuOverlay.classList.remove('opacity-100');
+                        menuOverlay.classList.add('opacity-0', 'pointer-events-none');
+                        document.body.style.overflow = '';
+                    }
+
+                    hamburgerBtn.addEventListener('click', openMenu);
+                    closeMenuBtn.addEventListener('click', closeMenu);
+                    menuOverlay.addEventListener('click', closeMenu);
+
+                    // Cerrar menú al hacer click en un link
+                    const mobileMenuLinks = mobileMenu.querySelectorAll('a');
+                    mobileMenuLinks.forEach(link => {
+                        link.addEventListener('click', closeMenu);
+                    });
+
+                    // Cerrar menú con tecla ESC
+                    document.addEventListener('keydown', (e) => {
+                        if (e.key === 'Escape') {
+                            closeMenu();
+                        }
+                    });
+                </script>
+                {% endblock %}
+                {% block hero %}
                 <section class="relative w-full overflow-hidden">
                     <div class="relative w-full min-h-[100vh] flex flex-col items-center justify-center px-4 py-18 text-center">
                         <div class="absolute inset-0 z-0">
@@ -331,46 +373,6 @@
                 const iframe = document.getElementById("mapFrame");
                 iframe.src = "https://www.google.com/maps?q=" + encodeURIComponent(location) + "&output=embed";
             }
-        </script>
-        <!-- JavaScript para el menú hamburguesa -->
-        <script>
-            const hamburgerBtn = document.getElementById('hamburger-btn');
-            const closeMenuBtn = document.getElementById('close-menu-btn');
-            const mobileMenu = document.getElementById('mobile-menu');
-            const menuOverlay = document.getElementById('menu-overlay');
-
-            function openMenu() {
-                mobileMenu.classList.remove('translate-x-full');
-                mobileMenu.classList.add('translate-x-0');
-                menuOverlay.classList.remove('opacity-0', 'pointer-events-none');
-                menuOverlay.classList.add('opacity-100');
-                document.body.style.overflow = 'hidden';
-            }
-
-            function closeMenu() {
-                mobileMenu.classList.remove('translate-x-0');
-                mobileMenu.classList.add('translate-x-full');
-                menuOverlay.classList.remove('opacity-100');
-                menuOverlay.classList.add('opacity-0', 'pointer-events-none');
-                document.body.style.overflow = '';
-            }
-
-            hamburgerBtn.addEventListener('click', openMenu);
-            closeMenuBtn.addEventListener('click', closeMenu);
-            menuOverlay.addEventListener('click', closeMenu);
-
-            // Cerrar menú al hacer click en un link
-            const mobileMenuLinks = mobileMenu.querySelectorAll('a');
-            mobileMenuLinks.forEach(link => {
-                link.addEventListener('click', closeMenu);
-            });
-
-            // Cerrar menú con tecla ESC
-            document.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape') {
-                    closeMenu();
-                }
-            });
         </script>
         {% endblock %}
     </div>

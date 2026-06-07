@@ -128,8 +128,8 @@ def obtener_horarios_disponibles(request):
     try:
         fecha = datetime.strptime(fecha_str, '%Y-%m-%d').date()
         dia_semana = fecha.weekday()
-        es_hoy = fecha == date.today()  # ← nuevo
-        ahora = datetime.now().time()   # ← nuevo
+        es_hoy = fecha == date.today()
+        ahora = datetime.now().time()   
 
         horarios_dia = HorarioDisponible.objects.filter(
             dia_semana=dia_semana,
