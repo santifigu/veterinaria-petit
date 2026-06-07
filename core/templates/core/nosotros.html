@@ -9,180 +9,197 @@
     <title>Petit {% block title %}| Nosotros {% endblock %}</title>
 </head>
 <body class="bg-background-light dark:bg-background-dark text-color9 dark:text-white transition-colors duration-300">
-        {% block hero %}
-        <!-- Header -->
-        <div class="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden">
-            <div class="layout-container flex h-full grow flex-col">
+                {% block hero %}
+                <!-- Header / Navbar -->
+                <div class="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden">
+                    <div class="layout-container flex h-full grow flex-col">
                         <header class="flex items-center justify-between backdrop-blur-xl bg-black/10 dark:bg-black/20 border-b border-white/10 px-6 lg:px-20 py-4 fixed top-0 w-full z-50 shadow-sm">
-                    <a class="flex items-center gap-3 text-white" href="{% url 'index' %}">
-                        <div class="size-8 text-primary">
-                            <span class="material-symbols-outlined">pets</span>
-                        </div>
-                        <div class="flex flex-col">
-                            <h2 class="text-lg font-bold leading-tight tracking-tight">Córdoba Veterinaria</h2>
-                            <span class="text-xs font-medium opacity-80 uppercase tracking-tighter">Córdoba Capital</span>
-                        </div>
-                    </a>
-                    
-                    <div class="flex flex-1 justify-end gap-6 items-center">
-                        <!-- Desktop Navigation -->
-                        <nav class="hidden md:flex items-center gap-8 text-[#e7f3eb]">
-                            <a class="text-sm font-semibold hover:text-primary transition-colors" href="{% url 'index' %}">Inicio</a>
-                            <a class="text-sm font-semibold hover:text-primary transition-colors" href="{% url 'nosotros' %}">Nosotros</a>
-                            <!--<a class="text-sm font-semibold hover:text-primary transition-colors" href="{% url 'domicilio' %}">Domicilio</a>-->
-                            <a class="text-sm font-semibold hover:text-primary transition-colors" href="{% url 'blog:blog' %}">Blog</a>
-                            <a class="text-sm font-semibold hover:text-primary transition-colors" href="{% url 'tienda' %}">Tienda</a>
-                            <a class="text-sm font-semibold hover:text-primary transition-colors" href="{% url 'turnos:turnos' %}">Turnos</a>
-                            <a class="text-sm font-semibold hover:text-primary transition-colors" href="{% url 'contacto' %}">Contacto</a>
-                        </nav>
-
-                        <div class="flex gap-3 items-center">
-                            <!-- CARRITO -->
-                            <a href="{% url 'checkout' %}" class="relative flex items-center justify-center w-10 h-10 rounded-lg hover:scale-105 transition-transform">
-                                <!-- BADGE -->
-                                <span class="absolute -top-1 -right-1 bg-primary text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center shadow-md">{{ cantidad_total_carro }}</span>
-                                <!-- SVG DEL CARRITO -->
-                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 512 512">
-                                    <path fill="#e7f3eb" d="M454.65 169.4A31.82 31.82 0 0 0 432 160h-64v-16a112 112 0 0 0-224 0v16H80a32 32 0 0 0-32 32v216c0 39 33 72 72 72h272a72.22 72.22 0 0 0 50.48-20.55a69.48 69.48 0 0 0 21.52-50.2V192a31.75 31.75 0 0 0-9.35-22.6M176 144a80 80 0 0 1 160 0v16H176Z"/>
-                                </svg>
+                            <a class="flex items-center gap-3 text-white" href="{% url 'index' %}">
+                                <div class="size-8 text-primary">
+                                    <span class="material-symbols-outlined">pets</span>
+                                </div>
+                                <div class="flex flex-col">
+                                    <h2 class="text-lg font-bold leading-tight tracking-tight">Córdoba Veterinaria</h2>
+                                    <span class="text-xs font-medium opacity-80 uppercase tracking-tighter">Córdoba Capital</span>
+                                </div>
                             </a>
-                            <!-- PERFIL -->
-                            {% if user.is_authenticated %}
-                                <a href="{% url 'perfil' %}" class="flex items-center justify-center w-10 h-10 text-white hover:scale-125 transition-transform">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24"><path fill="#E7F3EB" d="M12 4a4 4 0 1 1 0 8a4 4 0 0 1 0-8m0 16s8 0 8-2c0-2.4-3.9-5-8-5s-8 2.6-8 5c0 2 8 2 8 2"/></svg>
-                                </a>
-                            {% else %}
-                                <a href="{% url 'registro' %}" class="flex items-center justify-center w-10 h-10 text-white hover:scale-125 transition-transform">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24"><path fill="#E7F3EB" d="M12 4a4 4 0 1 1 0 8a4 4 0 0 1 0-8m0 16s8 0 8-2c0-2.4-3.9-5-8-5s-8 2.6-8 5c0 2 8 2 8 2"/></svg>
-                                </a>
-                            {% endif %}
+                            
+                            <div class="flex flex-1 justify-end gap-6 items-center">
+                                <!-- Desktop Navigation -->
+                                <nav class="hidden md:flex items-center gap-8 text-[#e7f3eb]">
+                                    <a class="text-sm font-semibold hover:text-primary transition-colors" href="{% url 'index' %}">Inicio</a>
+                                    <a class="text-sm font-semibold hover:text-primary transition-colors" href="{% url 'nosotros' %}">Nosotros</a>
+                                    <a class="text-sm font-semibold hover:text-primary transition-colors" href="{% url 'blog:blog' %}">Blog</a>
+                                    <a class="text-sm font-semibold hover:text-primary transition-colors" href="{% url 'tienda' %}">Tienda</a>
+                                    <a class="text-sm font-semibold hover:text-primary transition-colors" href="{% url 'turnos:turnos' %}">Turnos</a>
+                                    <a class="text-sm font-semibold hover:text-primary transition-colors" href="{% url 'contacto' %}">Contacto</a>
+                                </nav>
 
-                            <!-- HAMBURGER BUTTON (Mobile) -->
-                            <button id="hamburger-btn" class="md:hidden flex items-center justify-center w-10 h-10 text-white hover:text-primary transition-colors">
-                                <span class="material-symbols-outlined text-3xl">menu</span>
-                            </button>
-                        </div>
-                    </div>
-                </header>
+                                <div class="flex gap-3 items-center">
+                                    <!-- CARRITO -->
+                                    <a href="{% url 'checkout' %}" class="relative flex items-center justify-center w-10 h-10 rounded-lg hover:scale-105 transition-transform">
+                                        <span class="absolute -top-1 -right-1 bg-primary text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center shadow-md">{{ cantidad_total_carro }}</span>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 512 512">
+                                            <path fill="#e7f3eb" d="M454.65 169.4A31.82 31.82 0 0 0 432 160h-64v-16a112 112 0 0 0-224 0v16H80a32 32 0 0 0-32 32v216c0 39 33 72 72 72h272a72.22 72.22 0 0 0 50.48-20.55a69.48 69.48 0 0 0 21.52-50.2V192a31.75 31.75 0 0 0-9.35-22.6M176 144a80 80 0 0 1 160 0v16H176Z"/>
+                                        </svg>
+                                    </a>
+                                    <!-- PERFIL -->
+                                    {% if user.is_authenticated %}
+                                        <a href="{% url 'perfil' %}" class="flex items-center justify-center w-10 h-10 text-white hover:scale-125 transition-transform">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24"><path fill="#E7F3EB" d="M12 4a4 4 0 1 1 0 8a4 4 0 0 1 0-8m0 16s8 0 8-2c0-2.4-3.9-5-8-5s-8 2.6-8 5c0 2 8 2 8 2"/></svg>
+                                        </a>
+                                    {% else %}
+                                        <a href="{% url 'registro' %}" class="flex items-center justify-center w-10 h-10 text-white hover:scale-125 transition-transform">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24"><path fill="#E7F3EB" d="M12 4a4 4 0 1 1 0 8a4 4 0 0 1 0-8m0 16s8 0 8-2c0-2.4-3.9-5-8-5s-8 2.6-8 5c0 2 8 2 8 2"/></svg>
+                                        </a>
+                                    {% endif %}
 
-                <!-- MOBILE MENU (Sidebar) -->
-                <div id="mobile-menu" class="fixed top-0 right-0 h-full w-[280px] bg-background-dark/98 backdrop-blur-xl border-l border-white/10 transform translate-x-full transition-transform duration-300 ease-in-out z-[60] md:hidden shadow-2xl">
-                    <div class="flex flex-col h-full">
-                        <!-- Close Button -->
-                        <div class="flex items-center justify-between px-6 py-4 border-b border-white/10">
-                            <div class="flex items-center gap-2 text-white">
-                                <span class="material-symbols-outlined text-primary">pets</span>
-                                <span class="font-bold text-sm">Menú</span>
+                                    <!-- HAMBURGER BUTTON (Mobile) -->
+                                    <button id="hamburger-btn" class="md:hidden flex items-center justify-center w-10 h-10 text-white hover:text-primary transition-colors">
+                                        <span class="material-symbols-outlined text-3xl">menu</span>
+                                    </button>
+                                </div>
                             </div>
-                            <button id="close-menu-btn" class="flex items-center justify-center w-10 h-10 text-white hover:text-primary transition-colors">
-                                <span class="material-symbols-outlined text-3xl">close</span>
-                            </button>
+                        </header>
+
+                        <!-- MOBILE MENU (Sidebar) -->
+                        <div id="mobile-menu" class="fixed top-0 right-0 h-full w-[280px] bg-background-dark/98 backdrop-blur-xl border-l border-white/10 transform translate-x-full transition-transform duration-300 ease-in-out z-[60] md:hidden shadow-2xl">
+                            <div class="flex flex-col h-full">
+                                <div class="flex items-center justify-between px-6 py-4 border-b border-white/10">
+                                    <div class="flex items-center gap-2 text-white">
+                                        <span class="material-symbols-outlined text-primary">pets</span>
+                                        <span class="font-bold text-sm">Menú</span>
+                                    </div>
+                                    <button id="close-menu-btn" class="flex items-center justify-center w-10 h-10 text-white hover:text-primary transition-colors">
+                                        <span class="material-symbols-outlined text-3xl">close</span>
+                                    </button>
+                                </div>
+
+                                <nav class="flex flex-col gap-1 px-4 py-6 flex-1 overflow-y-auto">
+                                    <a class="flex items-center gap-3 px-4 py-3 text-white hover:bg-primary/10 hover:text-primary rounded-lg transition-all font-semibold" href="{% url 'index' %}">
+                                        <span class="material-symbols-outlined text-xl">home</span>
+                                        <span>Inicio</span>
+                                    </a>
+                                    <a class="flex items-center gap-3 px-4 py-3 text-white hover:bg-primary/10 hover:text-primary rounded-lg transition-all font-semibold" href="{% url 'nosotros' %}">
+                                        <span class="material-symbols-outlined text-xl">group</span>
+                                        <span>Nosotros</span>
+                                    </a>
+                                    <a class="flex items-center gap-3 px-4 py-3 text-white hover:bg-primary/10 hover:text-primary rounded-lg transition-all font-semibold" href="{% url 'blog:blog' %}">
+                                        <span class="material-symbols-outlined text-xl">article</span>
+                                        <span>Blog</span>
+                                    </a>
+                                    <a class="flex items-center gap-3 px-4 py-3 text-white hover:bg-primary/10 hover:text-primary rounded-lg transition-all font-semibold" href="{% url 'tienda' %}">
+                                        <span class="material-symbols-outlined text-xl">store</span>
+                                        <span>Tienda</span>
+                                    </a>
+                                    <a class="flex items-center gap-3 px-4 py-3 text-white hover:bg-primary/10 hover:text-primary rounded-lg transition-all font-semibold" href="{% url 'turnos:turnos' %}">
+                                        <span class="material-symbols-outlined text-xl">calendar_month</span>
+                                        <span>Turnos</span>
+                                    </a>
+                                    <a class="flex items-center gap-3 px-4 py-3 text-white hover:bg-primary/10 hover:text-primary rounded-lg transition-all font-semibold" href="{% url 'contacto' %}">
+                                        <span class="material-symbols-outlined text-xl">mail</span>
+                                        <span>Contacto</span>
+                                    </a>
+                                </nav>
+
+                                <div class="px-4 py-3 border-t border-white/10 flex gap-3">
+                                    <a href="{% url 'checkout' %}" class="relative flex items-center justify-center gap-2 flex-1 bg-white/5 hover:bg-white/10 text-white py-3 rounded-lg transition-all font-semibold text-sm">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 512 512">
+                                            <path fill="#e7f3eb" d="M454.65 169.4A31.82 31.82 0 0 0 432 160h-64v-16a112 112 0 0 0-224 0v16H80a32 32 0 0 0-32 32v216c0 39 33 72 72 72h272a72.22 72.22 0 0 0 50.48-20.55a69.48 69.48 0 0 0 21.52-50.2V192a31.75 31.75 0 0 0-9.35-22.6M176 144a80 80 0 0 1 160 0v16H176Z"/>
+                                        </svg>
+                                        <span>Carrito</span>
+                                        <span class="absolute -top-1 -right-1 bg-primary text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">{{ cantidad_total_carro }}</span>
+                                    </a>
+                                    {% if user.is_authenticated %}
+                                        <a href="{% url 'perfil' %}" class="flex items-center justify-center gap-2 flex-1 bg-white/5 hover:bg-white/10 text-white py-3 rounded-lg transition-all font-semibold text-sm">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path fill="#E7F3EB" d="M12 4a4 4 0 1 1 0 8a4 4 0 0 1 0-8m0 16s8 0 8-2c0-2.4-3.9-5-8-5s-8 2.6-8 5c0 2 8 2 8 2"/></svg>
+                                            <span>Mi Perfil</span>
+                                        </a>
+                                    {% else %}
+                                        <a href="{% url 'registro' %}" class="flex items-center justify-center gap-2 flex-1 bg-white/5 hover:bg-white/10 text-white py-3 rounded-lg transition-all font-semibold text-sm">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path fill="#E7F3EB" d="M12 4a4 4 0 1 1 0 8a4 4 0 0 1 0-8m0 16s8 0 8-2c0-2.4-3.9-5-8-5s-8 2.6-8 5c0 2 8 2 8 2"/></svg>
+                                            <span>Registrarse</span>
+                                        </a>
+                                    {% endif %}
+                                </div>
+                            </div>
                         </div>
 
-                        <!-- Navigation Links -->
-                        <nav class="flex flex-col gap-1 px-4 py-6 flex-1 overflow-y-auto">
-                            <a class="flex items-center gap-3 px-4 py-3 text-white hover:bg-primary/10 hover:text-primary rounded-lg transition-all font-semibold" href="{% url 'index' %}">
-                                <span class="material-symbols-outlined text-xl">home</span>
-                                <span>Inicio</span>
-                            </a>
-                            <a class="flex items-center gap-3 px-4 py-3 text-white hover:bg-primary/10 hover:text-primary rounded-lg transition-all font-semibold" href="{% url 'nosotros' %}">
-                                <span class="material-symbols-outlined text-xl">group</span>
-                                <span>Nosotros</span>
-                            </a>
-                            <!--<a class="flex items-center gap-3 px-4 py-3 text-white hover:bg-primary/10 hover:text-primary rounded-lg transition-all font-semibold" href="{% url 'domicilio' %}">
-                                <span class="material-symbols-outlined text-xl">local_shipping</span>
-                                <span>Domicilio</span>
-                            </a>-->
-                            <a class="flex items-center gap-3 px-4 py-3 text-white hover:bg-primary/10 hover:text-primary rounded-lg transition-all font-semibold" href="{% url 'blog:blog' %}">
-                                <span class="material-symbols-outlined text-xl">article</span>
-                                <span>Blog</span>
-                            </a>
-                            <a class="flex items-center gap-3 px-4 py-3 text-white hover:bg-primary/10 hover:text-primary rounded-lg transition-all font-semibold" href="{% url 'tienda' %}">
-                                <span class="material-symbols-outlined text-xl">store</span>
-                                <span>Tienda</span>
-                            </a>
-                            <a class="flex items-center gap-3 px-4 py-3 text-white hover:bg-primary/10 hover:text-primary rounded-lg transition-all font-semibold" href="{% url 'turnos:turnos' %}">
-                                <span class="material-symbols-outlined text-xl">calendar_month</span>
-                                <span>Turnos</span>
-                            </a>
-                            <a class="flex items-center gap-3 px-4 py-3 text-white hover:bg-primary/10 hover:text-primary rounded-lg transition-all font-semibold" href="{% url 'contacto' %}">
-                                <span class="material-symbols-outlined text-xl">mail</span>
-                                <span>Contacto</span>
-                            </a>
-                        </nav>
-                        <!-- Carrito y perfil en mobile -->
-                        <div class="px-4 py-3 border-t border-white/10 flex gap-3">
-                            <a href="{% url 'checkout' %}" class="relative flex items-center justify-center gap-2 flex-1 bg-white/5 hover:bg-white/10 text-white py-3 rounded-lg transition-all font-semibold text-sm">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 512 512">
-                                    <path fill="#e7f3eb" d="M454.65 169.4A31.82 31.82 0 0 0 432 160h-64v-16a112 112 0 0 0-224 0v16H80a32 32 0 0 0-32 32v216c0 39 33 72 72 72h272a72.22 72.22 0 0 0 50.48-20.55a69.48 69.48 0 0 0 21.52-50.2V192a31.75 31.75 0 0 0-9.35-22.6M176 144a80 80 0 0 1 160 0v16H176Z"/>
-                                </svg>
-                                <span>Carrito</span>
-                                <span class="absolute -top-1 -right-1 bg-primary text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">{{ cantidad_total_carro }}</span>
-                            </a>
-                            {% if user.is_authenticated %}
-                                <a href="{% url 'perfil' %}" class="flex items-center justify-center gap-2 flex-1 bg-white/5 hover:bg-white/10 text-white py-3 rounded-lg transition-all font-semibold text-sm">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path fill="#E7F3EB" d="M12 4a4 4 0 1 1 0 8a4 4 0 0 1 0-8m0 16s8 0 8-2c0-2.4-3.9-5-8-5s-8 2.6-8 5c0 2 8 2 8 2"/></svg>
-                                    <span>Mi Perfil</span>
-                                </a>
-                            {% else %}
-                                <a href="{% url 'registro' %}" class="flex items-center justify-center gap-2 flex-1 bg-white/5 hover:bg-white/10 text-white py-3 rounded-lg transition-all font-semibold text-sm">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path fill="#E7F3EB" d="M12 4a4 4 0 1 1 0 8a4 4 0 0 1 0-8m0 16s8 0 8-2c0-2.4-3.9-5-8-5s-8 2.6-8 5c0 2 8 2 8 2"/></svg>
-                                    <span>Registrarse</span>
-                                </a>
-                            {% endif %}
-                        </div>
+                        <!-- OVERLAY -->
+                        <div id="menu-overlay" class="fixed inset-0 bg-black/50 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300 z-[55]"></div>
                     </div>
                 </div>
 
-                <!-- OVERLAY (cuando el menú está abierto) -->
-                <div id="menu-overlay" class="fixed inset-0 bg-black/50 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300 z-[55]"></div>
-                <!-- JavaScript Unificado y Asegurado -->
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const hamburgerBtn = document.getElementById('hamburger-btn');
-        const closeMenuBtn = document.getElementById('close-menu-btn');
-        const mobileMenu = document.getElementById('mobile-menu');
-        const menuOverlay = document.getElementById('menu-overlay');
+                <!-- Sección Hero Real (Unificada en el mismo bloque para evitar duplicados) -->
+                <section class="relative w-full overflow-hidden">
+                    <div class="relative w-full min-h-[100vh] flex flex-col items-center justify-center px-4 py-18 text-center">
+                        <div class="absolute inset-0 z-0">
+                            <img alt="Modern veterinary interior" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCeiFTulHTtpSqOSp4uadG7A01Vvz4OTmctD0v1EjfOvNsTM8iK6HZPlvbdnfXhVkv-TxNaUNx3yNhofhmwkeNIJIRB0XLz2_RTB-EHqXY8e2HUGmuRoBithMQ3R5vmfInbpl2jcz26mMiXmpYkesV4WkeRqWm7VqeqzzEJOyGwKxJwWssU9cCbB33DkaXCW7OBKYaJQRS_85p_ti2hXhkrv0i4FDx6qzrUY0yCuu1y5NhOkQtz3mOU0UT_1neNctqA2-HOWD4tKt0"/>
+                            <div class="absolute inset-0 bg-black/50 dark:bg-black/60"></div>
+                        </div>
+                        <div class="relative z-10 max-w-4xl mx-auto flex flex-col items-center gap-8">
+                            <span class="inline-block px-4 py-2 bg-primary/60 backdrop-blur-sm text-white text-xs font-bold uppercase tracking-[0.2em] rounded-full mb-4 mt-10">
+                                Quienes Somos
+                            </span>
+                            <div class="flex flex-col gap-6">
+                                <h1 class="text-5xl md:text-7xl font-black leading-tight tracking-tight mb-6 text-white">
+                                    Los Mejores Cuidados para tus <span class="text-primary">Mejores Amigos</span>
+                                </h1>
+                                <p class="text-xl md:text-2xl text-white/90 font-light max-w-2xl mx-auto leading-relaxed mb-10">
+                                    Somos un equipo de veterinarios apasionados por el bienestar animal, comprometidos con brindar la mejor atención a tu mascota.
+                                </p>
+                            </div>
+                            <div class="flex justify-center">
+                                <a class="bg-primary hover:bg-primary/90 text-teal-soft px-10 py-5 rounded-full font-bold text-lg transition-all flex items-center gap-3 shadow-xl" href="#equipo">
+                                    Nuestro Equipo
+                                    <span class="material-symbols-outlined">arrow_downward</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </section>
 
-        // Verificación defensiva para evitar errores si algún elemento falta en otras vistas
-        if (!hamburgerBtn || !closeMenuBtn || !mobileMenu || !menuOverlay) return;
+                <script>
+                    document.addEventListener('DOMContentLoaded', () => {
+                        const hamburgerBtn = document.getElementById('hamburger-btn');
+                        const closeMenuBtn = document.getElementById('close-menu-btn');
+                        const mobileMenu = document.getElementById('mobile-menu');
+                        const menuOverlay = document.getElementById('menu-overlay');
 
-        function openMenu() {
-            mobileMenu.classList.remove('translate-x-full');
-            mobileMenu.classList.add('translate-x-0');
-            menuOverlay.classList.remove('opacity-0', 'pointer-events-none');
-            menuOverlay.classList.add('opacity-100');
-            document.body.style.overflow = 'hidden';
-        }
+                        if (!hamburgerBtn || !closeMenuBtn || !mobileMenu || !menuOverlay) return;
 
-        function closeMenu() {
-            mobileMenu.classList.remove('translate-x-0');
-            mobileMenu.classList.add('translate-x-full');
-            menuOverlay.classList.remove('opacity-100');
-            menuOverlay.classList.add('opacity-0', 'pointer-events-none');
-            document.body.style.overflow = '';
-        }
+                        function openMenu() {
+                            mobileMenu.classList.remove('translate-x-full');
+                            mobileMenu.classList.add('translate-x-0');
+                            menuOverlay.classList.remove('opacity-0', 'pointer-events-none');
+                            menuOverlay.classList.add('opacity-100');
+                            document.body.style.overflow = 'hidden';
+                        }
 
-        hamburgerBtn.addEventListener('click', openMenu);
-        closeMenuBtn.addEventListener('click', closeMenu);
-        menuOverlay.addEventListener('click', closeMenu);
+                        function closeMenu() {
+                            mobileMenu.classList.remove('translate-x-0');
+                            mobileMenu.classList.add('translate-x-full');
+                            menuOverlay.classList.remove('opacity-100');
+                            menuOverlay.classList.add('opacity-0', 'pointer-events-none');
+                            document.body.style.overflow = '';
+                        }
 
-        // Cerrar menú al hacer click en cualquier enlace interno
-        const mobileMenuLinks = mobileMenu.querySelectorAll('a');
-        mobileMenuLinks.forEach(link => {
-            link.addEventListener('click', closeMenu);
-        });
+                        hamburgerBtn.addEventListener('click', openMenu);
+                        closeMenuBtn.addEventListener('click', closeMenu);
+                        menuOverlay.addEventListener('click', closeMenu);
 
-        // Cerrar menú con la tecla ESC
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                closeMenu();
-            }
-        });
-    });
-</script>
+                        const mobileMenuLinks = mobileMenu.querySelectorAll('a');
+                        mobileMenuLinks.forEach(link => {
+                            link.addEventListener('click', closeMenu);
+                        });
+
+                        document.addEventListener('keydown', (e) => {
+                            if (e.key === 'Escape') closeMenu();
+                        });
+                    });
+                </script>
                 {% endblock %}
-                {% block hero %}
+                {% block content %}
                 <section class="relative w-full overflow-hidden">
                     <div class="relative w-full min-h-[100vh] flex flex-col items-center justify-center px-4 py-18 text-center">
                         <div class="absolute inset-0 z-0">
@@ -210,9 +227,7 @@
                         </div>
                     </div>
                 </section>
-        {% endblock %}
-        {% block content %}
-        <!-- Sección de Estados -->
+                <!-- Sección de Estados -->
                 <section class="px-4 md:px-20 lg:px-40 py-24">
                     <div class="flex flex-wrap gap-4 justify-between">
                         <div class="flex min-w-[200px] flex-1 flex-col gap-2 rounded-xl p-8 border border-[#cfe7d7] dark:border-[#1a3a24] bg-white dark:bg-background-dark/50">
@@ -239,147 +254,145 @@
                         </div>
                     </div>
                 </section>
-            </div>
-        </div>
-        <!-- Sección de Filosofía -->
-        <section class="px-4 md:px-20 lg:px-40 py-15">
-            <div class="grid lg:grid-cols-2 gap-20 items-center">
-                <div class="flex flex-col gap-10">
-                    <div>
-                        <span class="text-primary font-bold uppercase tracking-[0.2em] text-sm">Nuestra Filosofía</span>
-                        <h2 class="text-color9 dark:text-white text-4xl md:text-5xl font-black mt-4 leading-tight">Atención Humanizada para cada Mascota</h2>
-                        <p class="text-color7 dark:text-white/70 text-lg mt-6 leading-relaxed">
-                                                Entendemos que su mascota es parte de la familia. Por eso, diseñamos nuestra clínica con el concepto de visitas sin miedo, garantizando que cada perro y gato se sienta como en casa mientras recibe atención médica de primera clase.
-                                            </p>
-                    </div>
-                    <div class="grid gap-8">
-                        <div class="flex gap-6 items-start">
-                            <div class="bg-primary/10 p-4 rounded-xl text-primary flex-shrink-0">
-                                <span class="material-symbols-outlined text-3xl text-primary">stethoscope</span>
-                            </div>
+                <!-- Sección de Filosofía -->
+                <section class="px-4 md:px-20 lg:px-40 py-15">
+                    <div class="grid lg:grid-cols-2 gap-20 items-center">
+                        <div class="flex flex-col gap-10">
                             <div>
-                                <h3 class="font-bold text-xl mb-2 text-color9 dark:text-white">Exelencia Médica</h3>
-                                <p class="text-base text-color7 dark:text-white/60">Tecnología diagnóstica y quirúrgica de última generación en el corazón de la ciudad.</p>
+                                <span class="text-primary font-bold uppercase tracking-[0.2em] text-sm">Nuestra Filosofía</span>
+                                <h2 class="text-color9 dark:text-white text-4xl md:text-5xl font-black mt-4 leading-tight">Atención Humanizada para cada Mascota</h2>
+                                <p class="text-color7 dark:text-white/70 text-lg mt-6 leading-relaxed">
+                                                        Entendemos que su mascota es parte de la familia. Por eso, diseñamos nuestra clínica con el concepto de visitas sin miedo, garantizando que cada perro y gato se sienta como en casa mientras recibe atención médica de primera clase.
+                                                    </p>
+                            </div>
+                            <div class="grid gap-8">
+                                <div class="flex gap-6 items-start">
+                                    <div class="bg-primary/10 p-4 rounded-xl text-primary flex-shrink-0">
+                                        <span class="material-symbols-outlined text-3xl text-primary">stethoscope</span>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-bold text-xl mb-2 text-color9 dark:text-white">Exelencia Médica</h3>
+                                        <p class="text-base text-color7 dark:text-white/60">Tecnología diagnóstica y quirúrgica de última generación en el corazón de la ciudad.</p>
+                                    </div>
+                                </div>
+                                <div class="flex gap-6 items-start">
+                                    <div class="bg-primary/10 p-4 rounded-xl text-primary flex-shrink-0">
+                                        <span class="material-symbols-outlined text-3xl text-primary">favorite</span>
+                                    </div>
+                                <div>
+                                    <h3 class="font-bold text-xl mb-2 text-color9 dark:text-white">Empatía &amp; Paciencia</h3>
+                                    <p class="text-base text-color7 dark:text-white/60">Tomamos el tiempo para escuchar sus preocupaciones y las necesidades de su mascota.</p>
+                                </div>
+                                </div>
                             </div>
                         </div>
-                        <div class="flex gap-6 items-start">
-                            <div class="bg-primary/10 p-4 rounded-xl text-primary flex-shrink-0">
-                                <span class="material-symbols-outlined text-3xl text-primary">favorite</span>
+                        <div class="relative">
+                            <div class="absolute -top-6 -right-6 w-32 h-32 bg-primary/10 rounded-full blur-3xl"></div>
+                            <div class="absolute -bottom-6 -left-6 w-32 h-32 bg-primary/10 rounded-full blur-3xl"></div>
+                            <div class="relative rounded-[2.5rem] overflow-hidden aspect-square shadow-2xl">
+                                <img alt="Veterinarian comforting a golden retriever" class="object-cover w-full h-full" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCqhD2JmQBCHqhwGUcdVG7f4emC7_Hpgsk-lfmiUJKBlovuXwM5QCD2VRybLi-2B5pD74AlQzw4OlbZ4JyFOhx0Z6XiMq11tS4tKxSpCXmRv2cmW8qgn5H3pKVPnnuil_9vLvOu6dpyyiu3Qa5AaGMCiCJ9_fALjVocVvnotNm1GvnzWJB9XgBUgDVNb5Pz57BUvraodpdQcCtW56-lqks_gWiFcOBa0pUNvmWKODg9UnRupWH3jTn1GSglP_U4XOmvtfETUVYA1e8"/>
                             </div>
-                        <div>
-                            <h3 class="font-bold text-xl mb-2 text-color9 dark:text-white">Empatía &amp; Paciencia</h3>
-                            <p class="text-base text-color7 dark:text-white/60">Tomamos el tiempo para escuchar sus preocupaciones y las necesidades de su mascota.</p>
-                        </div>
                         </div>
                     </div>
-                </div>
-                <div class="relative">
-                    <div class="absolute -top-6 -right-6 w-32 h-32 bg-primary/10 rounded-full blur-3xl"></div>
-                    <div class="absolute -bottom-6 -left-6 w-32 h-32 bg-primary/10 rounded-full blur-3xl"></div>
-                    <div class="relative rounded-[2.5rem] overflow-hidden aspect-square shadow-2xl">
-                        <img alt="Veterinarian comforting a golden retriever" class="object-cover w-full h-full" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCqhD2JmQBCHqhwGUcdVG7f4emC7_Hpgsk-lfmiUJKBlovuXwM5QCD2VRybLi-2B5pD74AlQzw4OlbZ4JyFOhx0Z6XiMq11tS4tKxSpCXmRv2cmW8qgn5H3pKVPnnuil_9vLvOu6dpyyiu3Qa5AaGMCiCJ9_fALjVocVvnotNm1GvnzWJB9XgBUgDVNb5Pz57BUvraodpdQcCtW56-lqks_gWiFcOBa0pUNvmWKODg9UnRupWH3jTn1GSglP_U4XOmvtfETUVYA1e8"/>
+                </section>
+                <!-- Sección de Equipo -->
+                <!-- Consigna 6 -->
+                <section class="bg-white/50 dark:bg-background-dark/30 py-16 px-4 md:px-20 lg:px-40 border-y border-[#e7f3eb] dark:border-[#1a3a24]" id="equipo">
+                    <div class="text-center max-w-3xl mx-auto mb-20">
+                        <span class="text-primary font-bold text-sm tracking-[0.3em] uppercase">Nuestro Equipo</span>
+                        <h2 class="text-color9 dark:text-white text-4xl md:text-5xl font-black leading-tight tracking-tight mt-3">
+                            Conocé a Nuestros <span class="text-primary">Especialistas</span>
+                        </h2>
+                        <div class="h-1.5 w-24 bg-primary rounded-full mx-auto mt-4 mb-6"></div>
+                        <p class="text-color9/60 dark:text-white/60 text-lg font-light max-w-md mx-auto leading-relaxed">
+                            No solo tratamos mascotas, también las amamos.
+                        </p>
                     </div>
-                </div>
-            </div>
-        </section>
-        <!-- Sección de Equipo -->
-        <!-- Consigna 6 -->
-        <section class="bg-white/50 dark:bg-background-dark/30 py-16 px-4 md:px-20 lg:px-40 border-y border-[#e7f3eb] dark:border-[#1a3a24]" id="equipo">
-            <div class="text-center max-w-3xl mx-auto mb-20">
-                <span class="text-primary font-bold text-sm tracking-[0.3em] uppercase">Nuestro Equipo</span>
-                <h2 class="text-color9 dark:text-white text-4xl md:text-5xl font-black leading-tight tracking-tight mt-3">
-                    Conocé a Nuestros <span class="text-primary">Especialistas</span>
-                </h2>
-                <div class="h-1.5 w-24 bg-primary rounded-full mx-auto mt-4 mb-6"></div>
-                <p class="text-color9/60 dark:text-white/60 text-lg font-light max-w-md mx-auto leading-relaxed">
-                    No solo tratamos mascotas, también las amamos.
-                </p>
-            </div>
-            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
-                <div class="group bg-white dark:bg-background-dark p-4 rounded-[2rem] border border-[#e7f3eb] dark:border-white/5 hover:border-primary/40 transition-all duration-500 shadow-sm hover:shadow-xl">
-                <div class="relative aspect-[4/5] rounded-2xl overflow-hidden mb-6">
-                    <img alt="Vet. Sofia Martinez with her cat Luna" class="object-cover w-full h-full group-hover:scale-105 transition-transform duration-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDKbdxQX7hr0GxmG0WXp7hh58xeWfNZWZvPr9fqsNlIkg3A1nv-nkriZoobszjVzA1q6BfM4En0cPfy0T5JJEgKVp0RkpoJFHvz-KesKbtZlmwiGmYZGB9dOKtPxxHUgIevTOxjnjuBy1gjulWpd99h_hYZYpephFpk-wUKp0Y-C0dSpInKUMFxtqnr277kjS-1mfuqV0v4fUrJcWdPruHRxYpTvTOgYQjJ8EhmKGe3oPpYXNlhK4elpw67OllaishSCLdlhyKoLJc"/>
-                </div>
-                <div class="px-4 pb-4">
-                    <h3 class="text-2xl font-bold text-color9 dark:text-white">Vet. Sofia Martinez</h3>
-                    <p class="text-primary text-sm font-bold uppercase tracking-widest mt-1">Médica Cirujana</p>
-                    <p class="mt-4 text-color8 dark:text-white/70 leading-relaxed italic">"Milo (en la foto) me enseñó que cada gato necesita un toque suave y mucha paciencia."</p>
-                </div>
-                </div>
-                <div class="group bg-white dark:bg-background-dark p-4 rounded-[2rem] border border-[#e7f3eb] dark:border-white/5 hover:border-primary/40 transition-all duration-500 shadow-sm hover:shadow-xl">
-                    <div class="relative aspect-[4/5] rounded-2xl overflow-hidden mb-6">
-                        <img alt="Vet. Julian Gomez with his dog Pipo" class="object-cover w-full h-full group-hover:scale-105 transition-transform duration-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBuMVlj4wK4s1roYKQYjkr6mIbcurUpn7-phUYYcyALQJDOolUXFdvV25GlYblLqzTKKaggbv7lNDXpOBzc1-h8TAG3a0XPYPbojrecELxUMd6sLkfwpyak84YjOu051EFo9ODlarcPXu6RU-mam03fKbGGIrh2P8e14Ue68pIwUGETT4q6RaB2DDZ3kfli4PKXIQGXtmtlnUm-NFGman6CWv9SpbDbvpuvVyp1PUOMO1cFWwH2EufEVChtlrmSvJpq58qmX8cA0pw"/>
-                    </div>
-                    <div class="px-4 pb-4">
-                        <h3 class="text-2xl font-bold text-color9 dark:text-white">Vet. Julián Gomez</h3>
-                        <p class="text-primary text-sm font-bold uppercase tracking-widest mt-1">Especialista Ortopédico</p>
-                        <p class="mt-4 text-color8 dark:text-white/70 leading-relaxed italic">"Leroy fue mi inspiración para especializarme en la salud de las articulaciones para perros activos y trabajadores."</p>
-                    </div>
-                </div>
-                <div class="group bg-white dark:bg-background-dark p-4 rounded-[2rem] border border-[#e7f3eb] dark:border-white/5 hover:border-primary/40 transition-all duration-500 shadow-sm hover:shadow-xl">
-                    <div class="relative aspect-[4/5] rounded-2xl overflow-hidden mb-6">
-                        <img alt="Vet. Elena Rossi with her pet rabbit" class="object-cover w-full h-full group-hover:scale-105 transition-transform duration-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDsw3hV1aPUy-XxubTQznDl9m1kObKgE6mYZ_Pv42yaE81a7ZxUGFj6sHpJyAIZoo1v4ceqAGUwJioJqHvxEpi0IxdXsNf6wrqi4P5-3XZYPoMoUq5dtCZNINdqgt_Hj5-k8mXmkjp5k8rMorGYCXPGMjnJnWJAHEwM1x3IDybx6lJeAWlfGPLq_zmBJmFB64XvuvWuT6rIBRMeZWYqmpx4AfyWU5PXJoLGKYGRIHDNSOZqC3nHCS_qB6vHLc3wYcabJyHTR5VFDg8"/>
-                    </div>
-                    <div class="px-4 pb-4">
-                        <h3 class="text-2xl font-bold text-color9 dark:text-white">Vet. Elena Rossi</h3>
-                        <p class="text-primary text-sm font-bold uppercase tracking-widest mt-1">Mascotas Exóticas</p>
-                        <p class="mt-4 text-color8 dark:text-white/70 leading-relaxed italic">"Las mascotas exóticas requieren cuidados especiales. ¡Mi conejito Copo me mantiene alerta!"</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-        <!-- Seccion de Ubicacion -->
-        <section class="px-4 md:px-20 lg:px-40 py-24">
-            <div class="bg-white dark:bg-[#0a1a10] rounded-[3rem] overflow-hidden grid lg:grid-cols-5 items-stretch shadow-2xl border border-[#e7f3eb] dark:border-white/5">
-                <!-- Izquierda -->
-                <div class="lg:col-span-2 p-12 lg:p-20 flex flex-col justify-center">
-                    <h2 class="text-4xl font-black mb-6 text-color9 dark:text-white">Dónde Encontrarnos</h2>
-                    <!-- Dirección principal destacada -->
-                    <div class="bg-[#52ACB5]/10 border border-[#52ACB5]/30 rounded-2xl p-5 mb-8 shadow-sm">
-                        <p class="text-sm uppercase tracking-wide text-[#52ACB5] font-bold mb-2">Ubicación</p>
-                        <div class="flex items-center gap-3">
-                            <span class="material-symbols-outlined text-white bg-[#52ACB5] p-2 rounded-lg shadow">
-                                location_on
-                            </span>
-                            <span class="text-2xl font-extrabold text-[#4d5050] dark:text-white">
-                                Miguel C. del Corro 56
-                            </span>
+                    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
+                        <div class="group bg-white dark:bg-background-dark p-4 rounded-[2rem] border border-[#e7f3eb] dark:border-white/5 hover:border-primary/40 transition-all duration-500 shadow-sm hover:shadow-xl">
+                        <div class="relative aspect-[4/5] rounded-2xl overflow-hidden mb-6">
+                            <img alt="Vet. Sofia Martinez with her cat Luna" class="object-cover w-full h-full group-hover:scale-105 transition-transform duration-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDKbdxQX7hr0GxmG0WXp7hh58xeWfNZWZvPr9fqsNlIkg3A1nv-nkriZoobszjVzA1q6BfM4En0cPfy0T5JJEgKVp0RkpoJFHvz-KesKbtZlmwiGmYZGB9dOKtPxxHUgIevTOxjnjuBy1gjulWpd99h_hYZYpephFpk-wUKp0Y-C0dSpInKUMFxtqnr277kjS-1mfuqV0v4fUrJcWdPruHRxYpTvTOgYQjJ8EhmKGe3oPpYXNlhK4elpw67OllaishSCLdlhyKoLJc"/>
+                        </div>
+                        <div class="px-4 pb-4">
+                            <h3 class="text-2xl font-bold text-color9 dark:text-white">Vet. Sofia Martinez</h3>
+                            <p class="text-primary text-sm font-bold uppercase tracking-widest mt-1">Médica Cirujana</p>
+                            <p class="mt-4 text-color8 dark:text-white/70 leading-relaxed italic">"Milo (en la foto) me enseñó que cada gato necesita un toque suave y mucha paciencia."</p>
+                        </div>
+                        </div>
+                        <div class="group bg-white dark:bg-background-dark p-4 rounded-[2rem] border border-[#e7f3eb] dark:border-white/5 hover:border-primary/40 transition-all duration-500 shadow-sm hover:shadow-xl">
+                            <div class="relative aspect-[4/5] rounded-2xl overflow-hidden mb-6">
+                                <img alt="Vet. Julian Gomez with his dog Pipo" class="object-cover w-full h-full group-hover:scale-105 transition-transform duration-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBuMVlj4wK4s1roYKQYjkr6mIbcurUpn7-phUYYcyALQJDOolUXFdvV25GlYblLqzTKKaggbv7lNDXpOBzc1-h8TAG3a0XPYPbojrecELxUMd6sLkfwpyak84YjOu051EFo9ODlarcPXu6RU-mam03fKbGGIrh2P8e14Ue68pIwUGETT4q6RaB2DDZ3kfli4PKXIQGXtmtlnUm-NFGman6CWv9SpbDbvpuvVyp1PUOMO1cFWwH2EufEVChtlrmSvJpq58qmX8cA0pw"/>
+                            </div>
+                            <div class="px-4 pb-4">
+                                <h3 class="text-2xl font-bold text-color9 dark:text-white">Vet. Julián Gomez</h3>
+                                <p class="text-primary text-sm font-bold uppercase tracking-widest mt-1">Especialista Ortopédico</p>
+                                <p class="mt-4 text-color8 dark:text-white/70 leading-relaxed italic">"Leroy fue mi inspiración para especializarme en la salud de las articulaciones para perros activos y trabajadores."</p>
+                            </div>
+                        </div>
+                        <div class="group bg-white dark:bg-background-dark p-4 rounded-[2rem] border border-[#e7f3eb] dark:border-white/5 hover:border-primary/40 transition-all duration-500 shadow-sm hover:shadow-xl">
+                            <div class="relative aspect-[4/5] rounded-2xl overflow-hidden mb-6">
+                                <img alt="Vet. Elena Rossi with her pet rabbit" class="object-cover w-full h-full group-hover:scale-105 transition-transform duration-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDsw3hV1aPUy-XxubTQznDl9m1kObKgE6mYZ_Pv42yaE81a7ZxUGFj6sHpJyAIZoo1v4ceqAGUwJioJqHvxEpi0IxdXsNf6wrqi4P5-3XZYPoMoUq5dtCZNINdqgt_Hj5-k8mXmkjp5k8rMorGYCXPGMjnJnWJAHEwM1x3IDybx6lJeAWlfGPLq_zmBJmFB64XvuvWuT6rIBRMeZWYqmpx4AfyWU5PXJoLGKYGRIHDNSOZqC3nHCS_qB6vHLc3wYcabJyHTR5VFDg8"/>
+                            </div>
+                            <div class="px-4 pb-4">
+                                <h3 class="text-2xl font-bold text-color9 dark:text-white">Vet. Elena Rossi</h3>
+                                <p class="text-primary text-sm font-bold uppercase tracking-widest mt-1">Mascotas Exóticas</p>
+                                <p class="mt-4 text-color8 dark:text-white/70 leading-relaxed italic">"Las mascotas exóticas requieren cuidados especiales. ¡Mi conejito Copo me mantiene alerta!"</p>
+                            </div>
                         </div>
                     </div>
-                    <p class="text-color7 dark:text-white/70 mb-10 text-lg leading-relaxed">
-                        Atendemos en el principal barrio de Córdoba. Elegí la zona para ver la ubicación en el mapa.
-                    </p>
-                    <ul class="space-y-5">
-                    <a 
-                        href="{% url 'contacto' %}" 
-                        class="mt-14 bg-primary text-white py-5 rounded-2xl font-bold text-lg shadow-lg hover:shadow-primary/20 hover:border-primary hover:bg-primary/80 transition-all text-center block"
-                    >
-                        Contáctanos
-                    </a>
-                </div>
-                <!-- Mapa -->
-                <div class="lg:col-span-3 min-h-[500px] relative bg-gray-200 dark:bg-black overflow-hidden">
-                    <iframe 
-                        id="mapFrame"
-                        width="100%" 
-                        height="100%" 
-                        class="absolute inset-0"
-                        style="border:0;" 
-                        loading="lazy"
-                        allowfullscreen
-                        src="https://www.google.com/maps?q=Miguel+C+del+Corro+56,+Córdoba,+Argentina&output=embed">
-                    </iframe>
-                </div>
-            </div>
-        </section>
+                </section>
+                <!-- Seccion de Ubicacion -->
+                <section class="px-4 md:px-20 lg:px-40 py-24">
+                    <div class="bg-white dark:bg-[#0a1a10] rounded-[3rem] overflow-hidden grid lg:grid-cols-5 items-stretch shadow-2xl border border-[#e7f3eb] dark:border-white/5">
+                        <!-- Izquierda -->
+                        <div class="lg:col-span-2 p-12 lg:p-20 flex flex-col justify-center">
+                            <h2 class="text-4xl font-black mb-6 text-color9 dark:text-white">Dónde Encontrarnos</h2>
+                            <!-- Dirección principal destacada -->
+                            <div class="bg-[#52ACB5]/10 border border-[#52ACB5]/30 rounded-2xl p-5 mb-8 shadow-sm">
+                                <p class="text-sm uppercase tracking-wide text-[#52ACB5] font-bold mb-2">Ubicación</p>
+                                <div class="flex items-center gap-3">
+                                    <span class="material-symbols-outlined text-white bg-[#52ACB5] p-2 rounded-lg shadow">
+                                        location_on
+                                    </span>
+                                    <span class="text-2xl font-extrabold text-[#4d5050] dark:text-white">
+                                        Miguel C. del Corro 56
+                                    </span>
+                                </div>
+                            </div>
+                            <p class="text-color7 dark:text-white/70 mb-10 text-lg leading-relaxed">
+                                Atendemos en el principal barrio de Córdoba. Elegí la zona para ver la ubicación en el mapa.
+                            </p>
+                            <ul class="space-y-5">
+                            <a 
+                                href="{% url 'contacto' %}" 
+                                class="mt-14 bg-primary text-white py-5 rounded-2xl font-bold text-lg shadow-lg hover:shadow-primary/20 hover:border-primary hover:bg-primary/80 transition-all text-center block"
+                            >
+                                Contáctanos
+                            </a>
+                        </div>
+                        <!-- Mapa -->
+                        <div class="lg:col-span-3 min-h-[500px] relative bg-gray-200 dark:bg-black overflow-hidden">
+                            <iframe 
+                                id="mapFrame"
+                                width="100%" 
+                                height="100%" 
+                                class="absolute inset-0"
+                                style="border:0;" 
+                                loading="lazy"
+                                allowfullscreen
+                                src="https://www.google.com/maps?q=Miguel+C+del+Corro+56,+Córdoba,+Argentina&output=embed">
+                            </iframe>
+                        </div>
+                    </div>
+                </section>
 
-        <script>
-            function changeMap(location) {
-                const iframe = document.getElementById("mapFrame");
-                iframe.src = "https://www.google.com/maps?q=" + encodeURIComponent(location) + "&output=embed";
-            }
-        </script>
-        {% endblock %}
+                <script>
+                    function changeMap(location) {
+                        const iframe = document.getElementById("mapFrame");
+                        iframe.src = "https://www.google.com/maps?q=" + encodeURIComponent(location) + "&output=embed";
+                    }
+                </script>
+                {% endblock %}
     </div>
 </body>
 </html>
