@@ -335,19 +335,19 @@
                         <input id="nombre-mascota" class="w-full bg-gray-100 rounded-lg p-3 text-sm" placeholder="Milo" type="text" required/>
                     </div>
                     <div class="pt-4">
-    <label class="block text-xs font-bold text-gray-400 uppercase mb-2">
-        Email para confirmación
-    </label>
-    <input id="email-cliente"
-        class="w-full bg-gray-100 rounded-lg p-3 text-sm"
-        placeholder="tu@email.com"
-        type="email"
-        value="{% if request.user.is_authenticated %}{{ request.user.email }}{% endif %}"
-        required/>
-    <p class="text-xs text-gray-400 mt-1 ml-1">
-        Acá te mandamos la confirmación del turno.
-    </p>
-</div>
+                        <label class="block text-xs font-bold text-gray-400 uppercase mb-2">
+                            Email para confirmación
+                        </label>
+                        <input id="email-cliente"
+                            class="w-full bg-gray-100 rounded-lg p-3 text-sm"
+                            placeholder="tu@email.com"
+                            type="email"
+                            value="{% if request.user.is_authenticated %}{{ request.user.email }}{% endif %}"
+                            required/>
+                        <p class="text-xs text-gray-400 mt-1 ml-1">
+                            Acá te mandamos la confirmación del turno.
+                        </p>
+                    </div>
                 </div>
                 <div class="bg-gray-50 p-4 rounded-xl mb-8">
                     <div class="flex justify-between items-center">
@@ -358,6 +358,7 @@
                 <button type="button" id="btn-confirmar" class="w-full flex items-center justify-center gap-2 bg-primary text-white py-4 rounded-xl font-bold disabled:opacity-50" disabled>
                     <span id="btn-text">Confirmar Turno</span>
                     <span id="btn-spinner" class="hidden">
+                        <p>Confirmando turno...</p>
                         <svg class="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
