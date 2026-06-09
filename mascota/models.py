@@ -9,9 +9,6 @@ ESTADO_CHOICES = [
     ('critico', 'Crítico'),
 ]
 
-altura = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True, help_text="Altura en cm")
-estado = models.CharField(max_length=20, choices=ESTADO_CHOICES, default='saludable')
-
 class Mascota(models.Model):
     TIPO_CHOICES = [
         ('perro', 'Perro'),

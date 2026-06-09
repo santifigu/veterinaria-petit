@@ -306,7 +306,7 @@
                                         <td>{{ vac.fecha_aplicacion|date:"d/m/Y" }}</td>
                                         <td>{% if vac.proxima_dosis %}<span class="badge bg-blue-50 text-blue-700 border border-blue-100">{{ vac.proxima_dosis|date:"d/m/Y" }}</span>{% else %}<span class="text-gray-400 text-xs">—</span>{% endif %}</td>
                                         <td>{{ vac.veterinario }}</td>
-                                        <td>{% if vac.firma_sello %}<img src="{{ vac.firma_sello.url }}" class="h-8 object-contain" alt="Firma"/>{% else %}<span class="text-gray-400 text-xs">—</span>{% endif %}</td>
+                                        <td>{% if vac.laboratorio %}{{ vac.laboratorio }}{% else %}<span class="text-gray-400 text-xs">—</span>{% endif %}</td>
                                     </tr>
                                     {% endfor %}
                                     </tbody>
