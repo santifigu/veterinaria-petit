@@ -10,6 +10,9 @@ from pedidos.models import Pedido
 from turnos.models import Turno
 from django.contrib.auth.views import PasswordResetView # Importar la vista de restablecimiento de contraseña
 from django.contrib.auth.models import User # Importar el modelo User para verificar la existencia del usuario durante el restablecimiento de contraseña
+from django.http import JsonResponse
+from tutor.models import Tutor
+import json
 
 @login_required
 def perfil(request):
@@ -35,10 +38,16 @@ def perfil(request):
     estado__in=['pendiente', 'confirmado', 'en_curso']
     ).select_related('servicio').order_by('fecha', 'hora')
 
+    try:
+        tutor = Tutor.objects.get(tutor=request.user)
+    except Tutor.DoesNotExist:
+        tutor = None
+
     context = {
         'mascotas': mascotas,
         'pedidos': pedidos,
-        'turnos_usuario': turnos_usuario, 
+        'turnos_usuario': turnos_usuario,
+        'tutor': tutor,
     }
     return render(request, 'registro/perfil.html', context)
 
@@ -101,3 +110,80 @@ def loguear(request):
             messages.error(request, "Usuario o contraseña incorrectos.")
 
     return redirect('registro')
+
+@login_required
+def actualizar_perfil(request):
+    if request.method != 'POST':
+        return JsonResponse({'success': False, 'error': 'Método no permitido'})
+
+    try:
+        data = json.loads(request.body)
+    except json.JSONDecodeError:
+        return JsonResponse({'success': False, 'error': 'Datos inválidos'})
+
+    user = request.user
+    campo = data.get('campo')
+    valor = data.get('valor', '').strip()
+
+    if not valor:
+        return JsonResponse({'success': False, 'error': 'El valor no puede estar vacío'})
+
+    try:
+        if campo == 'username':
+            if User.objects.filter(username=valor).exclude(pk=user.pk).exists():
+                return JsonResponse({'success': False, 'error': 'Ese nombre de usuario ya existe'})
+            user.username = valor
+            user.save()
+
+        elif campo == 'email':
+            if User.objects.filter(email=valor).exclude(pk=user.pk).exists():
+                return JsonResponse({'success': False, 'error': 'Ese email ya está en uso'})
+            user.email = valor
+            user.save()
+            try:
+                tutor = Tutor.objects.get(tutor=user)
+                tutor.email = valor
+                tutor.save()
+            except Tutor.DoesNotExist:
+                pass
+
+        elif campo in ['telefono', 'direccion', 'nombre', 'apellido']:
+            tutor, created = Tutor.objects.get_or_create(
+                tutor=user,
+                defaults={
+                    'nombre': user.username,
+                    'apellido': '',
+                    'email': user.email,
+                    'telefono': '',
+                    'direccion': '',
+                }
+            )
+            setattr(tutor, campo, valor)
+            tutor.save()
+
+        else:
+            return JsonResponse({'success': False, 'error': 'Campo no válido'})
+
+        return JsonResponse({'success': True, 'valor': valor})
+
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)})
+
+
+@login_required
+def eliminar_cuenta(request):
+    if request.method != 'POST':
+        return JsonResponse({'success': False, 'error': 'Método no permitido'})
+
+    user = request.user
+    try:
+        try:
+            tutor = Tutor.objects.get(tutor=user)
+            tutor.delete()
+        except Tutor.DoesNotExist:
+            pass
+        logout(request)
+        user.delete()
+        return JsonResponse({'success': True})
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)})

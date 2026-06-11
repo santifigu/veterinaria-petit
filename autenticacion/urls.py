@@ -1,7 +1,7 @@
 from django.urls import include, path
 from . import views
 from django.contrib.auth import views as auth_views
-from .views import VRegistro, VPasswordReset
+from .views import VRegistro, VPasswordReset, actualizar_perfil, eliminar_cuenta
 
 urlpatterns = [
     path('', VRegistro.as_view(), name="registro"),
@@ -26,4 +26,6 @@ urlpatterns = [
     path('password-reset-complete/', auth_views.PasswordResetCompleteView.as_view(
         template_name='registro/password_reset_complete.html'
     ), name='password_reset_complete'),
+    path('actualizar-perfil/', actualizar_perfil, name='actualizar_perfil'),
+    path('eliminar-cuenta/', eliminar_cuenta, name='eliminar_cuenta'),
 ]
