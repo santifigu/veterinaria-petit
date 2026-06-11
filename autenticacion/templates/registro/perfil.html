@@ -96,7 +96,6 @@
             const closeMenuBtn = document.getElementById('close-menu-btn');
             const mobileMenu = document.getElementById('mobile-menu');
             const menuOverlay = document.getElementById('menu-overlay');
-
             function openMenu() {
                 mobileMenu.classList.remove('translate-x-full');
                 mobileMenu.classList.add('translate-x-0');
@@ -104,7 +103,6 @@
                 menuOverlay.classList.add('opacity-100');
                 document.body.style.overflow = 'hidden';
             }
-
             function closeMenu() {
                 mobileMenu.classList.remove('translate-x-0');
                 mobileMenu.classList.add('translate-x-full');
@@ -112,24 +110,12 @@
                 menuOverlay.classList.add('opacity-0', 'pointer-events-none');
                 document.body.style.overflow = '';
             }
-
             hamburgerBtn.addEventListener('click', openMenu);
             closeMenuBtn.addEventListener('click', closeMenu);
             menuOverlay.addEventListener('click', closeMenu);
-
-            // Cerrar menú al hacer click en un link
-            const mobileMenuLinks = mobileMenu.querySelectorAll('a');
-            mobileMenuLinks.forEach(link => {
-                link.addEventListener('click', closeMenu);
-            });
-
-            // Cerrar menú con tecla ESC
-            document.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape') {
-                    closeMenu();
-                }
-            });
-        </script>
+            mobileMenu.querySelectorAll('a').forEach(link => link.addEventListener('click', closeMenu));
+            document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeMenu(); });
+            </script>
         </div>
     </div>
     {% endblock %}
@@ -160,21 +146,30 @@
         #perfil-aside { position:fixed;top:72px;left:0;width:260px;height:calc(100vh - 72px);background:white;border-right:1px solid #f3f4f6;display:flex;flex-direction:column;padding:2rem 1.25rem;overflow-y:auto;z-index:30; }
         #perfil-content { margin-left:260px;min-height:calc(100vh - 72px); }
         @media(max-width:768px){#perfil-aside{display:none}#perfil-content{margin-left:0}}
+        .mostrar-mas-btn { display:flex;align-items:center;justify-content:center;gap:6px;width:100%;padding:10px;margin-top:8px;border:1px dashed #d4e4e1;border-radius:14px;font-size:12px;font-weight:700;color:#004e44;background:transparent;cursor:pointer;transition:background .18s,border-color .18s; }
+        .mostrar-mas-btn:hover { background:rgba(0,78,68,.04);border-color:#004e44; }
+        .mostrar-mas-btn .material-symbols-outlined { font-size:16px;transition:transform .25s; }
+        .mostrar-mas-btn.abierto .material-symbols-outlined { transform:rotate(180deg); }
+        .fila-oculta { display:none !important; }
+        .item-oculto { display:none !important; }
 
-        /* ── Mostrar más ── */
-        .mostrar-mas-btn {
-            display: flex; align-items: center; justify-content: center; gap: 6px;
-            width: 100%; padding: 10px; margin-top: 8px;
-            border: 1px dashed #d4e4e1; border-radius: 14px;
-            font-size: 12px; font-weight: 700; color: #004e44;
-            background: transparent; cursor: pointer;
-            transition: background .18s, border-color .18s;
-        }
-        .mostrar-mas-btn:hover { background: rgba(0,78,68,.04); border-color: #004e44; }
-        .mostrar-mas-btn .material-symbols-outlined { font-size: 16px; transition: transform .25s; }
-        .mostrar-mas-btn.abierto .material-symbols-outlined { transform: rotate(180deg); }
-        .fila-oculta { display: none !important; }
-        .item-oculto { display: none !important; }
+        /* Campo editable */
+        .campo-editable { display:flex;align-items:center;gap:8px;group; }
+        .campo-editable .valor-texto { font-size:14px;font-weight:600;color:#1a1c1c; }
+        .campo-editable .btn-editar { opacity:0;transition:opacity .15s;background:none;border:none;cursor:pointer;padding:2px;color:#52ACB5; }
+        .campo-editable:hover .btn-editar { opacity:1; }
+        .campo-editable .input-edicion { display:none;font-size:14px;font-weight:600;border:1px solid #52ACB5;border-radius:8px;padding:4px 8px;outline:none;width:100%;max-width:220px; }
+        .campo-editable .acciones-edicion { display:none;gap:4px; }
+        .campo-editable.editando .valor-texto { display:none; }
+        .campo-editable.editando .btn-editar { display:none; }
+        .campo-editable.editando .input-edicion { display:block; }
+        .campo-editable.editando .acciones-edicion { display:flex; }
+
+        /* Foto mascota upload */
+        .foto-upload-overlay { position:absolute;inset:0;background:rgba(0,0,0,0);border-radius:16px;display:flex;align-items:center;justify-content:center;transition:background .2s;cursor:pointer; }
+        .foto-upload-overlay:hover { background:rgba(0,0,0,.45); }
+        .foto-upload-overlay .upload-icon { opacity:0;transition:opacity .2s;color:white;font-size:28px; }
+        .foto-upload-overlay:hover .upload-icon { opacity:1; }
     </style>
 
     <div class="pt-[72px]">
@@ -199,6 +194,9 @@
             </nav>
             <div class="mt-auto pt-5 border-t border-gray-100 flex flex-col gap-2">
                 <a class="sidebar-link" href="{% url 'cerrar_sesion' %}" style="color:#f87171;"><span class="material-symbols-outlined">logout</span> Cerrar Sesión</a>
+                <button onclick="abrirModalEliminar()" class="sidebar-link w-full text-left" style="color:#dc2626;border:none;background:none;cursor:pointer;">
+                    <span class="material-symbols-outlined">delete_forever</span> Eliminar Cuenta
+                </button>
             </div>
         </aside>
 
@@ -212,11 +210,7 @@
                 <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 512 512"><path fill="#9ca3af" d="M454.65 169.4A31.82 31.82 0 0 0 432 160h-64v-16a112 112 0 0 0-224 0v16H80a32 32 0 0 0-32 32v216c0 39 33 72 72 72h272a72.22 72.22 0 0 0 50.48-20.55a69.48 69.48 0 0 0 21.52-50.2V192a31.75 31.75 0 0 0-9.35-22.6M176 144a80 80 0 0 1 160 0v16H176Z"/></svg>
                 <span class="text-[10px] font-bold">Carrito</span>
             </a>
-            {% if user.is_authenticated %}
-                <a href="{% url 'cerrar_sesion' %}" class="flex flex-col items-center gap-0.5 text-red-400"><span class="material-symbols-outlined" style="font-size:22px;">logout</span><span class="text-[10px] font-bold">Salir</span></a>
-            {% else %}
-                <a href="{% url 'registro' %}" class="flex flex-col items-center gap-0.5 text-gray-400"><span class="material-symbols-outlined" style="font-size:22px;">login</span><span class="text-[10px] font-bold">Ingresar</span></a>
-            {% endif %}
+            <button onclick="abrirModalEliminar()" class="flex flex-col items-center gap-0.5 text-red-400"><span class="material-symbols-outlined" style="font-size:22px;">delete_forever</span><span class="text-[10px] font-bold">Eliminar</span></button>
         </nav>
 
         <!-- ══ CONTENIDO PRINCIPAL ══ -->
@@ -240,6 +234,142 @@
                     </div>
                 </div>
 
+                <!-- ══ DATOS DEL PERFIL ══ -->
+                <section class="fade-1">
+                    <div class="flex justify-between items-center mb-5">
+                        <div>
+                            <h3 class="text-2xl font-bold text-primary leading-none">Mi Perfil</h3>
+                            <p class="text-gray-400 text-xs font-semibold mt-1">Hacé click en el ícono para editar un campo</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-white dark:bg-white/5 rounded-2xl border border-gray-100 dark:border-white/10 p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                        <!-- Username -->
+                        <div>
+                            <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Nombre de usuario</p>
+                            <div class="campo-editable" data-campo="username">
+                                <span class="valor-texto">{{ user.username }}</span>
+                                <button class="btn-editar" title="Editar">
+                                    <span class="material-symbols-outlined" style="font-size:16px;">edit</span>
+                                </button>
+                                <input class="input-edicion" type="text" value="{{ user.username }}"/>
+                                <div class="acciones-edicion">
+                                    <button class="btn-confirmar w-7 h-7 bg-primary text-white rounded-lg flex items-center justify-center hover:bg-primary/90 transition-colors">
+                                        <span class="material-symbols-outlined" style="font-size:14px;">check</span>
+                                    </button>
+                                    <button class="btn-cancelar w-7 h-7 bg-gray-100 text-gray-500 rounded-lg flex items-center justify-center hover:bg-gray-200 transition-colors">
+                                        <span class="material-symbols-outlined" style="font-size:14px;">close</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Email -->
+                        <div>
+                            <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Correo electrónico</p>
+                            <div class="campo-editable" data-campo="email">
+                                <span class="valor-texto">{{ user.email|default:"Sin email" }}</span>
+                                <button class="btn-editar" title="Editar">
+                                    <span class="material-symbols-outlined" style="font-size:16px;">edit</span>
+                                </button>
+                                <input class="input-edicion" type="email" value="{{ user.email }}"/>
+                                <div class="acciones-edicion">
+                                    <button class="btn-confirmar w-7 h-7 bg-primary text-white rounded-lg flex items-center justify-center hover:bg-primary/90 transition-colors">
+                                        <span class="material-symbols-outlined" style="font-size:14px;">check</span>
+                                    </button>
+                                    <button class="btn-cancelar w-7 h-7 bg-gray-100 text-gray-500 rounded-lg flex items-center justify-center hover:bg-gray-200 transition-colors">
+                                        <span class="material-symbols-outlined" style="font-size:14px;">close</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Nombre -->
+                        <div>
+                            <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Nombre</p>
+                            <div class="campo-editable" data-campo="nombre">
+                                <span class="valor-texto">{{ tutor.nombre|default:"—" }}</span>
+                                <button class="btn-editar" title="Editar">
+                                    <span class="material-symbols-outlined" style="font-size:16px;">edit</span>
+                                </button>
+                                <input class="input-edicion" type="text" value="{{ tutor.nombre|default:'' }}"/>
+                                <div class="acciones-edicion">
+                                    <button class="btn-confirmar w-7 h-7 bg-primary text-white rounded-lg flex items-center justify-center hover:bg-primary/90 transition-colors">
+                                        <span class="material-symbols-outlined" style="font-size:14px;">check</span>
+                                    </button>
+                                    <button class="btn-cancelar w-7 h-7 bg-gray-100 text-gray-500 rounded-lg flex items-center justify-center hover:bg-gray-200 transition-colors">
+                                        <span class="material-symbols-outlined" style="font-size:14px;">close</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Apellido -->
+                        <div>
+                            <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Apellido</p>
+                            <div class="campo-editable" data-campo="apellido">
+                                <span class="valor-texto">{{ tutor.apellido|default:"—" }}</span>
+                                <button class="btn-editar" title="Editar">
+                                    <span class="material-symbols-outlined" style="font-size:16px;">edit</span>
+                                </button>
+                                <input class="input-edicion" type="text" value="{{ tutor.apellido|default:'' }}"/>
+                                <div class="acciones-edicion">
+                                    <button class="btn-confirmar w-7 h-7 bg-primary text-white rounded-lg flex items-center justify-center hover:bg-primary/90 transition-colors">
+                                        <span class="material-symbols-outlined" style="font-size:14px;">check</span>
+                                    </button>
+                                    <button class="btn-cancelar w-7 h-7 bg-gray-100 text-gray-500 rounded-lg flex items-center justify-center hover:bg-gray-200 transition-colors">
+                                        <span class="material-symbols-outlined" style="font-size:14px;">close</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Teléfono -->
+                        <div>
+                            <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Teléfono</p>
+                            <div class="campo-editable" data-campo="telefono">
+                                <span class="valor-texto">{{ tutor.telefono|default:"—" }}</span>
+                                <button class="btn-editar" title="Editar">
+                                    <span class="material-symbols-outlined" style="font-size:16px;">edit</span>
+                                </button>
+                                <input class="input-edicion" type="text" value="{{ tutor.telefono|default:'' }}"/>
+                                <div class="acciones-edicion">
+                                    <button class="btn-confirmar w-7 h-7 bg-primary text-white rounded-lg flex items-center justify-center hover:bg-primary/90 transition-colors">
+                                        <span class="material-symbols-outlined" style="font-size:14px;">check</span>
+                                    </button>
+                                    <button class="btn-cancelar w-7 h-7 bg-gray-100 text-gray-500 rounded-lg flex items-center justify-center hover:bg-gray-200 transition-colors">
+                                        <span class="material-symbols-outlined" style="font-size:14px;">close</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Dirección -->
+                        <div>
+                            <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Dirección</p>
+                            <div class="campo-editable" data-campo="direccion">
+                                <span class="valor-texto">{{ tutor.direccion|default:"—" }}</span>
+                                <button class="btn-editar" title="Editar">
+                                    <span class="material-symbols-outlined" style="font-size:16px;">edit</span>
+                                </button>
+                                <input class="input-edicion" type="text" value="{{ tutor.direccion|default:'' }}"/>
+                                <div class="acciones-edicion">
+                                    <button class="btn-confirmar w-7 h-7 bg-primary text-white rounded-lg flex items-center justify-center hover:bg-primary/90 transition-colors">
+                                        <span class="material-symbols-outlined" style="font-size:14px;">check</span>
+                                    </button>
+                                    <button class="btn-cancelar w-7 h-7 bg-gray-100 text-gray-500 rounded-lg flex items-center justify-center hover:bg-gray-200 transition-colors">
+                                        <span class="material-symbols-outlined" style="font-size:14px;">close</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <!-- Toast de feedback -->
+                    <div id="toast-perfil" class="hidden fixed bottom-24 md:bottom-6 right-6 z-50 px-5 py-3 rounded-2xl text-sm font-bold shadow-lg transition-all"></div>
+                </section>
+
                 <!-- ══ MASCOTAS ══ -->
                 <section id="mascotas" class="fade-2">
                     <div class="flex justify-between items-center mb-5">
@@ -253,14 +383,23 @@
                     {% for mascota in mascotas %}
                     <div class="pet-card mb-6 mascota-item" data-index="{{ forloop.counter0 }}">
                         <div class="p-6 flex flex-col sm:flex-row items-start sm:items-center gap-5 border-b border-gray-50">
+
+                            <!-- Foto con upload overlay -->
                             <div class="relative flex-shrink-0">
                                 {% if mascota.foto %}
-                                    <img src="{{ mascota.foto.url }}" class="w-24 h-24 rounded-2xl object-cover ring-2 ring-primary/20" alt="{{ mascota.nombre }}"/>
+                                    <img id="foto-mascota-{{ mascota.id }}" src="{{ mascota.foto.url }}" class="w-24 h-24 rounded-2xl object-cover ring-2 ring-primary/20" alt="{{ mascota.nombre }}"/>
                                 {% else %}
-                                    <div class="w-24 h-24 rounded-2xl bg-primary/10 flex items-center justify-center ring-2 ring-primary/20">
+                                    <div id="foto-mascota-{{ mascota.id }}" class="w-24 h-24 rounded-2xl bg-primary/10 flex items-center justify-center ring-2 ring-primary/20">
                                         <span class="material-symbols-outlined text-primary" style="font-size:40px;">pets</span>
                                     </div>
                                 {% endif %}
+
+                                <!-- Overlay de subida -->
+                                <label for="input-foto-{{ mascota.id }}" class="foto-upload-overlay" title="Cambiar foto">
+                                    <span class="material-symbols-outlined upload-icon">photo_camera</span>
+                                </label>
+                                <input type="file" id="input-foto-{{ mascota.id }}" accept="image/*" class="hidden" data-mascota-id="{{ mascota.id }}" onchange="subirFotoMascota(this)"/>
+
                                 {% if mascota.estado == 'saludable' %}
                                     <div class="absolute -bottom-1.5 -right-1.5 w-7 h-7 rounded-full bg-green-400 border-2 border-white flex items-center justify-center"><span class="material-symbols-outlined text-white" style="font-size:14px;font-variation-settings:'FILL' 1;">check</span></div>
                                 {% elif mascota.estado == 'chequeo' %}
@@ -269,6 +408,7 @@
                                     <div class="absolute -bottom-1.5 -right-1.5 w-7 h-7 rounded-full bg-red-500 border-2 border-white flex items-center justify-center"><span class="material-symbols-outlined text-white" style="font-size:14px;font-variation-settings:'FILL' 1;">emergency</span></div>
                                 {% endif %}
                             </div>
+
                             <div class="flex-grow min-w-0">
                                 <div class="flex flex-wrap items-start justify-between gap-3">
                                     <div>
@@ -282,6 +422,11 @@
                                 <div class="flex gap-2 flex-wrap mt-4">
                                     <div class="stat-pill"><span class="material-symbols-outlined">scale</span>{{ mascota.peso }} kg</div>
                                     <div class="stat-pill"><span class="material-symbols-outlined">height</span>{{ mascota.altura }} cm</div>
+                                    {% if mascota.microchip %}
+                                        <div class="stat-pill"><span class="material-symbols-outlined">memory</span>Chip: {{ mascota.microchip }}</div>
+                                    {% else %}
+                                        <div class="stat-pill" style="color:#9ca3af;"><span class="material-symbols-outlined" style="color:#9ca3af;">memory</span>Sin microchip</div>
+                                    {% endif %}
                                     <div class="stat-pill"><span class="material-symbols-outlined">vaccines</span>{% if mascota.vacunas.exists %}Al día{% else %}Sin registro{% endif %}</div>
                                     <div class="stat-pill"><span class="material-symbols-outlined">bug_report</span>{% if mascota.antiparasitarios.exists %}Controlado{% else %}Sin registro{% endif %}</div>
                                 </div>
@@ -289,7 +434,7 @@
                         </div>
 
                         <!-- Vacunas -->
-                        <div class="p-6 border-b border-gray-50" id="registros">
+                        <div class="p-6 border-b border-gray-50">
                             <div class="flex items-center gap-2 mb-4">
                                 <div class="w-8 h-8 rounded-xl bg-blue-50 flex items-center justify-center"><span class="material-symbols-outlined text-blue-500" style="font-size:16px;">vaccines</span></div>
                                 <h5 class="font-bold text-slate-800">Registro de Vacunación</h5>
@@ -298,7 +443,7 @@
                             {% if mascota.vacunas.exists %}
                             <div class="overflow-x-auto rounded-xl border border-gray-100">
                                 <table class="record-table">
-                                    <thead><tr><th>Vacuna</th><th>Fecha</th><th>Próxima</th><th>Veterinario</th><th>Firma/Sello</th></tr></thead>
+                                    <thead><tr><th>Vacuna</th><th>Fecha</th><th>Próxima</th><th>Veterinario</th><th>Laboratorio</th></tr></thead>
                                     <tbody id="vacunas-{{ mascota.id }}">
                                     {% for vac in mascota.vacunas.all %}
                                     <tr class="vac-row" data-index="{{ forloop.counter0 }}">
@@ -503,29 +648,45 @@
         </div>
     </div>
 
-    <script>
-    // ── Ocultar elementos que pasen del índice 2 (es decir, mostrar solo los primeros 3) ──
-    document.addEventListener('DOMContentLoaded', () => {
+    <!-- ══ MODAL ELIMINAR CUENTA ══ -->
+    <div id="modal-eliminar" class="fixed inset-0 z-[100] hidden items-center justify-center p-4 bg-black/60">
+        <div class="bg-white rounded-3xl p-8 max-w-md w-full text-center space-y-5 shadow-2xl">
+            <div class="w-16 h-16 bg-red-100 text-red-500 rounded-full flex items-center justify-center mx-auto">
+                <span class="material-symbols-outlined text-4xl">delete_forever</span>
+            </div>
+            <h2 class="text-2xl font-black text-slate-800">¿Eliminar tu cuenta?</h2>
+            <p class="text-gray-500 text-sm leading-relaxed">Esta acción es <strong>permanente e irreversible</strong>. Se borrarán tu usuario, datos de tutor y todas tus mascotas registradas.</p>
+            <div class="flex gap-3 justify-center pt-2">
+                <button onclick="cerrarModalEliminar()" class="px-6 py-3 rounded-xl font-bold border border-gray-200 text-gray-600 hover:bg-gray-50 transition-all">
+                    Cancelar
+                </button>
+                <button onclick="eliminarCuenta()" class="px-6 py-3 rounded-xl font-bold bg-red-600 text-white hover:bg-red-700 transition-all">
+                    Sí, eliminar todo
+                </button>
+            </div>
+        </div>
+    </div>
 
-        // Mascotas, pedidos, turnos: ocultar desde el índice 3 en adelante
+    <script>
+    // ── Ocultar items más allá del índice 2 ──
+    document.addEventListener('DOMContentLoaded', () => {
         ['mascota-item', 'pedido-item', 'turno-item'].forEach(cls => {
             document.querySelectorAll('.' + cls).forEach(el => {
                 if (parseInt(el.dataset.index) >= 3) el.classList.add('item-oculto');
             });
         });
-
-        // Filas de vacunas y antiparasitarios: ocultar desde fila 3 en adelante
         document.querySelectorAll('.vac-row, .anti-row').forEach(row => {
             if (parseInt(row.dataset.index) >= 3) row.classList.add('fila-oculta');
         });
+
+        // Inicializar campos editables
+        document.querySelectorAll('.campo-editable').forEach(initCampo);
     });
 
-    // ── Toggle para items tipo card (mascotas, pedidos, turnos) ──
     function toggleItems(containerId, selector, btn) {
-        const items  = document.querySelectorAll('#' + containerId + ' ' + selector);
+        const items = document.querySelectorAll('#' + containerId + ' ' + selector);
         const ocultos = [...items].filter(el => parseInt(el.dataset.index) >= 3);
         const estaAbierto = btn.classList.contains('abierto');
-
         ocultos.forEach(el => el.classList.toggle('item-oculto', estaAbierto));
         btn.classList.toggle('abierto', !estaAbierto);
         btn.innerHTML = !estaAbierto
@@ -533,17 +694,157 @@
             : '<span class="material-symbols-outlined">expand_more</span> Ver ' + ocultos.length + ' elemento' + (ocultos.length > 1 ? 's' : '') + ' más';
     }
 
-    // ── Toggle para filas de tablas (vacunas, antiparasitarios) ──
     function toggleFilas(tbodyId, btn) {
         const filas = document.querySelectorAll('#' + tbodyId + ' tr');
         const ocultas = [...filas].filter(f => parseInt(f.dataset.index) >= 3);
         const estaAbierto = btn.classList.contains('abierto');
-
         ocultas.forEach(f => f.classList.toggle('fila-oculta', estaAbierto));
         btn.classList.toggle('abierto', !estaAbierto);
         btn.innerHTML = !estaAbierto
             ? '<span class="material-symbols-outlined">expand_less</span> Mostrar menos'
             : '<span class="material-symbols-outlined">expand_more</span> Ver ' + ocultas.length + ' registro' + (ocultas.length > 1 ? 's' : '') + ' más';
+    }
+
+    // ── Edición inline de perfil ──
+    function initCampo(el) {
+        const btnEditar = el.querySelector('.btn-editar');
+        const btnConfirmar = el.querySelector('.btn-confirmar');
+        const btnCancelar = el.querySelector('.btn-cancelar');
+        const input = el.querySelector('.input-edicion');
+        const valorTexto = el.querySelector('.valor-texto');
+
+        btnEditar.addEventListener('click', () => {
+            input.value = valorTexto.textContent.trim() === '—' ? '' : valorTexto.textContent.trim();
+            el.classList.add('editando');
+            input.focus();
+        });
+
+        btnCancelar.addEventListener('click', () => {
+            el.classList.remove('editando');
+        });
+
+        btnConfirmar.addEventListener('click', () => guardarCampo(el));
+
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') guardarCampo(el);
+            if (e.key === 'Escape') el.classList.remove('editando');
+        });
+    }
+
+    async function guardarCampo(el) {
+        const campo = el.dataset.campo;
+        const input = el.querySelector('.input-edicion');
+        const valorTexto = el.querySelector('.valor-texto');
+        const valor = input.value.trim();
+
+        if (!valor) {
+            mostrarToast('El campo no puede estar vacío', 'error');
+            return;
+        }
+
+        try {
+            const resp = await fetch('{% url "actualizar_perfil" %}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}',
+                },
+                body: JSON.stringify({ campo, valor }),
+            });
+            const data = await resp.json();
+
+            if (data.success) {
+                valorTexto.textContent = data.valor;
+                el.classList.remove('editando');
+                mostrarToast('✅ Guardado correctamente', 'success');
+            } else {
+                mostrarToast('❌ ' + data.error, 'error');
+            }
+        } catch {
+            mostrarToast('❌ Error de conexión', 'error');
+        }
+    }
+
+    function mostrarToast(mensaje, tipo) {
+        const toast = document.getElementById('toast-perfil');
+        toast.textContent = mensaje;
+        toast.className = 'fixed bottom-24 md:bottom-6 right-6 z-50 px-5 py-3 rounded-2xl text-sm font-bold shadow-lg transition-all ';
+        toast.className += tipo === 'success'
+            ? 'bg-green-100 text-green-800 border border-green-200'
+            : 'bg-red-100 text-red-800 border border-red-200';
+        toast.classList.remove('hidden');
+        setTimeout(() => toast.classList.add('hidden'), 3000);
+    }
+
+    // ── Subir foto de mascota ──
+    async function subirFotoMascota(input) {
+        const mascotaId = input.dataset.mascotaId;
+        const file = input.files[0];
+        if (!file) return;
+
+        const formData = new FormData();
+        formData.append('foto', file);
+        formData.append('mascota_id', mascotaId);
+        formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+
+        try {
+            const resp = await fetch('{% url "actualizar_foto_mascota" %}', {
+                method: 'POST',
+                body: formData,
+            });
+            const data = await resp.json();
+
+            if (data.success) {
+                const contenedor = document.getElementById('foto-mascota-' + mascotaId);
+                if (contenedor.tagName === 'IMG') {
+                    contenedor.src = data.url + '?t=' + Date.now();
+                } else {
+                    const img = document.createElement('img');
+                    img.id = 'foto-mascota-' + mascotaId;
+                    img.src = data.url;
+                    img.className = 'w-24 h-24 rounded-2xl object-cover ring-2 ring-primary/20';
+                    img.alt = 'Mascota';
+                    contenedor.replaceWith(img);
+                }
+                mostrarToast('✅ Foto actualizada', 'success');
+            } else {
+                mostrarToast('❌ ' + data.error, 'error');
+            }
+        } catch {
+            mostrarToast('❌ Error al subir la foto', 'error');
+        }
+    }
+
+    // ── Modal eliminar cuenta ──
+    function abrirModalEliminar() {
+        const modal = document.getElementById('modal-eliminar');
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+    }
+
+    function cerrarModalEliminar() {
+        const modal = document.getElementById('modal-eliminar');
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+    }
+
+    async function eliminarCuenta() {
+        try {
+            const resp = await fetch('{% url "eliminar_cuenta" %}', {
+                method: 'POST',
+                headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+            });
+            const data = await resp.json();
+            if (data.success) {
+                window.location.href = '/';
+            } else {
+                mostrarToast('❌ ' + data.error, 'error');
+                cerrarModalEliminar();
+            }
+        } catch {
+            mostrarToast('❌ Error de conexión', 'error');
+            cerrarModalEliminar();
+        }
     }
     </script>
 
