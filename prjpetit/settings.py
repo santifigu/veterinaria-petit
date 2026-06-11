@@ -41,7 +41,6 @@ INSTALLED_APPS = [
     'domicilio',
     'turnos',
     'tienda',
-    'servicios',
     'mascota',
     'veterinario',
     'tutor',
