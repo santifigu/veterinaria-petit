@@ -28,4 +28,5 @@ urlpatterns = [
     ), name='password_reset_complete'),
     path('actualizar-perfil/', actualizar_perfil, name='actualizar_perfil'),
     path('eliminar-cuenta/', eliminar_cuenta, name='eliminar_cuenta'),
+    path('actualizar-foto-mascota/', views.actualizar_foto_mascota, name='actualizar_foto_mascota'),
 ]

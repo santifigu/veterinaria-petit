@@ -168,6 +168,28 @@ def actualizar_perfil(request):
 
     except Exception as e:
         return JsonResponse({'success': False, 'error': str(e)})
+    
+@login_required
+def actualizar_foto_mascota(request):
+    if request.method != 'POST':
+        return JsonResponse({'success': False, 'error': 'Método no permitido'})
+
+    mascota_id = request.POST.get('mascota_id')
+    foto = request.FILES.get('foto')
+
+    if not mascota_id or not foto:
+        return JsonResponse({'success': False, 'error': 'Datos incompletos'})
+
+    try:
+        from mascota.models import Mascota
+        mascota = Mascota.objects.get(id=mascota_id, tutor__tutor=request.user)
+        mascota.foto = foto
+        mascota.save()
+        return JsonResponse({'success': True, 'url': mascota.foto.url})
+    except Mascota.DoesNotExist:
+        return JsonResponse({'success': False, 'error': 'Mascota no encontrada'})
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)})
 
 
 @login_required
