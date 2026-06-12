@@ -38,7 +38,9 @@
                                 <div class="flex gap-3 items-center">
                                     <!-- CARRITO -->
                                     <a href="{% url 'checkout' %}" class="relative flex items-center justify-center w-10 h-10 rounded-lg hover:scale-105 transition-transform">
+                                        <!-- BADGE -->
                                         <span class="absolute -top-1 -right-1 bg-primary text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center shadow-md">{{ cantidad_total_carro }}</span>
+                                        <!-- SVG DEL CARRITO -->
                                         <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 512 512">
                                             <path fill="#e7f3eb" d="M454.65 169.4A31.82 31.82 0 0 0 432 160h-64v-16a112 112 0 0 0-224 0v16H80a32 32 0 0 0-32 32v216c0 39 33 72 72 72h272a72.22 72.22 0 0 0 50.48-20.55a69.48 69.48 0 0 0 21.52-50.2V192a31.75 31.75 0 0 0-9.35-22.6M176 144a80 80 0 0 1 160 0v16H176Z"/>
                                         </svg>
@@ -101,7 +103,7 @@
                                         <span>Contacto</span>
                                     </a>
                                 </nav>
-
+                                <!-- Carrito y perfil en mobile -->
                                 <div class="px-4 py-3 border-t border-white/10 flex gap-3">
                                     <a href="{% url 'checkout' %}" class="relative flex items-center justify-center gap-2 flex-1 bg-white/5 hover:bg-white/10 text-white py-3 rounded-lg transition-all font-semibold text-sm">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 512 512">
@@ -124,78 +126,49 @@
                                 </div>
                             </div>
                         </div>
-
                         <!-- OVERLAY -->
                         <div id="menu-overlay" class="fixed inset-0 bg-black/50 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300 z-[55]"></div>
                     </div>
                 </div>
 
-                <!-- Sección Hero Real (Unificada en el mismo bloque para evitar duplicados) -->
-                <section class="relative w-full overflow-hidden">
-                    <div class="relative w-full min-h-[100vh] flex flex-col items-center justify-center px-4 py-18 text-center">
-                        <div class="absolute inset-0 z-0">
-                            <img alt="Modern veterinary interior" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCeiFTulHTtpSqOSp4uadG7A01Vvz4OTmctD0v1EjfOvNsTM8iK6HZPlvbdnfXhVkv-TxNaUNx3yNhofhmwkeNIJIRB0XLz2_RTB-EHqXY8e2HUGmuRoBithMQ3R5vmfInbpl2jcz26mMiXmpYkesV4WkeRqWm7VqeqzzEJOyGwKxJwWssU9cCbB33DkaXCW7OBKYaJQRS_85p_ti2hXhkrv0i4FDx6qzrUY0yCuu1y5NhOkQtz3mOU0UT_1neNctqA2-HOWD4tKt0"/>
-                            <div class="absolute inset-0 bg-black/50 dark:bg-black/60"></div>
-                        </div>
-                        <div class="relative z-10 max-w-4xl mx-auto flex flex-col items-center gap-8">
-                            <span class="inline-block px-4 py-2 bg-primary/60 backdrop-blur-sm text-white text-xs font-bold uppercase tracking-[0.2em] rounded-full mb-4 mt-10">
-                                Quienes Somos
-                            </span>
-                            <div class="flex flex-col gap-6">
-                                <h1 class="text-5xl md:text-7xl font-black leading-tight tracking-tight mb-6 text-white">
-                                    Los Mejores Cuidados para tus <span class="text-primary">Mejores Amigos</span>
-                                </h1>
-                                <p class="text-xl md:text-2xl text-white/90 font-light max-w-2xl mx-auto leading-relaxed mb-10">
-                                    Somos un equipo de veterinarios apasionados por el bienestar animal, comprometidos con brindar la mejor atención a tu mascota.
-                                </p>
-                            </div>
-                            <div class="flex justify-center">
-                                <a class="bg-primary hover:bg-primary/90 text-teal-soft px-10 py-5 rounded-full font-bold text-lg transition-all flex items-center gap-3 shadow-xl" href="#equipo">
-                                    Nuestro Equipo
-                                    <span class="material-symbols-outlined">arrow_downward</span>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
+                <!-- JavaScript para el menú hamburguesa -->
                 <script>
-                    document.addEventListener('DOMContentLoaded', () => {
-                        const hamburgerBtn = document.getElementById('hamburger-btn');
-                        const closeMenuBtn = document.getElementById('close-menu-btn');
-                        const mobileMenu = document.getElementById('mobile-menu');
-                        const menuOverlay = document.getElementById('menu-overlay');
+                    const hamburgerBtn = document.getElementById('hamburger-btn');
+                    const closeMenuBtn = document.getElementById('close-menu-btn');
+                    const mobileMenu = document.getElementById('mobile-menu');
+                    const menuOverlay = document.getElementById('menu-overlay');
 
-                        if (!hamburgerBtn || !closeMenuBtn || !mobileMenu || !menuOverlay) return;
+                    function openMenu() {
+                        mobileMenu.classList.remove('translate-x-full');
+                        mobileMenu.classList.add('translate-x-0');
+                        menuOverlay.classList.remove('opacity-0', 'pointer-events-none');
+                        menuOverlay.classList.add('opacity-100');
+                        document.body.style.overflow = 'hidden';
+                    }
 
-                        function openMenu() {
-                            mobileMenu.classList.remove('translate-x-full');
-                            mobileMenu.classList.add('translate-x-0');
-                            menuOverlay.classList.remove('opacity-0', 'pointer-events-none');
-                            menuOverlay.classList.add('opacity-100');
-                            document.body.style.overflow = 'hidden';
+                    function closeMenu() {
+                        mobileMenu.classList.remove('translate-x-0');
+                        mobileMenu.classList.add('translate-x-full');
+                        menuOverlay.classList.remove('opacity-100');
+                        menuOverlay.classList.add('opacity-0', 'pointer-events-none');
+                        document.body.style.overflow = '';
+                    }
+
+                    hamburgerBtn.addEventListener('click', openMenu);
+                    closeMenuBtn.addEventListener('click', closeMenu);
+                    menuOverlay.addEventListener('click', closeMenu);
+
+                    // Cerrar menú al hacer click en un link
+                    const mobileMenuLinks = mobileMenu.querySelectorAll('a');
+                    mobileMenuLinks.forEach(link => {
+                        link.addEventListener('click', closeMenu);
+                    });
+
+                    // Cerrar menú con tecla ESC
+                    document.addEventListener('keydown', (e) => {
+                        if (e.key === 'Escape') {
+                            closeMenu();
                         }
-
-                        function closeMenu() {
-                            mobileMenu.classList.remove('translate-x-0');
-                            mobileMenu.classList.add('translate-x-full');
-                            menuOverlay.classList.remove('opacity-100');
-                            menuOverlay.classList.add('opacity-0', 'pointer-events-none');
-                            document.body.style.overflow = '';
-                        }
-
-                        hamburgerBtn.addEventListener('click', openMenu);
-                        closeMenuBtn.addEventListener('click', closeMenu);
-                        menuOverlay.addEventListener('click', closeMenu);
-
-                        const mobileMenuLinks = mobileMenu.querySelectorAll('a');
-                        mobileMenuLinks.forEach(link => {
-                            link.addEventListener('click', closeMenu);
-                        });
-
-                        document.addEventListener('keydown', (e) => {
-                            if (e.key === 'Escape') closeMenu();
-                        });
                     });
                 </script>
                 {% endblock %}
