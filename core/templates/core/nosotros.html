@@ -3,7 +3,7 @@
 
 {% block title %}| Nosotros {% endblock %}
 
-{% block content %}
+{% block hero %}
 <section class="relative w-full overflow-hidden">
     <div class="relative w-full min-h-[100vh] flex flex-col items-center justify-center px-4 py-18 text-center">
         <div class="absolute inset-0 z-0">
@@ -31,7 +31,9 @@
         </div>
     </div>
 </section>
+{% endblock %}
 
+{% block content %}
 <section class="px-4 md:px-20 lg:px-40 py-24 bg-background-light dark:bg-background-dark">
     <div class="flex flex-wrap gap-4 justify-between">
         <div class="flex min-w-[200px] flex-1 flex-col gap-2 rounded-xl p-8 border border-[#cfe7d7] dark:border-[#1a3a24] bg-white dark:bg-background-dark/50">
