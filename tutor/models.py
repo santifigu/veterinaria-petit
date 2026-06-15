@@ -5,11 +5,11 @@ from django.core.validators import EmailValidator
 class Tutor(models.Model):
     """Modelo para los tutores/dueños de mascotas"""
     tutor = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)
-    nombre = models.CharField(max_length=100)
-    apellido = models.CharField(max_length=100)
-    email = models.EmailField(validators=[EmailValidator()], unique=True)
-    telefono = models.CharField(max_length=20)
-    direccion = models.TextField()
+    nombre = models.CharField(max_length=100, blank=True, default='')
+    apellido = models.CharField(max_length=100, blank=True, default='')
+    email = models.EmailField(validators=[EmailValidator()], unique=True, blank=True, default='')
+    telefono = models.CharField(max_length=20, blank=True, default='')
+    direccion = models.TextField(blank=True, default='')
     fecha_registro = models.DateTimeField(auto_now_add=True)
     
     class Meta:
