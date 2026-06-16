@@ -29,4 +29,5 @@ urlpatterns = [
     path('actualizar-perfil/', actualizar_perfil, name='actualizar_perfil'),
     path('eliminar-cuenta/', eliminar_cuenta, name='eliminar_cuenta'),
     path('actualizar-foto-mascota/', views.actualizar_foto_mascota, name='actualizar_foto_mascota'),
+    path('eliminar-foto-mascota/', views.eliminar_foto_mascota, name='eliminar_foto_mascota'),
 ]

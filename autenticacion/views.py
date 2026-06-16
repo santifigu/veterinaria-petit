@@ -190,6 +190,27 @@ def actualizar_foto_mascota(request):
         return JsonResponse({'success': False, 'error': 'Mascota no encontrada'})
     except Exception as e:
         return JsonResponse({'success': False, 'error': str(e)})
+    
+@login_required
+def eliminar_foto_mascota(request):
+    if request.method != 'POST':
+        return JsonResponse({'success': False, 'error': 'Método no permitido'})
+
+    mascota_id = request.POST.get('mascota_id')
+    if not mascota_id:
+        return JsonResponse({'success': False, 'error': 'Datos incompletos'})
+
+    try:
+        mascota = Mascota.objects.get(id=mascota_id, tutor__tutor=request.user)
+        if mascota.foto:
+            mascota.foto.delete(save=False)
+            mascota.foto = None
+            mascota.save()
+        return JsonResponse({'success': True})
+    except Mascota.DoesNotExist:
+        return JsonResponse({'success': False, 'error': 'Mascota no encontrada'})
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)})
 
 
 @login_required
@@ -209,3 +230,4 @@ def eliminar_cuenta(request):
         return JsonResponse({'success': True})
     except Exception as e:
         return JsonResponse({'success': False, 'error': str(e)})
+    
