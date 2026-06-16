@@ -10,4 +10,5 @@ urlpatterns = [
     path('mis-turnos/', views.mis_turnos, name='mis_turnos'),
     path('cancelar-turno/', views.cancelar_turno, name='cancelar_turno'),
     path('modificar-turno/', views.modificar_turno, name='modificar_turno'),
+    path('servicios/', views.obtener_servicios,name='servicios'),
 ]

@@ -765,60 +765,447 @@
         }
     }
 
-    // ── MODIFICAR / REPROGRAMAR HORARIO DE TURNO ──
+    // ══════════════════════════════════════════════════════════
+    // MODAL MODIFICAR TURNO — lógica completa
+    // ══════════════════════════════════════════════════════════
+
+    let mmtTurnoId       = null;
+    let mmtServicio      = null;   // { id, nombre, precio }
+    let mmtFecha         = null;   // Date object
+    let mmtHora          = null;   // string "HH:MM"
+    let mmtCurrentDate   = new Date();
+
+    const MESES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio',
+                    'Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+
+    // ── Abrir modal ──
     async function modificarTurno(turnoId) {
-        // Le pedimos al usuario la nueva fecha y hora usando SweetAlert
-        const { value: formValues } = await Swal.fire({
-            title: 'Reprogramar Turno',
-            html:
-                '<div class="flex flex-col gap-3 text-left p-2">' +
-                '<label class="text-xs font-bold text-gray-500">Nueva Fecha:</label>' +
-                '<input id="swal-fecha" type="date" class="swal2-input m-0 w-full rounded-xl border-gray-200">' +
-                '<label class="text-xs font-bold text-gray-500 mt-2">Nueva Hora:</label>' +
-                '<input id="swal-hora" type="time" class="swal2-input m-0 w-full rounded-xl border-gray-200">' +
-                '</div>',
-            focusConfirm: false,
-            showCancelButton: true,
-            confirmButtonColor: '#52ACB5', // El color primario de tu paleta
-            confirmButtonText: 'Guardar Cambios',
-            cancelButtonText: 'Cancelar',
-            preConfirm: () => {
-                return {
-                    fecha: document.getElementById('swal-fecha').value,
-                    hora: document.getElementById('swal-hora').value
-                }
+        mmtTurnoId     = turnoId;
+        mmtServicio    = null;
+        mmtFecha       = null;
+        mmtHora        = null;
+        mmtCurrentDate = new Date();
+
+        // Intentar con SweetAlert primero; si no existe, usar modal propio
+        if (typeof Swal !== 'undefined') {
+            _mmtAbrirComoSwal();
+        } else {
+            _mmtAbrirModal();
+        }
+    }
+
+    // ── Versión SweetAlert (llama al modal nativo dentro de Swal) ──
+    async function _mmtAbrirComoSwal() {
+        // Preparar el modal nativo para que Swal lo embeba
+        _mmtReset();
+        await _mmtCargarServicios();
+
+        const modalEl = document.getElementById('modal-modificar-turno');
+        // Sacar el contenido del modal y ponerlo en Swal
+        await Swal.fire({
+            title: '',
+            html: `
+                <div id="swal-mmt-wrapper" style="text-align:left; padding: 0;">
+                    <!-- El modal nativo se muestra directamente -->
+                </div>
+            `,
+            showConfirmButton: false,
+            showCancelButton:  false,
+            width: '680px',
+            padding: '0',
+            customClass: { popup: 'rounded-[2rem] overflow-hidden p-0' },
+            didOpen: () => {
+                // Cuando Swal abre, mostramos nuestro modal nativo encima
+                _mmtAbrirModal();
+            },
+            willClose: () => {
+                cerrarModalModificar();
             }
         });
+    }
 
-        if (!formValues || !formValues.fecha || !formValues.hora) return;
+    // ── Abrir modal nativo ──
+    function _mmtAbrirModal() {
+        _mmtReset();
+        const modal = document.getElementById('modal-modificar-turno');
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        _mmtCargarServicios();
+    }
 
+    function cerrarModalModificar() {
+        const modal = document.getElementById('modal-modificar-turno');
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+        // Cerrar Swal si está abierto
+        if (typeof Swal !== 'undefined' && Swal.isVisible()) Swal.close();
+    }
+
+    // ── Reset estado del modal ──
+    function _mmtReset() {
+        mmtServicio = null; mmtFecha = null; mmtHora = null;
+        
+        // Pasos
+        document.getElementById('mmt-paso-1').classList.remove('hidden');
+        document.getElementById('mmt-paso-2').classList.add('hidden');
+        document.getElementById('mmt-paso-3').classList.add('hidden');
+        
+        // Progreso
+        _mmtSetPaso(1);
+        
+        // Resumen chips
+        ['mmt-res-servicio','mmt-res-fecha','mmt-res-hora'].forEach(id => {
+            document.getElementById(id).classList.add('hidden');
+            document.getElementById(id).classList.remove('flex');
+        });
+        
+        // Botón guardar
+        const btn = document.getElementById('mmt-btn-guardar');
+        btn.disabled = true;
+        document.getElementById('mmt-btn-txt').textContent = 'Guardá primero el servicio';
+        document.getElementById('mmt-btn-volver').classList.add('hidden');
+    }
+
+    // ── Actualizar barra de progreso ──
+    function _mmtSetPaso(paso) {
+        document.getElementById('mmt-step-num').textContent = paso;
+        document.getElementById('mmt-progress').style.width = (paso / 3 * 100) + '%';
+        
+        ['1','2','3'].forEach(n => {
+            const el = document.getElementById('mmt-ind-' + n);
+            el.className = 'text-[10px] font-black uppercase tracking-wider ' +
+                (parseInt(n) <= paso ? 'text-primary' : 'text-gray-300');
+        });
+        
+        // Mostrar/ocultar "Volver"
+        document.getElementById('mmt-btn-volver').classList.toggle('hidden', paso === 1);
+    }
+
+    // ── Volver un paso ──
+    function mmtVolver() {
+        const paso1 = !document.getElementById('mmt-paso-1').classList.contains('hidden');
+        const paso2 = !document.getElementById('mmt-paso-2').classList.contains('hidden');
+        const paso3 = !document.getElementById('mmt-paso-3').classList.contains('hidden');
+
+        if (paso3) {
+            document.getElementById('mmt-paso-3').classList.add('hidden');
+            document.getElementById('mmt-paso-2').classList.remove('hidden');
+            mmtHora = null;
+            // Ocultar chip hora
+            document.getElementById('mmt-res-hora').classList.add('hidden');
+            document.getElementById('mmt-res-hora').classList.remove('flex');
+            _mmtSetPaso(2);
+            _mmtActualizarBotonGuardar();
+        } else if (paso2) {
+            document.getElementById('mmt-paso-2').classList.add('hidden');
+            document.getElementById('mmt-paso-1').classList.remove('hidden');
+            mmtFecha = null;
+            document.getElementById('mmt-res-fecha').classList.add('hidden');
+            document.getElementById('mmt-res-fecha').classList.remove('flex');
+            _mmtSetPaso(1);
+            _mmtActualizarBotonGuardar();
+        }
+    }
+
+    // ── Cargar servicios desde la API ──
+    async function _mmtCargarServicios() {
+        const grid = document.getElementById('mmt-servicios-grid');
+        try {
+            const resp = await fetch('{% url "turnos:servicios" %}');
+            const data = await resp.json();
+            if (!data.success) throw new Error('Error al obtener servicios');
+            
+            grid.innerHTML = '';
+            data.servicios.forEach(s => {
+                const card = document.createElement('div');
+                card.className = 'mmt-service-card flex items-center gap-3 p-4 rounded-2xl border-2 border-gray-100 cursor-pointer hover:border-primary transition-all';
+                card.dataset.id     = s.id;
+                card.dataset.nombre = s.nombre;
+                card.dataset.precio = s.precio;
+                card.innerHTML = `
+                    <div class="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center flex-shrink-0">
+                        <span class="material-symbols-outlined text-primary" style="font-size:18px;">stethoscope</span>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="font-bold text-slate-800 text-sm leading-tight">${s.nombre}</p>
+                        <p class="text-xs text-primary font-semibold mt-0.5">${s.duracion_minutos} min · $${Math.round(s.precio).toLocaleString('es-AR')}</p>
+                    </div>
+                    <span class="mmt-check hidden text-primary">
+                        <span class="material-symbols-outlined" style="font-size:20px;font-variation-settings:'FILL' 1;">check_circle</span>
+                    </span>
+                `;
+                card.addEventListener('click', () => _mmtSeleccionarServicio(card, s));
+                grid.appendChild(card);
+            });
+        } catch(e) {
+            grid.innerHTML = '<p class="text-sm text-red-500 col-span-2 text-center py-4">Error al cargar servicios. Recargá la página.</p>';
+        }
+    }
+
+    // ── Seleccionar servicio → ir a paso 2 ──
+    function _mmtSeleccionarServicio(card, servicio) {
+        document.querySelectorAll('.mmt-service-card').forEach(c => {
+            c.classList.remove('border-primary', 'bg-primary/5');
+            c.querySelector('.mmt-check').classList.add('hidden');
+        });
+        card.classList.add('border-primary', 'bg-primary/5');
+        card.querySelector('.mmt-check').classList.remove('hidden');
+        
+        mmtServicio = servicio;
+        
+        // Mostrar chip de servicio
+        document.getElementById('mmt-res-servicio-txt').textContent = servicio.nombre;
+        document.getElementById('mmt-res-servicio').classList.remove('hidden');
+        document.getElementById('mmt-res-servicio').classList.add('flex');
+        
+        // Avanzar al paso 2 con pequeño delay
+        setTimeout(() => {
+            document.getElementById('mmt-paso-1').classList.add('hidden');
+            document.getElementById('mmt-paso-2').classList.remove('hidden');
+            _mmtSetPaso(2);
+            _mmtGenerarCalendario();
+            _mmtActualizarBotonGuardar();
+        }, 250);
+    }
+
+    // ── Generar calendario ──
+    function _mmtGenerarCalendario() {
+        const year  = mmtCurrentDate.getFullYear();
+        const month = mmtCurrentDate.getMonth();
+        
+        document.getElementById('mmt-cal-mes').textContent = `${MESES[month]} ${year}`;
+        
+        const firstDay    = new Date(year, month, 1);
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+        const startDay    = firstDay.getDay() === 0 ? 6 : firstDay.getDay() - 1;
+        
+        const container = document.getElementById('mmt-cal-dias');
+        container.innerHTML = '';
+        
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        
+        // Celdas vacías
+        for (let i = 0; i < startDay; i++) {
+            container.appendChild(Object.assign(document.createElement('div'), { className: 'p-2' }));
+        }
+        
+        for (let day = 1; day <= daysInMonth; day++) {
+            const dayDate = new Date(year, month, day);
+            dayDate.setHours(0, 0, 0, 0);
+            const isPast   = dayDate < today;
+            const isSunday = dayDate.getDay() === 0;
+            
+            const div = document.createElement('div');
+            div.textContent = day;
+            div.className   = 'p-2 text-center rounded-xl text-sm font-semibold';
+            
+            if (isPast || isSunday) {
+                div.className += ' text-gray-300 cursor-not-allowed';
+            } else {
+                div.className += ' cursor-pointer hover:bg-primary/10 hover:text-primary transition-colors';
+                div.addEventListener('click', () => _mmtSeleccionarFecha(year, month, day, div));
+            }
+            container.appendChild(div);
+        }
+    }
+
+    document.getElementById('mmt-prev-mes').addEventListener('click', () => {
+        mmtCurrentDate.setMonth(mmtCurrentDate.getMonth() - 1);
+        _mmtGenerarCalendario();
+    });
+    document.getElementById('mmt-next-mes').addEventListener('click', () => {
+        mmtCurrentDate.setMonth(mmtCurrentDate.getMonth() + 1);
+        _mmtGenerarCalendario();
+    });
+
+    // ── Seleccionar fecha → ir a paso 3 ──
+    async function _mmtSeleccionarFecha(year, month, day, div) {
+        // Resaltar día seleccionado
+        document.querySelectorAll('#mmt-cal-dias > div').forEach(d => {
+            d.classList.remove('bg-primary', 'text-white', '!text-white');
+        });
+        div.classList.add('bg-primary', 'text-white');
+        
+        mmtFecha = new Date(year, month, day);
+        const fechaStr = mmtFecha.toISOString().split('T')[0];
+        
+        // Chip fecha
+        document.getElementById('mmt-res-fecha-txt').textContent =
+            mmtFecha.toLocaleDateString('es-AR', { day: 'numeric', month: 'short', year: 'numeric' });
+        document.getElementById('mmt-res-fecha').classList.remove('hidden');
+        document.getElementById('mmt-res-fecha').classList.add('flex');
+        
+        // Avanzar a paso 3
+        setTimeout(async () => {
+            document.getElementById('mmt-paso-2').classList.add('hidden');
+            document.getElementById('mmt-paso-3').classList.remove('hidden');
+            _mmtSetPaso(3);
+            await _mmtCargarHorarios(fechaStr);
+            _mmtActualizarBotonGuardar();
+        }, 200);
+    }
+
+    // ── Cargar horarios disponibles ──
+    async function _mmtCargarHorarios(fechaStr) {
+        document.getElementById('mmt-horarios-cargando').classList.remove('hidden');
+        document.getElementById('mmt-horarios-contenido').classList.add('hidden');
+        
+        try {
+            const resp = await fetch(`/turnos/horarios-disponibles/?fecha=${fechaStr}`);
+            const data = await resp.json();
+            if (data.success) _mmtMostrarHorarios(data.horarios);
+            else throw new Error(data.error);
+        } catch(e) {
+            document.getElementById('mmt-horarios-cargando').classList.add('hidden');
+            document.getElementById('mmt-horarios-contenido').classList.remove('hidden');
+            document.getElementById('mmt-sin-horarios').classList.remove('hidden');
+        }
+    }
+
+    function _mmtMostrarHorarios(horarios) {
+        const grids = {
+            'mañana': document.getElementById('mmt-grid-manana'),
+            'tarde':  document.getElementById('mmt-grid-tarde'),
+            'noche':  document.getElementById('mmt-grid-noche'),
+        };
+        const secs = {
+            'mañana': document.getElementById('mmt-sec-manana'),
+            'tarde':  document.getElementById('mmt-sec-tarde'),
+            'noche':  document.getElementById('mmt-sec-noche'),
+        };
+        
+        Object.values(grids).forEach(g => g.innerHTML = '');
+        Object.values(secs).forEach(s => s.classList.add('hidden'));
+        document.getElementById('mmt-sin-horarios').classList.add('hidden');
+        document.getElementById('mmt-horarios-cargando').classList.add('hidden');
+        document.getElementById('mmt-horarios-contenido').classList.remove('hidden');
+        
+        if (!horarios.length) {
+            document.getElementById('mmt-sin-horarios').classList.remove('hidden');
+            return;
+        }
+        
+        const grupos = { 'mañana': [], 'tarde': [], 'noche': [] };
+        horarios.forEach(h => grupos[h.turno]?.push(h));
+        
+        Object.entries(grupos).forEach(([turno, horas]) => {
+            if (!horas.length) return;
+            secs[turno].classList.remove('hidden');
+            horas.forEach(h => {
+                const btn = document.createElement('button');
+                btn.type      = 'button';
+                btn.textContent = h.hora;
+                btn.className = 'py-2 px-2 text-xs font-bold rounded-xl border-2 transition-all ';
+                
+                if (h.disponible) {
+                    btn.className += 'border-gray-200 hover:border-primary hover:text-primary';
+                    btn.addEventListener('click', () => _mmtSeleccionarHora(h.hora, btn));
+                } else {
+                    btn.className += 'border-gray-100 text-gray-300 cursor-not-allowed';
+                    btn.disabled   = true;
+                }
+                grids[turno].appendChild(btn);
+            });
+        });
+    }
+
+    // ── Seleccionar hora ──
+    function _mmtSeleccionarHora(hora, btn) {
+        document.querySelectorAll('#mmt-paso-3 button[type="button"]').forEach(b => {
+            b.classList.remove('border-primary', 'bg-primary', 'text-white', '!text-white');
+            b.classList.add('border-gray-200');
+        });
+        btn.classList.add('border-primary', 'bg-primary', 'text-white');
+        btn.classList.remove('border-gray-200');
+        
+        mmtHora = hora;
+        document.getElementById('mmt-res-hora-txt').textContent = hora + ' hs';
+        document.getElementById('mmt-res-hora').classList.remove('hidden');
+        document.getElementById('mmt-res-hora').classList.add('flex');
+        
+        _mmtActualizarBotonGuardar();
+    }
+
+    // ── Actualizar estado del botón guardar ──
+    function _mmtActualizarBotonGuardar() {
+        const btn    = document.getElementById('mmt-btn-guardar');
+        const btnTxt = document.getElementById('mmt-btn-txt');
+        const listo  = mmtServicio && mmtFecha && mmtHora;
+        
+        btn.disabled = !listo;
+        if (!mmtServicio)     btnTxt.textContent = 'Guardá primero el servicio';
+        else if (!mmtFecha)   btnTxt.textContent = 'Ahora elegí una fecha';
+        else if (!mmtHora)    btnTxt.textContent = 'Seleccioná un horario';
+        else                  btnTxt.textContent = 'Confirmar cambios';
+    }
+
+    // ── Guardar modificación ──
+    async function guardarModificacionTurno() {
+        if (!mmtServicio || !mmtFecha || !mmtHora) return;
+        
+        const btn     = document.getElementById('mmt-btn-guardar');
+        const btnTxt  = document.getElementById('mmt-btn-txt');
+        const spinner = document.getElementById('mmt-btn-spinner');
+        
+        btn.disabled = true;
+        btnTxt.classList.add('hidden');
+        spinner.classList.remove('hidden');
+        
         const formData = new FormData();
-        formData.append('turno_id', turnoId);
-        formData.append('fecha', formValues.fecha);
-        formData.append('hora', formValues.hora);
+        formData.append('turno_id',    mmtTurnoId);
+        formData.append('servicio_id', mmtServicio.id);
+        formData.append('fecha',       mmtFecha.toISOString().split('T')[0]);
+        formData.append('hora',        mmtHora);
         formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
-
+        
         try {
             const resp = await fetch('{% url "turnos:modificar_turno" %}', {
                 method: 'POST',
-                body: formData,
+                body:   formData,
             });
             const data = await resp.json();
-
+            
             if (data.success) {
-                // Actualizamos dinámicamente los campos en el HTML sin recargar
-                document.getElementById('turno-dia-' + turnoId).innerText = data.nuevo_dia;
-                document.getElementById('turno-mes-' + turnoId).innerText = data.nuevo_mes;
-                document.getElementById('turno-info-' + turnoId).innerText = `${data.nueva_fecha_formateada} · ${data.nueva_hora} hs`;
+                // Actualizar la card en el DOM sin recargar
+                document.getElementById('turno-dia-'  + mmtTurnoId).textContent = data.nuevo_dia;
+                document.getElementById('turno-mes-'  + mmtTurnoId).textContent = data.nuevo_mes;
+                document.getElementById('turno-info-' + mmtTurnoId).textContent =
+                    `${data.nueva_fecha_formateada} · ${data.nueva_hora} hs`;
                 
-                mostrarToast('✅ Horario actualizado con éxito', 'success');
+                // Actualizar nombre del servicio en la card
+                const card = document.getElementById('turno-card-' + mmtTurnoId);
+                if (card) {
+                    const nombreEl = card.querySelector('.text-sm.font-black.text-slate-800');
+                    if (nombreEl) nombreEl.textContent = data.nuevo_servicio_nombre;
+                    const precioEl = card.querySelector('.text-sm.font-black.text-primary');
+                    if (precioEl) precioEl.textContent = `$${parseInt(data.nuevo_precio).toLocaleString('es-AR')}`;
+                }
+                
+                cerrarModalModificar();
+                mostrarToast('✅ Turno actualizado con éxito', 'success');
             } else {
-                Swal.fire('Error', data.error, 'error');
+                mostrarToast('❌ ' + data.error, 'error');
+                btn.disabled = false;
             }
         } catch {
-            mostrarToast('❌ Error al modificar el turno', 'error');
+            mostrarToast('❌ Error al guardar los cambios', 'error');
+            btn.disabled = false;
+        } finally {
+            btnTxt.classList.remove('hidden');
+            spinner.classList.add('hidden');
         }
     }
+
+    // Cerrar modal con click fuera
+    document.getElementById('modal-modificar-turno').addEventListener('click', function(e) {
+        if (e.target === this) cerrarModalModificar();
+    });
+
+    // Cerrar con ESC
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Escape') cerrarModalModificar();
+    });
 
     function toggleFilas(tbodyId, btn) {
         const filas = document.querySelectorAll('#' + tbodyId + ' tr');
@@ -1007,7 +1394,150 @@
         }
     }
     </script>
+    <!-- ══ MODAL MODIFICAR TURNO ══ -->
+    <div id="modal-modificar-turno" class="fixed inset-0 z-[200] hidden items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden">
+            
+            <!-- Header -->
+            <div class="flex items-center justify-between px-6 py-5 border-b border-gray-100">
+                <div>
+                    <h2 class="text-xl font-black text-slate-800">Reprogramar Turno</h2>
+                    <p class="text-xs text-gray-400 font-semibold mt-0.5">Modificá el servicio, fecha y horario</p>
+                </div>
+                <button onclick="cerrarModalModificar()" class="w-9 h-9 flex items-center justify-center rounded-xl hover:bg-gray-100 text-gray-400 transition-colors">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
 
+            <!-- Barra de progreso -->
+            <div class="px-6 pt-4 pb-2">
+                <div class="flex justify-between items-center mb-2">
+                    <p class="text-xs font-bold text-gray-400">Paso <span id="mmt-step-num">1</span> de 3</p>
+                </div>
+                <div class="h-1.5 bg-gray-100 rounded-full">
+                    <div id="mmt-progress" class="h-full rounded-full bg-primary transition-all duration-300" style="width:33%"></div>
+                </div>
+                <!-- Steps indicadores -->
+                <div class="flex justify-between mt-2">
+                    <span id="mmt-ind-1" class="text-[10px] font-black text-primary uppercase tracking-wider">Servicio</span>
+                    <span id="mmt-ind-2" class="text-[10px] font-black text-gray-300 uppercase tracking-wider">Fecha</span>
+                    <span id="mmt-ind-3" class="text-[10px] font-black text-gray-300 uppercase tracking-wider">Horario</span>
+                </div>
+            </div>
+
+            <!-- Contenido scrolleable -->
+            <div class="flex-1 overflow-y-auto px-6 py-4">
+
+                <!-- PASO 1: Servicios -->
+                <div id="mmt-paso-1">
+                    <p class="text-sm font-bold text-gray-500 mb-4">Seleccioná el servicio</p>
+                    <div id="mmt-servicios-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <!-- Se genera con JS -->
+                        <div class="col-span-2 text-center py-8 text-gray-400">
+                            <div class="inline-block w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin mb-2"></div>
+                            <p class="text-sm">Cargando servicios...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PASO 2: Calendario -->
+                <div id="mmt-paso-2" class="hidden">
+                    <p class="text-sm font-bold text-gray-500 mb-4">Elegí una fecha</p>
+                    <div class="bg-gray-50 rounded-2xl p-5 max-w-sm mx-auto">
+                        <div class="flex items-center justify-between mb-5">
+                            <h3 id="mmt-cal-mes" class="font-bold text-slate-800"></h3>
+                            <div class="flex gap-1">
+                                <button type="button" id="mmt-prev-mes" class="p-1.5 hover:bg-gray-200 rounded-lg transition-colors">
+                                    <span class="material-symbols-outlined text-slate-600" style="font-size:18px;">chevron_left</span>
+                                </button>
+                                <button type="button" id="mmt-next-mes" class="p-1.5 hover:bg-gray-200 rounded-lg transition-colors">
+                                    <span class="material-symbols-outlined text-slate-600" style="font-size:18px;">chevron_right</span>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-7 text-center text-[10px] font-black text-gray-400 mb-2">
+                            <div>LU</div><div>MA</div><div>MI</div><div>JU</div><div>VI</div><div>SÁ</div><div>DO</div>
+                        </div>
+                        <div id="mmt-cal-dias" class="grid grid-cols-7 gap-1 text-sm"></div>
+                    </div>
+                </div>
+
+                <!-- PASO 3: Horarios -->
+                <div id="mmt-paso-3" class="hidden">
+                    <p class="text-sm font-bold text-gray-500 mb-4">Seleccioná un horario disponible</p>
+
+                    <div id="mmt-horarios-cargando" class="text-center py-8 text-gray-400">
+                        <div class="inline-block w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin mb-2"></div>
+                        <p class="text-sm">Cargando horarios...</p>
+                    </div>
+
+                    <div id="mmt-horarios-contenido" class="hidden space-y-5">
+                        <div id="mmt-sec-manana" class="hidden">
+                            <p class="text-xs font-black text-gray-400 uppercase tracking-wider mb-2 flex items-center gap-1">
+                                <span class="material-symbols-outlined" style="font-size:14px;">light_mode</span> Mañana
+                            </p>
+                            <div id="mmt-grid-manana" class="grid grid-cols-4 sm:grid-cols-5 gap-2"></div>
+                        </div>
+                        <div id="mmt-sec-tarde" class="hidden">
+                            <p class="text-xs font-black text-gray-400 uppercase tracking-wider mb-2 flex items-center gap-1">
+                                <span class="material-symbols-outlined" style="font-size:14px;">wb_twilight</span> Tarde
+                            </p>
+                            <div id="mmt-grid-tarde" class="grid grid-cols-4 sm:grid-cols-5 gap-2"></div>
+                        </div>
+                        <div id="mmt-sec-noche" class="hidden">
+                            <p class="text-xs font-black text-gray-400 uppercase tracking-wider mb-2 flex items-center gap-1">
+                                <span class="material-symbols-outlined" style="font-size:14px;">nightlight</span> Noche
+                            </p>
+                            <div id="mmt-grid-noche" class="grid grid-cols-4 sm:grid-cols-5 gap-2"></div>
+                        </div>
+                        <div id="mmt-sin-horarios" class="hidden text-center py-8 text-gray-400">
+                            <span class="material-symbols-outlined text-4xl mb-2 block">event_busy</span>
+                            <p class="text-sm font-semibold">No hay horarios disponibles para esta fecha</p>
+                            <p class="text-xs mt-1">Intentá con otro día</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Footer con resumen y botones -->
+            <div class="px-6 py-4 border-t border-gray-100 bg-gray-50/50">
+                <!-- Mini resumen -->
+                <div id="mmt-resumen" class="flex flex-wrap gap-3 mb-4 text-xs font-semibold text-gray-500">
+                    <span id="mmt-res-servicio" class="hidden items-center gap-1 bg-primary/10 text-primary px-3 py-1.5 rounded-full font-bold">
+                        <span class="material-symbols-outlined" style="font-size:13px;">stethoscope</span>
+                        <span id="mmt-res-servicio-txt"></span>
+                    </span>
+                    <span id="mmt-res-fecha" class="hidden items-center gap-1 bg-primary/10 text-primary px-3 py-1.5 rounded-full font-bold">
+                        <span class="material-symbols-outlined" style="font-size:13px;">calendar_today</span>
+                        <span id="mmt-res-fecha-txt"></span>
+                    </span>
+                    <span id="mmt-res-hora" class="hidden items-center gap-1 bg-primary/10 text-primary px-3 py-1.5 rounded-full font-bold">
+                        <span class="material-symbols-outlined" style="font-size:13px;">schedule</span>
+                        <span id="mmt-res-hora-txt"></span>
+                    </span>
+                </div>
+
+                <div class="flex gap-3">
+                    <button id="mmt-btn-volver" onclick="mmtVolver()" class="hidden px-5 py-3 rounded-xl font-bold border border-gray-200 text-gray-600 hover:bg-gray-100 transition-all text-sm">
+                        ← Volver
+                    </button>
+                    <button id="mmt-btn-guardar"
+                        onclick="guardarModificacionTurno()"
+                        class="flex-1 flex items-center justify-center gap-2 bg-primary text-white py-3 rounded-xl font-bold text-sm disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                        disabled>
+                        <span id="mmt-btn-txt">Guardá primero el servicio</span>
+                        <span id="mmt-btn-spinner" class="hidden">
+                            <svg class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                        </span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
     {% endblock %}
     {% block footer %}{% endblock %}
 </body>

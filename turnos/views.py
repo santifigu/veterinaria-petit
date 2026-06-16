@@ -119,6 +119,14 @@ http://localhost:8000/admin/turnos/turno/{turno.id}/
         return JsonResponse({'success': True, 'turno_id': turno.id, 'mensaje': '✅ Turno confirmado. Podés ver los detalles en tu perfil.'})
     except Exception as e:
         return JsonResponse({'success': False, 'error': str(e)})
+    
+@require_http_methods(["GET"])
+def obtener_servicios(request):
+    """Devuelve los servicios activos en JSON para el modal de modificación."""
+    servicios = Servicio.objects.filter(activo=True).values(
+        'id', 'nombre', 'precio', 'duracion_minutos', 'imagen_url'
+    )
+    return JsonResponse({'success': True, 'servicios': list(servicios)})
 
 @require_http_methods(["GET"])
 def obtener_horarios_disponibles(request):
@@ -226,31 +234,47 @@ def cancelar_turno(request):
 
 def modificar_turno(request):
     if request.method == 'POST':
-        turno_id = request.POST.get('turno_id')
-        fecha_str = request.POST.get('fecha')
-        hora_str = request.POST.get('hora')
-        
-        turno = get_object_or_404(Turno, id=turno_id, tutor__tutor=request.user)
-        
+        turno_id    = request.POST.get('turno_id')
+        fecha_str   = request.POST.get('fecha')
+        hora_str    = request.POST.get('hora')
+        servicio_id = request.POST.get('servicio_id')  # ← nuevo campo
+
+        turno = get_object_or_404(Turno, id=turno_id, user=request.user)
+
         try:
-            # Convertimos strings a objetos date/time nativos de Python
             fecha_obj = datetime.strptime(fecha_str, '%Y-%m-%d').date()
-            hora_obj = datetime.strptime(hora_str, '%H:%M').time()
-            
-            # Guardamos los cambios en PostgreSQL
+            hora_obj  = datetime.strptime(hora_str,  '%H:%M').time()
+
+            # Verificar que el nuevo horario no esté ocupado por OTRO turno
+            conflicto = Turno.objects.filter(
+                fecha=fecha_obj,
+                hora=hora_obj,
+                estado__in=['pendiente', 'confirmado', 'en_curso']
+            ).exclude(id=turno_id).exists()
+
+            if conflicto:
+                return JsonResponse({'success': False, 'error': 'Ese horario ya está reservado. Elegí otro.'})
+
             turno.fecha = fecha_obj
-            turno.hora = hora_obj
+            turno.hora  = hora_obj
+
+            if servicio_id:
+                servicio = get_object_or_404(Servicio, id=servicio_id, activo=True)
+                turno.servicio = servicio
+
             turno.save()
-            
-            # Formateamos las respuestas para refrescar el HTML instantáneamente
+
             return JsonResponse({
                 'success': True,
-                'nuevo_dia': fecha_obj.strftime('%d'),
-                'nuevo_mes': date_format(fecha_obj, 'M'), # Ej: 'jun' o 'dic'
-                'nueva_fecha_formateada': date_format(fecha_obj, 'l d/m/Y'), # Ej: 'martes 16/06/2026'
-                'nueva_hora': hora_obj.strftime('%H:%M')
+                'nuevo_dia':              fecha_obj.strftime('%d'),
+                'nuevo_mes':              date_format(fecha_obj, 'M'),
+                'nueva_fecha_formateada': date_format(fecha_obj, 'l d/m/Y'),
+                'nueva_hora':             hora_obj.strftime('%H:%M'),
+                'nuevo_servicio_nombre':  turno.servicio.nombre,
+                'nuevo_precio':           int(turno.servicio.precio),
             })
+
         except ValueError:
             return JsonResponse({'success': False, 'error': 'Formato de fecha u hora inválido.'})
-            
+
     return JsonResponse({'success': False, 'error': 'Método no permitido'}, status=400)
