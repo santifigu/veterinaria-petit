@@ -1,6 +1,7 @@
 from django.db import models
 from django.core.validators import EmailValidator
 from django.contrib.auth.models import User
+from django.utils import timezone
 
 class Servicio(models.Model):
     nombre = models.CharField(verbose_name="Nombre", max_length=100)
@@ -54,6 +55,11 @@ class Turno(models.Model):
         verbose_name_plural = "Turnos"
         ordering = ['-fecha', '-hora']
         unique_together = ['fecha', 'hora']
+    
+    def esta_vencido(self):
+        from datetime import datetime
+        turno_dt = datetime.combine(self.fecha, self.hora)
+        return turno_dt < datetime.now()
     
     def __str__(self):
         return f"{self.nombre_mascota} - {self.servicio.nombre} - {self.fecha} {self.hora}"

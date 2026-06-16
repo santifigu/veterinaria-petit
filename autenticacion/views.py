@@ -4,6 +4,7 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from urllib3 import request
 from mascota.models import Mascota, ControlAntiparasitario
 from .forms import RegistroForm
 from pedidos.models import Pedido
@@ -13,6 +14,7 @@ from django.contrib.auth.models import User # Importar el modelo User para verif
 from django.http import JsonResponse
 from tutor.models import Tutor
 import json
+from datetime import date, timedelta
 
 @login_required
 def perfil(request):
@@ -32,10 +34,12 @@ def perfil(request):
         user=request.user
     ).prefetch_related('lineas__producto').order_by('-created_at')
 
-    # ← Turnos del usuario por email
+    hace_30_dias = date.today() - timedelta(days=30)
+
     turnos_usuario = Turno.objects.filter(
-    user=request.user,
-    estado__in=['pendiente', 'confirmado', 'en_curso']
+        user=request.user,
+        fecha__gte=hace_30_dias,
+        estado__in=['pendiente', 'confirmado', 'en_curso']
     ).select_related('servicio').order_by('fecha', 'hora')
 
     try:
