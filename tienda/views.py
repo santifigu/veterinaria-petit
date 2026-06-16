@@ -50,7 +50,7 @@ def checkout(request, template_name='tienda/checkout.html'):
         nombre = request.user.get_full_name() or request.user.username
         email = request.user.email
         try:
-            tutor = request.user.tutor  # relación inversa directa
+            tutor = Tutor.objects.get(tutor=request.user)
             telefono = tutor.telefono
         except Tutor.DoesNotExist:
             pass
