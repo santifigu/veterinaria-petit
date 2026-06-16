@@ -395,7 +395,6 @@
                                 {% endif %}
 
                                 <!-- Overlay de subida -->
-                                <!-- Overlay de subida -->
                                 <label for="input-foto-{{ mascota.id }}" class="foto-upload-overlay" title="Cambiar foto">
                                     <span class="material-symbols-outlined upload-icon">photo_camera</span>
                                 </label>
@@ -608,24 +607,36 @@
 
                     <div id="lista-turnos">
                     {% for turno in turnos_usuario %}
-                    <div class="order-card mb-4 turno-item" data-index="{{ forloop.counter0 }}">
+                    <div id="turno-card-{{ turno.id }}" class="order-card mb-4 turno-item" data-index="{{ forloop.counter0 }}">
                         <div class="px-6 py-4 flex flex-wrap justify-between items-center gap-4">
                             <div class="flex items-center gap-4">
                                 <div class="w-12 h-12 bg-primary/10 rounded-2xl flex flex-col items-center justify-center flex-shrink-0">
-                                    <span class="text-xs font-black text-primary leading-none">{{ turno.fecha|date:"d" }}</span>
-                                    <span class="text-[10px] font-bold text-primary/70 uppercase">{{ turno.fecha|date:"M" }}</span>
+                                    <span id="turno-dia-{{ turno.id }}" class="text-xs font-black text-primary leading-none">{{ turno.fecha|date:"d" }}</span>
+                                    <span id="turno-mes-{{ turno.id }}" class="text-[10px] font-bold text-primary/70 uppercase">{{ turno.fecha|date:"M" }}</span>
                                 </div>
                                 <div>
                                     <p class="text-sm font-black text-slate-800">{{ turno.servicio.nombre }}</p>
-                                    <p class="text-xs text-gray-400 font-semibold mt-0.5">{{ turno.fecha|date:"l d/m/Y" }} · {{ turno.hora|time:"H:i" }} hs</p>
+                                    <p id="turno-info-{{ turno.id }}" class="text-xs text-gray-400 font-semibold mt-0.5">
+                                        {{ turno.fecha|date:"l d/m/Y" }} · {{ turno.hora|time:"H:i" }} hs
+                                    </p>
                                     <p class="text-xs text-gray-400 font-medium mt-0.5">🐾 {{ turno.nombre_mascota }}</p>
                                 </div>
                             </div>
+                            
                             <div class="flex flex-col items-end gap-2">
                                 {% if turno.estado == 'confirmado' %}<span class="badge bg-green-50 text-green-700 border border-green-100">Confirmado</span>
                                 {% elif turno.estado == 'pendiente' %}<span class="badge bg-amber-50 text-amber-700 border border-amber-100">Pendiente</span>
                                 {% elif turno.estado == 'en_curso' %}<span class="badge bg-blue-50 text-blue-700 border border-blue-100">En curso</span>{% endif %}
                                 <p class="text-sm font-black text-primary">${{ turno.servicio.precio|floatformat:0 }}</p>
+                                
+                                <div class="flex gap-2 mt-2">
+                                    <button onclick="modificarTurno('{{ turno.id }}')" class="flex items-center justify-center p-1.5 text-gray-500 hover:text-primary hover:bg-primary/10 rounded-lg transition-all" title="Modificar fecha/hora">
+                                        <span class="material-symbols-outlined" style="font-size: 18px;">edit_calendar</span>
+                                    </button>
+                                    <button onclick="cancelarTurno('{{ turno.id }}')" class="flex items-center justify-center p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all" title="Cancelar turno">
+                                        <span class="material-symbols-outlined" style="font-size: 18px;">delete</span>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -699,6 +710,105 @@
         btn.innerHTML = !estaAbierto
             ? '<span class="material-symbols-outlined">expand_less</span> Mostrar menos'
             : '<span class="material-symbols-outlined">expand_more</span> Ver ' + ocultos.length + ' elemento' + (ocultos.length > 1 ? 's' : '') + ' más';
+    }
+
+    // ── CANCELAR / ELIMINAR TURNO ──
+    async function cancelarTurno(turnoId) {
+        // Usamos SweetAlert2 para una confirmación limpia
+        const confirmacion = await Swal.fire({
+            title: '¿Estás seguro?',
+            text: "Esta acción cancelará tu turno reservado definitivamente.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#ef4444',
+            cancelButtonColor: '#6b7280',
+            confirmButtonText: 'Sí, cancelar turno',
+            cancelButtonText: 'Volver'
+        });
+
+        if (!confirmacion.isConfirmed) return;
+
+        const formData = new FormData();
+        formData.append('turno_id', turnoId);
+        formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+
+        try {
+            const resp = await fetch('{% url "turnos:cancelar_turno" %}', {
+                method: 'POST',
+                body: formData,
+            });
+            const data = await resp.json();
+
+            if (data.success) {
+                // Elimina la tarjeta de la lista con un efecto visual suave
+                const card = document.getElementById('turno-card-' + turnoId);
+                if (card) {
+                    card.style.opacity = '0';
+                    card.style.transform = 'scale(0.95)';
+                    setTimeout(() => { card.remove(); }, 300);
+                }
+                mostrarToast('✅ Turno cancelado con éxito', 'success');
+            } else {
+                mostrarToast('❌ ' + data.error, 'error');
+            }
+        } catch {
+            mostrarToast('❌ Error al procesar la cancelación', 'error');
+        }
+    }
+
+    // ── MODIFICAR / REPROGRAMAR HORARIO DE TURNO ──
+    async function modificarTurno(turnoId) {
+        // Le pedimos al usuario la nueva fecha y hora usando SweetAlert
+        const { value: formValues } = await Swal.fire({
+            title: 'Reprogramar Turno',
+            html:
+                '<div class="flex flex-col gap-3 text-left p-2">' +
+                '<label class="text-xs font-bold text-gray-500">Nueva Fecha:</label>' +
+                '<input id="swal-fecha" type="date" class="swal2-input m-0 w-full rounded-xl border-gray-200">' +
+                '<label class="text-xs font-bold text-gray-500 mt-2">Nueva Hora:</label>' +
+                '<input id="swal-hora" type="time" class="swal2-input m-0 w-full rounded-xl border-gray-200">' +
+                '</div>',
+            focusConfirm: false,
+            showCancelButton: true,
+            confirmButtonColor: '#52ACB5', // El color primario de tu paleta
+            confirmButtonText: 'Guardar Cambios',
+            cancelButtonText: 'Cancelar',
+            preConfirm: () => {
+                return {
+                    fecha: document.getElementById('swal-fecha').value,
+                    hora: document.getElementById('swal-hora').value
+                }
+            }
+        });
+
+        if (!formValues || !formValues.fecha || !formValues.hora) return;
+
+        const formData = new FormData();
+        formData.append('turno_id', turnoId);
+        formData.append('fecha', formValues.fecha);
+        formData.append('hora', formValues.hora);
+        formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+
+        try {
+            const resp = await fetch('{% url "turnos:modificar_turno" %}', {
+                method: 'POST',
+                body: formData,
+            });
+            const data = await resp.json();
+
+            if (data.success) {
+                // Actualizamos dinámicamente los campos en el HTML sin recargar
+                document.getElementById('turno-dia-' + turnoId).innerText = data.nuevo_dia;
+                document.getElementById('turno-mes-' + turnoId).innerText = data.nuevo_mes;
+                document.getElementById('turno-info-' + turnoId).innerText = `${data.nueva_fecha_formateada} · ${data.nueva_hora} hs`;
+                
+                mostrarToast('✅ Horario actualizado con éxito', 'success');
+            } else {
+                Swal.fire('Error', data.error, 'error');
+            }
+        } catch {
+            mostrarToast('❌ Error al modificar el turno', 'error');
+        }
     }
 
     function toggleFilas(tbodyId, btn) {

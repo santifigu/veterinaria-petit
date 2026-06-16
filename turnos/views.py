@@ -1,8 +1,10 @@
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from django.core.mail import send_mail
+from django.shortcuts import get_object_or_404
 from django.conf import settings
 from django.views.decorators.http import require_http_methods
+from django.utils.formats import date_format
 from datetime import datetime, time, timedelta, date
 from .models import Turno, Servicio, HorarioDisponible
 
@@ -208,3 +210,47 @@ def mis_turnos(request):
     }
     
     return render(request, 'turnos/mis_turnos.html', context)
+
+def cancelar_turno(request):
+    if request.method == 'POST':
+        turno_id = request.POST.get('turno_id')
+        # Buscamos el turno asegurándonos que pertenezca al usuario logueado por seguridad
+        turno = get_object_or_404(Turno, id=turno_id, tutor__tutor=request.user)
+        
+        # Puedes borrarlo físicamente o cambiar su estado a 'cancelado'. 
+        # Si prefieres cambiar el estado: turno.estado = 'cancelado'; turno.save()
+        turno.delete() 
+        
+        return JsonResponse({'success': True})
+    return JsonResponse({'success': False, 'error': 'Método no permitido'}, status=400)
+
+def modificar_turno(request):
+    if request.method == 'POST':
+        turno_id = request.POST.get('turno_id')
+        fecha_str = request.POST.get('fecha')
+        hora_str = request.POST.get('hora')
+        
+        turno = get_object_or_404(Turno, id=turno_id, tutor__tutor=request.user)
+        
+        try:
+            # Convertimos strings a objetos date/time nativos de Python
+            fecha_obj = datetime.strptime(fecha_str, '%Y-%m-%d').date()
+            hora_obj = datetime.strptime(hora_str, '%H:%M').time()
+            
+            # Guardamos los cambios en PostgreSQL
+            turno.fecha = fecha_obj
+            turno.hora = hora_obj
+            turno.save()
+            
+            # Formateamos las respuestas para refrescar el HTML instantáneamente
+            return JsonResponse({
+                'success': True,
+                'nuevo_dia': fecha_obj.strftime('%d'),
+                'nuevo_mes': date_format(fecha_obj, 'M'), # Ej: 'jun' o 'dic'
+                'nueva_fecha_formateada': date_format(fecha_obj, 'l d/m/Y'), # Ej: 'martes 16/06/2026'
+                'nueva_hora': hora_obj.strftime('%H:%M')
+            })
+        except ValueError:
+            return JsonResponse({'success': False, 'error': 'Formato de fecha u hora inválido.'})
+            
+    return JsonResponse({'success': False, 'error': 'Método no permitido'}, status=400)
