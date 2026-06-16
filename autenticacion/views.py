@@ -40,7 +40,7 @@ def perfil(request):
         user=request.user,
         fecha__gte=hace_30_dias,
         estado__in=['pendiente', 'confirmado', 'en_curso']
-    ).select_related('servicio').order_by('fecha', 'hora')
+    ).select_related('servicio').order_by('-fecha', '-hora')
 
     try:
         tutor = Tutor.objects.get(tutor=request.user)

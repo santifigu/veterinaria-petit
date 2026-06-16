@@ -219,18 +219,12 @@ def mis_turnos(request):
     
     return render(request, 'turnos/mis_turnos.html', context)
 
+@require_http_methods(["POST"])
 def cancelar_turno(request):
-    if request.method == 'POST':
-        turno_id = request.POST.get('turno_id')
-        # Buscamos el turno asegurándonos que pertenezca al usuario logueado por seguridad
-        turno = get_object_or_404(Turno, id=turno_id, tutor__tutor=request.user)
-        
-        # Puedes borrarlo físicamente o cambiar su estado a 'cancelado'. 
-        # Si prefieres cambiar el estado: turno.estado = 'cancelado'; turno.save()
-        turno.delete() 
-        
-        return JsonResponse({'success': True})
-    return JsonResponse({'success': False, 'error': 'Método no permitido'}, status=400)
+    turno_id = request.POST.get('turno_id')
+    turno = get_object_or_404(Turno, id=turno_id, user=request.user)
+    turno.delete()
+    return JsonResponse({'success': True})
 
 def modificar_turno(request):
     if request.method == 'POST':

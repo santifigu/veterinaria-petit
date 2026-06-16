@@ -800,20 +800,21 @@
     const MESES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio',
                     'Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
 
-    // ── Abrir modal ──
     async function modificarTurno(turnoId) {
         mmtTurnoId     = turnoId;
         mmtServicio    = null;
         mmtFecha       = null;
         mmtHora        = null;
         mmtCurrentDate = new Date();
+        _mmtReset();
+        _mmtAbrirModal();
+    }
 
-        // Intentar con SweetAlert primero; si no existe, usar modal propio
-        if (typeof Swal !== 'undefined') {
-            _mmtAbrirComoSwal();
-        } else {
-            _mmtAbrirModal();
-        }
+    function _mmtAbrirModal() {
+        const modal = document.getElementById('modal-modificar-turno');
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        _mmtCargarServicios();
     }
 
     // ── Versión SweetAlert (llama al modal nativo dentro de Swal) ──
