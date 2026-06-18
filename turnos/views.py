@@ -109,12 +109,16 @@ http://localhost:8000/admin/turnos/turno/{turno.id}/
         """
 
         try:
-            # Al cliente
-            send_mail(asunto_cliente, mensaje_cliente, settings.EMAIL_HOST_USER, [email_cliente], fail_silently=True)
-            # A la veterinaria
-            send_mail(asunto_vet, mensaje_vet, settings.EMAIL_HOST_USER, ['santifigu72@gmail.com'], fail_silently=True)
+            send_mail(asunto_cliente, mensaje_cliente, settings.EMAIL_HOST_USER, [email_cliente], fail_silently=False)
+            print(f"✅ Mail al cliente enviado correctamente a {email_cliente}")
         except Exception as e:
-            print(f"⚠️ Error al enviar email: {e}")
+            print(f"❌ ERROR al enviar mail al cliente: {type(e).__name__}: {e}")
+
+        try:
+            send_mail(asunto_vet, mensaje_vet, settings.EMAIL_HOST_USER, ['santifigu72@gmail.com'], fail_silently=False)
+            print(f"✅ Mail a la veterinaria enviado correctamente")
+        except Exception as e:
+            print(f"❌ ERROR al enviar mail a la veterinaria: {type(e).__name__}: {e}")
 
         return JsonResponse({'success': True, 'turno_id': turno.id, 'mensaje': '✅ Turno confirmado. Podés ver los detalles en tu perfil.'})
     except Exception as e:

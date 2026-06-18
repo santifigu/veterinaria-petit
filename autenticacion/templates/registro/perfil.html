@@ -609,7 +609,7 @@
                             <h3 class="text-2xl font-bold text-primary leading-none">Mis Turnos</h3>
                             <p class="text-gray-400 text-xs font-semibold mt-1">{{ turnos_usuario.count }} turno{{ turnos_usuario.count|pluralize }} próximo{{ turnos_usuario.count|pluralize }}</p>
                         </div>
-                        <a href="{% url 'turnos:turnos' %}" class="flex items-center gap-1 text-xs font-bold text-primary hover:underline">
+                        <a href="{% url 'turnos:turnos' %}" class="flex items-center gap-1 text-xs font-bold text-primary bg-primary/10 hover:bg-primary hover:text-white px-4 py-2 rounded-full transition-all">
                             <span class="material-symbols-outlined" style="font-size:16px;">add</span> Reservar turno
                         </a>
                     </div>

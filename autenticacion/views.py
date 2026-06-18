@@ -15,6 +15,8 @@ from django.http import JsonResponse
 from tutor.models import Tutor
 import json
 from datetime import date, timedelta
+from django.core.mail import send_mail
+from django.conf import settings
 
 @login_required
 def perfil(request):
@@ -67,6 +69,39 @@ class VRegistro(View):
         if form.is_valid():
             usuario = form.save()
             login(request, usuario, backend='django.contrib.auth.backends.ModelBackend')
+            # ── Mail de bienvenida ──
+            if usuario.email:
+                asunto = '🐾 ¡Bienvenido a Petit, Córdoba Veterinaria!'
+                mensaje = f"""
+¡Hola {usuario.username}!
+
+Gracias por registrarte en Petit. Tu cuenta ya está lista para usar. 🐶🐱
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Con tu cuenta podés:
+
+    📅 Reservar turnos para tus mascotas
+    🛍️  Comprar productos en nuestra tienda
+    📋 Llevar el registro de vacunas y controles
+    🐾 Gestionar el perfil de cada una de tus mascotas
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📍 NUESTRA SUCURSAL
+    Miguel C. Del Corro 56
+    Córdoba Capital, Argentina
+
+📞 CONTACTO
+    +54 351 444-5566
+    veterinaria@cordoba.com
+
+¡Te esperamos pronto!
+El equipo de Petit 🐾
+                """
+                try:
+                    send_mail(asunto, mensaje, settings.EMAIL_HOST_USER, [usuario.email], fail_silently=True)
+                except Exception as e:
+                    print(f"⚠️ Error al enviar mail de bienvenida: {e}")
+
             messages.success(request, "¡Bienvenido a la familia Petit! Registro exitoso.")
             return redirect('index')
         else:

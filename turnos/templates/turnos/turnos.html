@@ -355,31 +355,58 @@
                         <span id="resumen-precio" class="text-2xl font-black text-primary">$-</span>
                     </div>
                 </div>
-                <button type="button" id="btn-confirmar" class="w-full flex items-center justify-center gap-2 bg-primary text-white py-4 rounded-xl font-bold disabled:opacity-50" disabled>
-                    <span id="btn-text">Confirmar Turno</span>
-                    <span id="btn-spinner" class="hidden">
-                        <p>Confirmando turno...</p>
-                        <svg class="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <button type="button" id="btn-confirmar" class="w-full flex items-center justify-center gap-2 bg-primary text-white py-3.5 sm:py-4 rounded-xl font-bold text-sm sm:text-base disabled:opacity-50 transition-all" disabled>
+                    <span id="btn-text" class="flex items-center gap-2">
+                        Confirmar Turno
+                        <span class="material-symbols-outlined" style="font-size:18px;">arrow_forward</span>
+                    </span>
+                    <span id="btn-spinner" class="hidden items-center gap-2">
+                        <svg class="animate-spin h-4 w-4 sm:h-5 sm:w-5 flex-shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                         </svg>
+                        Confirmando turno...
                     </span>
-                    <span class="material-symbols-outlined">arrow_forward</span>
                 </button>
             </div>
         </aside>
     </div>
 </main>
 
-<div id="modal-confirmacion" class="fixed inset-0 z-[100] hidden items-center justify-center p-4 bg-black/50">
-    <div class="bg-white rounded-3xl p-8 max-w-md w-full text-center space-y-6">
-        <div class="w-20 h-20 bg-emerald-100 text-emerald-500 rounded-full flex items-center justify-center mx-auto">
-            <span class="material-symbols-outlined text-5xl">check_circle</span>
+<!-- ══ MODAL CONFIRMACIÓN (fallback si Swal no carga) ══ -->
+<div id="modal-confirmacion" class="fixed inset-0 z-[100] hidden items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+    <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-md w-full text-center space-y-5 shadow-2xl">
+        <div class="w-16 h-16 sm:w-20 sm:h-20 bg-emerald-100 text-emerald-500 rounded-full flex items-center justify-center mx-auto">
+            <span class="material-symbols-outlined text-4xl sm:text-5xl">check_circle</span>
         </div>
-        <h2 class="text-3xl font-bold">¡Turno Confirmado!</h2>
-        <p class="text-gray-600">Tu turno fue registrado. Podés ver los detalles en tu perfil.</p>
-        <p>Equipo de Petit</p>
-        <a href="/" class="inline-block bg-primary text-white px-8 py-3 rounded-xl font-bold">Volver al Inicio</a>
+        <div>
+            <h2 class="text-2xl sm:text-3xl font-black text-slate-800">¡Turno Confirmado!</h2>
+            <p class="text-gray-500 text-sm mt-2">Tu turno fue registrado con éxito 🐾</p>
+        </div>
+
+        <div class="bg-gray-50 rounded-2xl p-4 text-left space-y-2.5">
+            <div class="flex justify-between items-center">
+                <span class="text-xs font-bold text-gray-400 uppercase tracking-wide">Servicio</span>
+                <span id="mc-servicio" class="text-sm font-black text-slate-800">-</span>
+            </div>
+            <div class="flex justify-between items-center">
+                <span class="text-xs font-bold text-gray-400 uppercase tracking-wide">Fecha</span>
+                <span id="mc-fecha" class="text-sm font-black text-slate-800">-</span>
+            </div>
+            <div class="flex justify-between items-center">
+                <span class="text-xs font-bold text-gray-400 uppercase tracking-wide">Horario</span>
+                <span id="mc-hora" class="text-sm font-black text-slate-800">-</span>
+            </div>
+        </div>
+
+        <div class="flex flex-col sm:flex-row gap-3 pt-2">
+            <a href="/" class="flex-1 inline-flex items-center justify-center gap-1 border border-gray-200 text-gray-600 px-5 py-3 rounded-xl font-bold text-sm hover:bg-gray-50 transition-all">
+                Volver al Inicio
+            </a>
+            <a href="https://veterinaria-petit-production.up.railway.app/autenticacion/perfil/#turnos" class="flex-1 inline-flex items-center justify-center gap-1 bg-primary text-white px-5 py-3 rounded-xl font-bold text-sm hover:opacity-90 transition-all">
+                Ver Turno
+            </a>
+        </div>
     </div>
 </div>
 
@@ -581,6 +608,7 @@ els.btnConfirmar.addEventListener('click',async()=>{
     
     document.getElementById('btn-text').classList.add('hidden');
     document.getElementById('btn-spinner').classList.remove('hidden');
+    document.getElementById('btn-spinner').classList.add('flex');
     els.btnConfirmar.disabled=true;
     
     try{
@@ -600,24 +628,57 @@ els.btnConfirmar.addEventListener('click',async()=>{
         const data=await response.json();
         
         if(data.success){
-        if(typeof Swal !== 'undefined'){
-            Swal.fire({
-                title: '¡Turno Confirmado!',
-                text: 'Tu turno fue registrado. Podés ver los detalles en tu perfil.',
-                icon: 'success',
-                confirmButtonColor: '#52ACB5',
-                confirmButtonText: 'Volver al Inicio',
-                customClass: {
-                    popup: 'rounded-[2rem]',
-                    confirmButton: 'rounded-xl font-bold px-6 py-3',
-                }
-            }).then(() => {
-                window.location.href = '/';
+            const fechaFormateada = fechaSeleccionada.toLocaleDateString('es-AR', {
+                weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
             });
-        } else {
-            document.getElementById('modal-confirmacion').classList.remove('hidden');
-            document.getElementById('modal-confirmacion').classList.add('flex');
-        }
+            const urlPerfilTurnos = 'https://veterinaria-petit-production.up.railway.app/autenticacion/perfil/#turnos';
+
+            if (typeof Swal !== 'undefined') {
+                Swal.fire({
+                    title: '¡Turno Confirmado! 🐾',
+                    html: `
+                        <div style="text-align:left; background:#f9fafb; border-radius:16px; padding:16px; margin-top:8px;">
+                            <div style="display:flex; justify-content:space-between; padding:4px 0;">
+                                <span style="font-size:11px; font-weight:800; color:#9ca3af; text-transform:uppercase;">Servicio</span>
+                                <span style="font-size:13px; font-weight:800; color:#1e293b;">${servicioSeleccionado.nombre}</span>
+                            </div>
+                            <div style="display:flex; justify-content:space-between; padding:4px 0;">
+                                <span style="font-size:11px; font-weight:800; color:#9ca3af; text-transform:uppercase;">Fecha</span>
+                                <span style="font-size:13px; font-weight:800; color:#1e293b;">${fechaFormateada}</span>
+                            </div>
+                            <div style="display:flex; justify-content:space-between; padding:4px 0;">
+                                <span style="font-size:11px; font-weight:800; color:#9ca3af; text-transform:uppercase;">Horario</span>
+                                <span style="font-size:13px; font-weight:800; color:#1e293b;">${horaSeleccionada} hs</span>
+                            </div>
+                        </div>
+                    `,
+                    icon: 'success',
+                    showCancelButton: true,
+                    confirmButtonColor: '#52ACB5',
+                    cancelButtonColor: '#6b7280',
+                    confirmButtonText: 'Ver Turno',
+                    cancelButtonText: 'Volver al Inicio',
+                    customClass: {
+                        popup: 'rounded-[2rem]',
+                        confirmButton: 'rounded-xl font-bold px-6 py-3',
+                        cancelButton: 'rounded-xl font-bold px-6 py-3',
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = urlPerfilTurnos;
+                    } else {
+                        window.location.href = '/';
+                    }
+                });
+            } else {
+                document.getElementById('mc-servicio').textContent = servicioSeleccionado.nombre;
+                document.getElementById('mc-fecha').textContent = fechaFormateada;
+                document.getElementById('mc-hora').textContent = `${horaSeleccionada} hs`;
+
+                const modal = document.getElementById('modal-confirmacion');
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            }
         }else{
             alert(data.error||'Error al confirmar');
         }
@@ -627,6 +688,7 @@ els.btnConfirmar.addEventListener('click',async()=>{
     }finally{
         document.getElementById('btn-text').classList.remove('hidden');
         document.getElementById('btn-spinner').classList.add('hidden');
+        document.getElementById('btn-spinner').classList.remove('flex');
         els.btnConfirmar.disabled=false;
     }
 });
