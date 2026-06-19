@@ -9,8 +9,8 @@ from mascota.models import Mascota, ControlAntiparasitario
 from .forms import RegistroForm
 from pedidos.models import Pedido
 from turnos.models import Turno
-from django.contrib.auth.views import PasswordResetView # Importar la vista de restablecimiento de contraseña
-from django.contrib.auth.models import User # Importar el modelo User para verificar la existencia del usuario durante el restablecimiento de contraseña
+from django.contrib.auth.views import PasswordResetView
+from django.contrib.auth.models import User
 from django.http import JsonResponse
 from tutor.models import Tutor
 import json
@@ -38,11 +38,25 @@ def perfil(request):
 
     hace_30_dias = date.today() - timedelta(days=30)
 
-    turnos_usuario = Turno.objects.filter(
+    # ── CAMBIO: separamos próximos (asc) de vencidos (desc) para que
+    # el turno más cercano aparezca primero, sin mezclarse con vencidos ──
+    turnos_qs = Turno.objects.filter(
         user=request.user,
         fecha__gte=hace_30_dias,
         estado__in=['pendiente', 'confirmado', 'en_curso']
-    ).select_related('servicio').order_by('-fecha', '-hora')
+    ).select_related('servicio')
+
+    proximos = sorted(
+        [t for t in turnos_qs if not t.esta_vencido()],
+        key=lambda t: (t.fecha, t.hora)
+    )
+    vencidos = sorted(
+        [t for t in turnos_qs if t.esta_vencido()],
+        key=lambda t: (t.fecha, t.hora),
+        reverse=True
+    )
+
+    turnos_usuario = proximos + vencidos
 
     try:
         tutor = Tutor.objects.get(tutor=request.user)
@@ -111,8 +125,6 @@ El equipo de Petit 🐾
             for error in form.non_field_errors():
                 messages.error(request, error)
             return render(request, 'registro/registro.html', {'form': form})
-
-
 
 # Vista personalizada para el restablecimiento de contraseña
 class VPasswordReset(PasswordResetView):
@@ -269,4 +281,3 @@ def eliminar_cuenta(request):
         return JsonResponse({'success': True})
     except Exception as e:
         return JsonResponse({'success': False, 'error': str(e)})
-    

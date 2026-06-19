@@ -8,6 +8,7 @@ def index(request, template_name='core/index.html'):
 def nosotros(request, template_name='core/nosotros.html'):
     return render(request, template_name)
 
+# Vistas para políticas y términos
 def politica(request, template_name='core/politica.html'):
     return render(request, template_name)
 
@@ -17,6 +18,7 @@ def terminos(request, template_name='core/terminos.html'):
 def cookies(request, template_name='core/cookies.html'):
     return render(request, template_name)
 
+# Errores personalizados
 def error_404(request, exception=None):
     return render(request, '404.html', status=404)
 

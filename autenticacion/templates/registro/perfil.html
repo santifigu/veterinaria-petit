@@ -607,7 +607,7 @@
                     <div class="flex justify-between items-center mb-5">
                         <div>
                             <h3 class="text-2xl font-bold text-primary leading-none">Mis Turnos</h3>
-                            <p class="text-gray-400 text-xs font-semibold mt-1">{{ turnos_usuario.count }} turno{{ turnos_usuario.count|pluralize }} próximo{{ turnos_usuario.count|pluralize }}</p>
+                            <p class="text-gray-400 text-xs font-semibold mt-1">{{ turnos_usuario|length }} turno{{ turnos_usuario|length|pluralize }} próximo{{ turnos_usuario|length|pluralize }}</p>
                         </div>
                         <a href="{% url 'turnos:turnos' %}" class="flex items-center gap-1 text-xs font-bold text-primary bg-primary/10 hover:bg-primary hover:text-white px-4 py-2 rounded-full transition-all">
                             <span class="material-symbols-outlined" style="font-size:16px;">add</span> Reservar turno
@@ -662,9 +662,10 @@
                                         </button>
                                     {% endif %}
 
-                                    <button onclick="cancelarTurno('{{ turno.id }}')"
+                                    <button data-turno-id="{{ turno.id }}" data-esta-vencido="{{ turno.esta_vencido|yesno:'true,false' }}"
+                                        onclick="(function(btn){const id=btn.dataset.turnoId;const vencido=btn.dataset.estaVencido==='true'; if(vencido) eliminarTurnoVencido(id); else cancelarTurno(id);})(this)"
                                         class="flex items-center justify-center p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
-                                        title="Cancelar turno">
+                                        title="{% if turno.esta_vencido %}Eliminar turno vencido{% else %}Cancelar turno{% endif %}">
                                         <span class="material-symbols-outlined" style="font-size: 18px;">delete</span>
                                     </button>
                                 </div>
@@ -685,10 +686,10 @@
                     {% endfor %}
                     </div>
 
-                    {% if turnos_usuario.count > 3 %}
+                    {% if turnos_usuario|length > 3 %}
                     <button class="mostrar-mas-btn" onclick="toggleItems('lista-turnos', '.turno-item', this)">
                         <span class="material-symbols-outlined">expand_more</span>
-                        Ver {{ turnos_usuario.count|add:"-3" }} turno{{ turnos_usuario.count|add:"-3"|pluralize:"s" }} más
+                        Ver {{ turnos_usuario|length|add:"-3" }} turno{{ turnos_usuario|length|add:"-3"|pluralize:"s" }} más
                     </button>
                     {% endif %}
                 </section>
@@ -784,6 +785,47 @@
             }
         } catch {
             mostrarToast('❌ Error al procesar la cancelación', 'error');
+        }
+    }
+    // ── ELIMINAR TURNO VENCIDO ──
+    async function eliminarTurnoVencido(turnoId) {
+        const confirmacion = await Swal.fire({
+            title: '¿Eliminar este turno?',
+            text: "Este turno ya venció. ¿Querés eliminarlo de tu historial?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#ef4444',
+            cancelButtonColor: '#6b7280',
+            confirmButtonText: 'Sí, eliminar',
+            cancelButtonText: 'Volver'
+        });
+
+        if (!confirmacion.isConfirmed) return;
+
+        const formData = new FormData();
+        formData.append('turno_id', turnoId);
+        formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+
+        try {
+            const resp = await fetch('{% url "turnos:cancelar_turno" %}', {
+                method: 'POST',
+                body: formData,
+            });
+            const data = await resp.json();
+
+            if (data.success) {
+                const card = document.getElementById('turno-card-' + turnoId);
+                if (card) {
+                    card.style.opacity = '0';
+                    card.style.transform = 'scale(0.95)';
+                    setTimeout(() => { card.remove(); }, 300);
+                }
+                mostrarToast('✅ Turno eliminado del historial', 'success');
+            } else {
+                mostrarToast('❌ ' + data.error, 'error');
+            }
+        } catch {
+            mostrarToast('❌ Error al eliminar el turno', 'error');
         }
     }
 
