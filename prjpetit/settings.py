@@ -134,6 +134,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
+EMAIL_TIMEOUT = 10
 EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER') # Borrar después # Aquí deberías colocar tu dirección de correo electrónico de Gmail o la que quieras usar para enviar los correos desde tu aplicación
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD') # Borrar después # Aquí deberías colocar tu contraseña de Gmail o, mejor aún, usar una contraseña de aplicación para mayor seguridad
 DEFAULT_FROM_EMAIL = f'Córdoba Veterinaria <{os.getenv("EMAIL_HOST_USER")}>' # Dirección de correo que aparecerá como remitente en los correos enviados desde tu aplicación

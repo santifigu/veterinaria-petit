@@ -174,7 +174,7 @@
 
                         {% for cat in categorias %}
                         <a class="flex flex-col items-center justify-center border-b-[3px] pb-[13px] pt-4 min-w-fit transition-colors
-                            {% if categoria_id == cat.id|stringformat:'s' %}border-b-primary text-[#0d1b12] dark:text-white{% else %}border-b-transparent text-primary hover:border-b-primary/50{% endif %}"
+                            {% if categoria_id == cat.id|stringformat:'s' %}border-b-primary text-[#0d1b12] dark:text-white{% else %}border-b-transparent text-primary hover:border-b-primary/50 duration-400{% endif %}"
                             href="?categoria={{ cat.id }}{% if q %}&q={{ q }}{% endif %}{% if orden %}&orden={{ orden }}{% endif %}">
                             <div class="flex items-center gap-2">
                                 {% with nombre=cat.nombre|lower %}
@@ -222,17 +222,48 @@
                             {% endif %}
                         </h2>
 
-                        <!-- Ordenamiento -->
-                        <div class="relative">
-                            <select
-                                id="ordenSelect"
-                                class="appearance-none bg-white dark:bg-background-dark border border-[#cfe7d7] dark:border-[#1e3a28] text-primary text-sm font-bold px-4 py-2 pr-8 rounded-xl cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary">
-                                <option value="" {% if not orden %}selected{% endif %}>Ordenar</option>
-                                <option value="precio_asc" {% if orden == 'precio_asc' %}selected{% endif %}>Precio: menor a mayor</option>
-                                <option value="precio_desc" {% if orden == 'precio_desc' %}selected{% endif %}>Precio: mayor a menor</option>
-                                <option value="nombre" {% if orden == 'nombre' %}selected{% endif %}>Nombre A-Z</option>
-                            </select>
-                            <span class="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 text-primary pointer-events-none text-[18px]">expand_more</span>
+                        <!-- Ordenamiento (dropdown custom) -->
+                        <div class="relative" id="ordenDropdown">
+                            <!-- Valor oculto que se manda en la URL -->
+                            <input type="hidden" id="ordenValue" value="{{ orden }}">
+
+                            <!-- Botón que abre/cierra -->
+                            <button type="button" id="ordenBtn"
+                                class="flex items-center gap-2 bg-white dark:bg-background-dark border-2 border-[#e7f3f1] dark:border-[#1e3a28] text-primary dark:text-white text-sm font-medium pl-4 pr-3 py-2.5 rounded-xl cursor-pointer transition-all duration-200 hover:border-primary/50 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 shadow-sm">
+                                <span class="material-symbols-outlined text-primary text-[18px]">sort</span>
+                                <span id="ordenLabel">
+                                    {% if orden == 'precio_asc' %}Precio: menor a mayor
+                                    {% elif orden == 'precio_desc' %}Precio: mayor a menor
+                                    {% elif orden == 'nombre' %}Nombre A-Z
+                                    {% else %}Ordenar por{% endif %}
+                                </span>
+                                <span class="material-symbols-outlined text-primary text-[20px] transition-transform duration-200" id="ordenChevron">expand_more</span>
+                            </button>
+
+                            <!-- Panel desplegable -->
+                            <div id="ordenPanel"
+                                class="hidden absolute right-0 mt-2 w-56 bg-white dark:bg-background-dark border-2 border-[#e7f3f1] dark:border-[#1e3a28] rounded-2xl shadow-lg overflow-hidden z-50 origin-top-right">
+                                <button type="button" data-value="" data-label="Ordenar por"
+                                    class="orden-option w-full text-left px-4 py-3 text-sm font-medium text-[#0d1b19] dark:text-white hover:bg-primary/10 hover:text-primary transition-colors flex items-center justify-between">
+                                    Ordenar por
+                                    <span class="material-symbols-outlined text-primary text-[18px] {% if orden %}invisible{% endif %} check-icon">check</span>
+                                </button>
+                                <button type="button" data-value="precio_asc" data-label="Precio: menor a mayor"
+                                    class="orden-option w-full text-left px-4 py-3 text-sm font-medium text-[#0d1b19] dark:text-white hover:bg-primary/10 hover:text-primary transition-colors flex items-center justify-between border-t border-[#f3f6f4] dark:border-[#1e3a28]">
+                                    Precio: menor a mayor
+                                    <span class="material-symbols-outlined text-primary text-[18px] {% if orden != 'precio_asc' %}invisible{% endif %} check-icon">check</span>
+                                </button>
+                                <button type="button" data-value="precio_desc" data-label="Precio: mayor a menor"
+                                    class="orden-option w-full text-left px-4 py-3 text-sm font-medium text-[#0d1b19] dark:text-white hover:bg-primary/10 hover:text-primary transition-colors flex items-center justify-between border-t border-[#f3f6f4] dark:border-[#1e3a28]">
+                                    Precio: mayor a menor
+                                    <span class="material-symbols-outlined text-primary text-[18px] {% if orden != 'precio_desc' %}invisible{% endif %} check-icon">check</span>
+                                </button>
+                                <button type="button" data-value="nombre" data-label="Nombre A-Z"
+                                    class="orden-option w-full text-left px-4 py-3 text-sm font-medium text-[#0d1b19] dark:text-white hover:bg-primary/10 hover:text-primary transition-colors flex items-center justify-between border-t border-[#f3f6f4] dark:border-[#1e3a28]">
+                                    Nombre A-Z
+                                    <span class="material-symbols-outlined text-primary text-[18px] {% if orden != 'nombre' %}invisible{% endif %} check-icon">check</span>
+                                </button>
+                            </div>
                         </div>
                     </div>
 
@@ -286,10 +317,10 @@
                             <div class="flex items-center justify-between">
                                 <p class="text-xl font-black text-[#0d1b12]/80 dark:text-white">${{ producto.precio }}</p>
                                 {% if user.is_authenticated %}
-                                    <a class="bg-primary hover:bg-primary/90 text-teal-soft p-2 rounded-lg flex items-center justify-center transition-colors"
+                                    <a class="bg-primary hover:bg-primary/90 text-teal-soft p-2 rounded-lg flex items-center justify-center transition-colors duration-400"
                                     href="{% url 'carro:agregar' producto.id %}">
                                 {% else %}
-                                    <a class="bg-primary hover:bg-primary/90 text-teal-soft p-2 rounded-lg flex items-center justify-center transition-colors cursor-pointer"
+                                    <a class="bg-primary hover:bg-primary/90 text-teal-soft p-2 rounded-lg flex items-center justify-center transition-colors duration-400 cursor-pointer"
                                     onclick="mensajeLogin()">
                                 {% endif %}
                                     <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 56 56">
@@ -339,12 +370,12 @@
                             <p class="text-2xl font-black text-[#0d1b12]/80 dark:text-white">${{ combo.precio }}</p>
                             {% if user.is_authenticated %}
                                 <a href="{% url 'carro:agregar' combo.id %}"
-                                class="bg-primary text-teal-soft px-4 py-2 rounded-lg font-bold text-sm hover:bg-primary/90 transition-colors">
+                                class="bg-primary text-teal-soft px-4 py-2 rounded-lg font-bold text-sm hover:bg-primary/90 transition-colors duration-400">
                                     Agregar Plan
                                 </a>
                             {% else %}
                                 <button onclick="mensajeLogin()"
-                                        class="bg-primary text-teal-soft px-4 py-2 rounded-lg font-bold text-sm hover:bg-primary/90 transition-colors">
+                                        class="bg-primary text-teal-soft px-4 py-2 rounded-lg font-bold text-sm hover:bg-primary/90 transition-colors duration-400">
                                     Agregar Plan
                                 </button>
                             {% endif %}
@@ -410,14 +441,52 @@
 
         <!-- Script para ordenamiento y búsqueda -->
         <script>
-        document.getElementById('ordenSelect').addEventListener('change', function() {
-            const url = new URL(window.location.href);
-            if (this.value) {
-                url.searchParams.set('orden', this.value);
-            } else {
-                url.searchParams.delete('orden');
+        // ── Dropdown custom de ordenamiento ──
+        const ordenBtn     = document.getElementById('ordenBtn');
+        const ordenPanel   = document.getElementById('ordenPanel');
+        const ordenChevron = document.getElementById('ordenChevron');
+        const ordenLabel   = document.getElementById('ordenLabel');
+        const ordenOptions = document.querySelectorAll('.orden-option');
+
+        function abrirOrdenPanel() {
+            ordenPanel.classList.remove('hidden');
+            ordenChevron.classList.add('rotate-180');
+        }
+        function cerrarOrdenPanel() {
+            ordenPanel.classList.add('hidden');
+            ordenChevron.classList.remove('rotate-180');
+        }
+
+        ordenBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (ordenPanel.classList.contains('hidden')) abrirOrdenPanel();
+            else cerrarOrdenPanel();
+        });
+
+        ordenOptions.forEach(opt => {
+            opt.addEventListener('click', function() {
+                const valor = this.dataset.value;
+
+                const url = new URL(window.location.href);
+                if (valor) {
+                    url.searchParams.set('orden', valor);
+                } else {
+                    url.searchParams.delete('orden');
+                }
+                window.location.href = url.toString();
+            });
+        });
+
+        // Cerrar al hacer click afuera
+        document.addEventListener('click', (e) => {
+            if (!document.getElementById('ordenDropdown').contains(e.target)) {
+                cerrarOrdenPanel();
             }
-            window.location.href = url.toString();
+        });
+
+        // Cerrar con ESC
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') cerrarOrdenPanel();
         });
 
         // Búsqueda con delay para no recargar en cada tecla

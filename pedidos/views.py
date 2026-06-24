@@ -130,13 +130,16 @@ Has recibido un nuevo pedido desde Petit Veterinaria.
 http://localhost:8000/admin/pedidos/pedido/{pedido.id}/
     """
 
-    send_mail(
-        asunto,
-        cuerpo,
-        settings.EMAIL_HOST_USER,
-        ['santifigu72@gmail.com'],
-        fail_silently=True,
-    )
+    try:
+        send_mail(
+            asunto,
+            cuerpo,
+            settings.EMAIL_HOST_USER,
+            ['santifigu72@gmail.com'],
+            fail_silently=True,
+        )
+    except Exception as e:
+        print(f"⚠️ Error al enviar mail a la veterinaria (pedido #{pedido.id}): {type(e).__name__}: {e}")
 
 
 def enviar_mail_cliente(**kwargs):
@@ -183,10 +186,13 @@ Presentá este email o mencioná el número de pedido #{pedido.id} al retirar.
 El equipo de Petit
     """
 
-    send_mail(
-        asunto,
-        cuerpo,
-        settings.EMAIL_HOST_USER,
-        [email],
-        fail_silently=True,
-    )
+    try:
+        send_mail(
+            asunto,
+            cuerpo,
+            settings.EMAIL_HOST_USER,
+            [email],
+            fail_silently=True,
+        )
+    except Exception as e:
+        print(f"⚠️ Error al enviar mail al cliente (pedido #{pedido.id}): {type(e).__name__}: {e}")

@@ -228,7 +228,7 @@
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                     {% for servicio in servicios %}
-                    <div class="service-card group relative flex flex-col gap-3 p-4 bg-white dark:bg-[#162a1c] rounded-xl border-2 border-gray-200 cursor-pointer hover:border-primary transition-all"
+                    <div class="service-card group relative flex flex-col gap-3 p-4 bg-white dark:bg-[#162a1c] rounded-xl border-2 border-gray-200 cursor-pointer hover:border-primary transition-all duration-400"
                         data-servicio-id="{{ servicio.id }}"
                         data-servicio-nombre="{{ servicio.nombre }}"
                         data-servicio-precio="{{ servicio.precio }}"
@@ -237,7 +237,7 @@
                             <span class="material-symbols-outlined">check_circle</span>
                         </div>
                         {% if servicio.imagen_url %}
-                        <div class="w-full aspect-video bg-cover bg-center rounded-lg grayscale group-hover:grayscale-0 transition-all" 
+                        <div class="w-full aspect-video bg-cover bg-center rounded-lg grayscale group-hover:grayscale-0 transition-all duration-400" 
                             style='background-image: url("{{ servicio.imagen_url }}");'></div>
                         {% endif %}
                         <div>
@@ -355,8 +355,8 @@
                         <span id="resumen-precio" class="text-2xl font-black text-primary">$-</span>
                     </div>
                 </div>
-                <button type="button" id="btn-confirmar" class="w-full flex items-center justify-center gap-2 bg-primary text-white py-3.5 sm:py-4 rounded-xl font-bold text-sm sm:text-base disabled:opacity-50 transition-all" disabled>
-                    <span id="btn-text" class="flex items-center gap-2">
+                <button type="button" id="btn-confirmar" class="w-full flex items-center justify-center gap-2 bg-primary text-white py-3.5 sm:py-4 rounded-xl font-bold text-sm sm:text-base disabled:opacity-50 transition-all hover:translate-x-[4px] duration-400" disabled>
+                    <span id="btn-text" class="flex items-center gap-2 hover: transition-transform duration-400">
                         Confirmar Turno
                         <span class="material-symbols-outlined" style="font-size:18px;">arrow_forward</span>
                     </span>

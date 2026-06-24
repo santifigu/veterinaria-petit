@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vete {% block title %}| Blog {% endblock %}</title>
 </head>
-<body class="bg-background-light dark:bg-background-dark text-color9 dark:text-white transition-colors duration-300 background-light">
+<body class="bg-background-light dark:bg-background-dark text-color9 dark:text-white transition-colors duration-400 background-light">
     {% block hero %}
         <div class="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden">
             <div class="layout-container flex h-full grow flex-col">
@@ -220,13 +220,13 @@
                     <div class="flex gap-3 overflow-x-auto pb-2 no-scrollbar">
                         <a href="{% url 'blog:blog' %}"
                         class="flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-full px-6 border transition-all cursor-pointer font-bold text-sm
-                        {% if not categoria_seleccionada %}bg-primary text-teal-soft shadow-md border-primary{% else %}bg-white dark:bg-[#1a3d24] text-[#0d1b12]/90 dark:text-white border-[#e7f3eb] dark:border-transparent hover:border-primary{% endif %}">
+                        {% if not categoria_seleccionada %}bg-primary text-teal-soft shadow-md border-primary{% else %}bg-white dark:bg-[#1a3d24] text-[#0d1b12]/90 dark:text-white border-[#e7f3eb] dark:border-transparent hover:border-primary duration-400{% endif %}">
                             Todos
                         </a>
                         {% for cat in categorias %}
                         <a href="{% url 'blog:categoria' cat.slug %}"
                         class="flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-full px-6 border transition-all cursor-pointer font-bold text-sm
-                        {% if categoria_seleccionada.id == cat.id %}bg-primary text-teal-soft shadow-md border-primary{% else %}bg-white dark:bg-[#1a3d24] text-[#0d1b12]/90 dark:text-white border-[#e7f3eb] dark:border-transparent hover:border-primary{% endif %}">
+                        {% if categoria_seleccionada.id == cat.id %}bg-primary text-teal-soft shadow-md border-primary{% else %}bg-white dark:bg-[#1a3d24] text-[#0d1b12]/90 dark:text-white border-[#e7f3eb] dark:border-transparent hover:border-primary duration-400{% endif %}">
                             {{ cat.nombre }}
                         </a>
                         {% endfor %}
@@ -236,7 +236,7 @@
                 <!-- POST DESTACADO (el más reciente) -->
                 {% if posts %}
                 {% with posts.0 as destacado %}
-                <div class="flex flex-col lg:flex-row items-stretch justify-start rounded-2xl overflow-hidden shadow-xl bg-white dark:bg-[#0d1b12] border border-[#e7f3eb] dark:border-[#1a3d24] hover:shadow-2xl transition-shadow duration-300">
+                <div class="flex flex-col lg:flex-row items-stretch justify-start rounded-2xl overflow-hidden shadow-xl bg-white dark:bg-[#0d1b12] border border-[#e7f3eb] dark:border-[#1a3d24] hover:shadow-2xl transition-shadow duration-400">
                     {% if destacado.imagen %}
                     <div class="w-full lg:w-3/5 bg-center bg-no-repeat aspect-video lg:aspect-auto bg-cover"
                         style="background-image: url('{{ destacado.imagen.url }}');"></div>
@@ -269,7 +269,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <a href="{% url 'blog:post' destacado.id %}" class="flex items-center justify-center gap-2 w-full lg:w-fit rounded-xl h-12 px-8 bg-primary text-teal-soft text-sm font-bold shadow-lg shadow-primary/20 hover:translate-x-[3px] transition-all">
+                            <a href="{% url 'blog:post' destacado.id %}" class="flex items-center justify-center gap-2 w-full lg:w-fit rounded-xl h-12 px-8 bg-primary text-teal-soft text-sm font-bold shadow-lg shadow-primary/20 hover:translate-x-[3px] transition-all duration-400">
                                 Leer Artículo <span class="material-symbols-outlined text-sm">arrow_forward</span>
                             </a>
                         </div>
@@ -284,10 +284,10 @@
                     <article class="group flex flex-col bg-white dark:bg-[#0d1b12] rounded-2xl overflow-hidden border border-[#e7f3eb] dark:border-[#1a3d24] shadow-sm hover:shadow-lg transition-all">
                         <div class="relative h-48 overflow-hidden">
                             {% if p.imagen %}
-                            <div class="absolute inset-0 bg-center bg-cover transition-transform duration-500 group-hover:scale-105"
+                            <div class="absolute inset-0 bg-center bg-cover transition-transform duration-400 group-hover:scale-105"
                                 style="background-image: url('{{ p.imagen.url }}');"></div>
                             {% else %}
-                            <div class="absolute inset-0 bg-[#1a3d24] flex items-center justify-center transition-transform duration-500 group-hover:scale-105">
+                            <div class="absolute inset-0 bg-[#1a3d24] flex items-center justify-center transition-transform duration-400 group-hover:scale-105">
                                 <span class="material-symbols-outlined text-primary text-6xl opacity-30">pets</span>
                             </div>
                             {% endif %}

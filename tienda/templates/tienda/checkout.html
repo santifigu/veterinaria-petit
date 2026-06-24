@@ -400,19 +400,29 @@
     labels.forEach(label => {
         label.addEventListener('click', () => {
             labels.forEach(l => {
+                const checkIcon = l.querySelector('.check-icon');
+                const metodoIcono = l.querySelector('.metodo-icono');
+
                 l.classList.remove('border-primary', 'bg-primary/5');
                 l.classList.add('border-[#e7f3f1]');
-                l.querySelector('.check-icon').textContent = 'radio_button_unchecked';
-                l.querySelector('.check-icon').classList.remove('text-primary');
-                l.querySelector('.metodo-icono').classList.remove('text-primary');
-                l.querySelector('.metodo-icono').classList.add('text-primary');
+
+                checkIcon.textContent = 'radio_button_unchecked';
+                checkIcon.classList.remove('text-primary');
+                checkIcon.classList.add('text-gray-300');
+
+                metodoIcono.classList.remove('text-primary');
+                metodoIcono.classList.add('text-primary'); // el ícono del método siempre queda primary, eso está bien
             });
+
+            const checkIconActivo = label.querySelector('.check-icon');
+
             label.classList.add('border-primary', 'bg-primary/5');
             label.classList.remove('border-[#e7f3f1]');
-            label.querySelector('.check-icon').textContent = 'check_circle';
-            label.querySelector('.check-icon').classList.add('text-primary');
-            label.querySelector('.metodo-icono').classList.add('text-primary');
-            label.querySelector('.metodo-icono').classList.remove('text-gray-400');
+
+            checkIconActivo.textContent = 'check_circle';
+            checkIconActivo.classList.remove('text-gray-300');
+            checkIconActivo.classList.add('text-primary');
+
             document.getElementById('aviso-pago').classList.add('hidden');
         });
     });
