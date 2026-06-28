@@ -193,10 +193,8 @@
                 <a class="sidebar-link" href="#turnos"><span class="material-symbols-outlined">calendar_month</span> Mis Turnos</a>
             </nav>
             <div class="mt-auto pt-5 border-t border-gray-100 flex flex-col gap-2">
-                <a class="sidebar-link" href="{% url 'cerrar_sesion' %}" style="color:#f87171;"><span class="material-symbols-outlined">logout</span> Cerrar Sesión</a>
-                <button onclick="abrirModalEliminar()" class="sidebar-link w-full text-left" style="color:#dc2626;border:none;background:none;cursor:pointer;">
-                    <span class="material-symbols-outlined">delete_forever</span> Eliminar Cuenta
-                </button>
+                <a class="sidebar-link" href="{% url 'cerrar_sesion' %}" onclick="return confirmarCerrarSesion(event)" style="color:#f87171;"><span class="material-symbols-outlined">logout</span> Cerrar Sesión</a>
+                <a class="sidebar-link" href="{% url 'eliminar_cuenta' %}" onclick="return confirmarEliminarCuenta(event)" style="color:#dc2626;"><span class="material-symbols-outlined">delete_forever</span> Eliminar Cuenta</a>
             </div>
         </aside>
 
@@ -210,7 +208,7 @@
                 <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 512 512"><path fill="#9ca3af" d="M454.65 169.4A31.82 31.82 0 0 0 432 160h-64v-16a112 112 0 0 0-224 0v16H80a32 32 0 0 0-32 32v216c0 39 33 72 72 72h272a72.22 72.22 0 0 0 50.48-20.55a69.48 69.48 0 0 0 21.52-50.2V192a31.75 31.75 0 0 0-9.35-22.6M176 144a80 80 0 0 1 160 0v16H176Z"/></svg>
                 <span class="text-[10px] font-bold">Carrito</span>
             </a>
-            <button onclick="abrirModalEliminar()" class="flex flex-col items-center gap-0.5 text-red-400"><span class="material-symbols-outlined" style="font-size:22px;">delete_forever</span><span class="text-[10px] font-bold">Eliminar</span></button>
+            <a href="{% url 'cerrar_sesion' %}" onclick="return confirmarCerrarSesion(event)" class="flex flex-col items-center gap-0.5 text-gray-400"><span class="material-symbols-outlined" style="font-size:22px;">logout</span><span class="text-[10px] font-bold">Salir</span></a>
         </nav>
 
         <!-- ══ CONTENIDO PRINCIPAL ══ -->
@@ -607,7 +605,11 @@
                     <div class="flex justify-between items-center mb-5">
                         <div>
                             <h3 class="text-2xl font-bold text-primary leading-none">Mis Turnos</h3>
+                            {% if turnos_usuario|length > 0 %}
                             <p class="text-gray-400 text-xs font-semibold mt-1">{{ turnos_usuario|length }} turno{{ turnos_usuario|length|pluralize }} próximo{{ turnos_usuario|length|pluralize }}</p>
+                            {% else %}
+                            <p class="text-gray-400 text-xs font-semibold mt-1">No tienes turnos próximos</p>
+                            {% endif %}
                         </div>
                         <a href="{% url 'turnos:turnos' %}" class="flex items-center gap-1 text-xs font-bold text-primary bg-primary/10 hover:bg-primary hover:text-white px-4 py-2 rounded-full transition-all ease-in-out duration-400">
                             <span class="material-symbols-outlined" style="font-size:16px;">add</span> Reservar turno
@@ -716,8 +718,64 @@
             </div>
         </div>
     </div>
+    <!-- ══ MODAL CERRAR SESIÓN (fallback si Swal no carga) ══ -->
+    <div id="modal-cerrar-sesion" class="fixed inset-0 z-[100] hidden items-center justify-center p-4 bg-black/60">
+        <div class="bg-white rounded-3xl p-8 max-w-md w-full text-center space-y-5 shadow-2xl">
+            <div class="w-16 h-16 bg-amber-100 text-amber-500 rounded-full flex items-center justify-center mx-auto">
+                <span class="material-symbols-outlined text-4xl">logout</span>
+            </div>
+            <h2 class="text-2xl font-black text-slate-800">¿Estás seguro que querés cerrar sesión?</h2>
+            <div class="flex gap-3 justify-center pt-2">
+                <button onclick="cerrarModalCerrarSesion()" class="px-6 py-3 rounded-xl font-bold border border-gray-200 text-gray-600 hover:bg-gray-50 transition-all">
+                    Cancelar
+                </button>
+                <a id="link-confirmar-cierre-sesion" href="{% url 'cerrar_sesion' %}" class="px-6 py-3 rounded-xl font-bold bg-red-600 text-white hover:bg-red-700 transition-all">
+                    Sí, cerrar sesión
+                </a>
+            </div>
+        </div>
+    </div>
 
     <script>
+    // ── Confirmar cierre de sesión ──
+    function confirmarCerrarSesion(event) {
+        event.preventDefault();
+        const url = event.currentTarget.href;
+
+        if (typeof Swal !== 'undefined') {
+            Swal.fire({
+                title: '¿Estás seguro que querés cerrar sesión?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#ef4444',
+                cancelButtonColor: '#6b7280',
+                confirmButtonText: 'Sí, cerrar sesión',
+                cancelButtonText: 'Cancelar',
+                customClass: {
+                    popup: 'rounded-[2rem]',
+                    confirmButton: 'rounded-xl font-bold px-6 py-3',
+                    cancelButton: 'rounded-xl font-bold px-6 py-3'
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = url;
+                }
+            });
+        } else {
+            document.getElementById('link-confirmar-cierre-sesion').href = url;
+            const modal = document.getElementById('modal-cerrar-sesion');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        return false; // evita la navegación inmediata del <a>
+    }
+
+    function cerrarModalCerrarSesion() {
+        const modal = document.getElementById('modal-cerrar-sesion');
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+    }
     // ── Ocultar items más allá del índice 2 ──
     document.addEventListener('DOMContentLoaded', () => {
         ['mascota-item', 'pedido-item', 'turno-item'].forEach(cls => {
