@@ -1,6 +1,6 @@
-# Veterinaria Petit
+# Veterinaria Córdoba
 
-Proyecto Django: sitio web para la veterinaria "Petit" (frontend + backend).
+Proyecto Django: sitio web para la veterinaria "Veterinaria Córdoba" (frontend + backend).
 
 ## Descripción
 
