@@ -21,6 +21,7 @@ local_settings.py
 db.sqlite3
 media
 staticfiles/
+prjpetit/settings.py
 
 # VSCode
 .vscode/
