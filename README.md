@@ -28,10 +28,3 @@ python manage.py migrate
 python manage.py createsuperuser
 python manage.py runserver
 ```
-
-## Notas
-
-- La rama `main` ya fue empujada a GitHub.
-- Se creó una rama de respaldo `backup-before-email-change` localmente antes de reescribir los commits para ajustar el email público.
-
-Si querés que agregue un `.gitignore` para Django o un `requirements.txt`, decime y lo agrego y commiteo también.
