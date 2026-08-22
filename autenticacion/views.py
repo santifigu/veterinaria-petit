@@ -85,11 +85,11 @@ class VRegistro(View):
             login(request, usuario, backend='django.contrib.auth.backends.ModelBackend')
             # ── Mail de bienvenida ──
             if usuario.email:
-                asunto = '🐾 ¡Bienvenido a Petit, Córdoba Veterinaria!'
+                asunto = '🐾 ¡Bienvenido a VetCor, una Veterinaria de Córdoba!'
                 mensaje = f"""
 ¡Hola {usuario.username}!
 
-Gracias por registrarte en Petit. Tu cuenta ya está lista para usar. 🐶🐱
+Gracias por registrarte en VetCor. Tu cuenta ya está lista para usar. 🐶🐱
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 Con tu cuenta podés:
@@ -101,7 +101,7 @@ Con tu cuenta podés:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 📍 NUESTRA SUCURSAL
-    Miguel C. Del Corro 56
+    Cerro las Rosas 123
     Córdoba Capital, Argentina
 
 📞 CONTACTO
@@ -109,14 +109,14 @@ Con tu cuenta podés:
     veterinaria@cordoba.com
 
 ¡Te esperamos pronto!
-El equipo de Petit 🐾
+El equipo de VetCor 🐾
                 """
                 try:
                     send_mail(asunto, mensaje, settings.EMAIL_HOST_USER, [usuario.email], fail_silently=True)
                 except Exception as e:
                     print(f"⚠️ Error al enviar mail de bienvenida: {e}")
 
-            messages.success(request, "¡Bienvenido a la familia Petit! Registro exitoso.")
+            messages.success(request, "¡Bienvenido a la familia VetCor! Registro exitoso.")
             return redirect('index')
         else:
             for field in form:

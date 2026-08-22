@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 import os
 import dj_database_url
 
-load_dotenv()
+load_dotenv() 
 
 SECRET_KEY = os.getenv('SECRET_KEY')
 EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
@@ -20,8 +20,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv('DEBUG', 'False') == 'True'
-
+DEBUG = os.getenv('DEBUG', 'False') == 'False' # Tengo que poner en "True" para cuando quiera poner de nuevo en producción, está en "False" simplemente porque quiero ver bien la interfaz del panel de administración
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
 
 # Application definition
